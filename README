@@ -1,6 +1,37 @@
-For help with GitHub commands (snapshotting, branching, updating, etc).
-please refer to the Git reference page below:
+Repulsion Software
+February 19, 2012
+Readme, Tips, and Tricks
 
-http://gitref.org/
+* * * * * * * * * * * * * * * * * * * * * * * * * * * 
+	README
+* * * * * * * * * * * * * * * * * * * * * * * * * * * 
 
-Removed Ha Ha Ha.txt
+
+
+
+* * * * * * * * * * * * * * * * * * * * * * * * * * * 
+	Tips
+* * * * * * * * * * * * * * * * * * * * * * * * * * * 
+
+A. To Pull the Repository:
+
+
+
+
+
+B. To Add a File:
+	1.) Add the file to the repository directory "Repulsiton-Software"
+	2.) In Git-Bash, type "git add <filename>.<extension>" (Replace filename appropriatly)
+	3.) In Git-Bash, type "git commit -a"
+	4.) Uncomment (Remove the '#') in front of the git commands
+	5.) Type, ':' 'w' 'q' '<Enter>'
+	6.) In Git-Bash, type "git push'
+	7.) It should respond with the changes and publish, check the website to verify
+
+C. To Remove a File:
+
+
+
+
+
+

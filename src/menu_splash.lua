@@ -51,12 +51,11 @@ function scene:enterScene( event )
 		local sky = display.newImage( "../images/test_bkg_clouds.png")
 		sky.x = 0
 		sky.y = 0
-		sky.width = display.contentWidth
-		sky.height = display.contentHeight
+		sky:scale(3,2)
 
 		local ground = display.newImage("../images/test_ground.png" )
 		ground.x = display.contentWidth / 2
-		ground.y = 445
+		ground.y = 345
 		ground.myName = "ground"
 
 		-- The parameter "myName" is arbitrary; you can add any parameters, functions or data to Corona display objects

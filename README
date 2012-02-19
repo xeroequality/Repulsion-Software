@@ -29,6 +29,12 @@ B. To Add a File:
 	7.) It should respond with the changes and publish, check the website to verify
 
 C. To Remove a File:
+	1.) Simply delete the file from the Windows Explorer folder
+	2.) In Git-Bash, type "git commit -a"
+	3.) Uncomment (Remove the '#') in front of the git commands
+	4.) Type, ':' 'w' 'q' '<Enter>'
+	5.) In Git-Bash, type "git push'
+	6.) It should respond with the changes and publish, check the website to verify
 
 
 

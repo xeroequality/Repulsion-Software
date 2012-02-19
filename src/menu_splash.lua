@@ -49,14 +49,19 @@ function scene:enterScene( event )
 		local physics = require( "physics" )
 		physics.start()
 
-		local sky = display.newImage( "../images/test_bkg_clouds.png")
-		sky.x = 0
-		sky.y = 0
-		sky:scale(3,2)
+		local space = display.newImage( "../images/space.png")
+		space.x = display.contentWidth/2
+		space.y = display.contentHeight/2
+		space:scale(1.5, 1.5)
+		
+		local earth = display.newImage("../images/earth_slice.png")
+		earth.x=display.contentWidth/2 -20
+		earth.y=display.contentHeight/5 + 250
+		
 
 		local textObj = display.newText("KatAstrophy",0,0,nil,20)
 		textObj.x = display.contentWidth/2
-		textObj.y = display.contentHeight/2
+		textObj.y = display.contentHeight/2 -120
 		--textObj:setReferencePoint(display.CenterRightReferencePoint)
 		--local textHey = display.newText(display.contentHeight,0,0,nil,14)
 		
@@ -65,6 +70,18 @@ function scene:enterScene( event )
 		button.x=display.contentHeight/2 +80
 		button.y=display.contentWidth/2
 		button:scale(.2,.2)
+		
+		
+		function button:touch( event )
+				--storyboard.gotoScene( "menu_mainmenu", flip, 500 )
+				--local hey = display.newText("hey girl",0,0,nil,20)
+				--button.x=event.x
+				--storyboard.exitScene()
+				storyboard.gotoScene("menu_mainmenu")
+		       
+		end
+
+		button:addEventListener( "touch", button )
 		
         -----------------------------------------------------------------------------
         

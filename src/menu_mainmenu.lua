@@ -53,28 +53,28 @@ function scene:enterScene( event )
 		sky.x = 0
 		sky.y = 0
 		sky:scale(3,2)
-
-		local ground = display.newImage("../images/test_ground.png" )
-		ground.x = display.contentWidth / 2
-		ground.y = 345
-		ground.myName = "ground"
-
-		-- The parameter "myName" is arbitrary; you can add any parameters, functions or data to Corona display objects
-
-		physics.addBody( ground, "static", { friction=0.5, bounce=0.3 } )
-
-		local crate1 = display.newImage( "../images/test_crate.png" )
-		crate1.x = 180; crate1.y = -50
-		crate1.myName = "first crate"
-
-		local crate2 = display.newImage( "../images/test_crate.png" )
-		crate2.x = 180; crate2.y = -150
-		crate2.myName = "second crate"
-
-		physics.addBody( crate1, { density=3.0, friction=0.5, bounce=0.3 } )
-		physics.addBody( crate2, { density=3.0, friction=0.5, bounce=0.3 } )
-        
-        -----------------------------------------------------------------------------
+		
+		-- Make the Signs
+		local SPsign = display.newImage("../images/background_SPsign.png")
+		local MPsign = display.newImage("../images/background_MPsign.png")
+		local settings_Sign = display.newImage("../images/background_Settingssign.png")
+		local help_Sign = display.newImage("../images/background_Helpsign.png")
+		cW = display.contentWidth/2;
+		cH = display.contentHeight/2;
+		
+		SPsign.x = cW; SPsign.y = 45;
+		
+		MPsign.y = cH; MPsign.x = cW+115; MPsign:rotate(90)
+		
+		settings_Sign.x = cW; settings_Sign.y = cH+115; settings_Sign:rotate(180)
+		
+		help_Sign.y = cH; help_Sign.x = cW-115; help_Sign:rotate(270)
+		
+		-- Create the Earth
+		local earth = display.newImage("../images/background_earth.png")
+		earth.x = display.contentWidth/2
+		earth.y = display.contentHeight/2
+		
         
 end
  

@@ -38,6 +38,20 @@ C. To Remove a File:
 
 
 
+Adding a file for MAC Users:
+
+// Editing the Commit_EditMSG
+1.) In Git-Bash, "git add <filename>.<file extension>"
+2.) In Git-Bash, "nano .git/COMMIT_EDITMSG"
+3.) Remove the '#' symbol in front of the changes
+4.) Type, "<CTRL> + X" To Exit
+5.) Type, "Y" To Save
+6.) In Git-Bash, "git push"
+
+
+// Without editing the commit_editmsg File:
+1.) In Git-Bash, "git add <filename>.<file extension>"
+2.) In Git-Bash, "git push"
 
 
 

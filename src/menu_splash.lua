@@ -48,11 +48,13 @@ function scene:enterScene( event )
 		local physics = require( "physics" )
 		physics.start()
 
-		local sky = display.newImage( "/images/test_bkg_clouds.png")
-		sky.x = display.contentWidth / 2
-		sky.y = 195
+		local sky = display.newImage( "../images/test_bkg_clouds.png")
+		sky.x = 0
+		sky.y = 0
+		sky.width = display.contentWidth
+		sky.height = display.contentHeight
 
-		local ground = display.newImage( "images/test_ground.png" )
+		local ground = display.newImage("../images/test_ground.png" )
 		ground.x = display.contentWidth / 2
 		ground.y = 445
 		ground.myName = "ground"
@@ -61,11 +63,11 @@ function scene:enterScene( event )
 
 		physics.addBody( ground, "static", { friction=0.5, bounce=0.3 } )
 
-		local crate1 = display.newImage( "images/test_crate.png" )
+		local crate1 = display.newImage( "../images/test_crate.png" )
 		crate1.x = 180; crate1.y = -50
 		crate1.myName = "first crate"
 
-		local crate2 = display.newImage( "images/test_crate.png" )
+		local crate2 = display.newImage( "../images/test_crate.png" )
 		crate2.x = 180; crate2.y = -150
 		crate2.myName = "second crate"
 

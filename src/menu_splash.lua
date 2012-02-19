@@ -26,7 +26,8 @@ local scene = storyboard.newScene()
 -- Called when the scene's view does not exist:
 function scene:createScene( event )
         local group = self.view
- 	
+ 
+	
         -----------------------------------------------------------------------------
                 
         --      CREATE display objects and add them to 'group' here.
@@ -53,26 +54,18 @@ function scene:enterScene( event )
 		sky.y = 0
 		sky:scale(3,2)
 
-		local ground = display.newImage("../images/test_ground.png" )
-		ground.x = display.contentWidth / 2
-		ground.y = 345
-		ground.myName = "ground"
-
-		-- The parameter "myName" is arbitrary; you can add any parameters, functions or data to Corona display objects
-
-		physics.addBody( ground, "static", { friction=0.5, bounce=0.3 } )
-
-		local crate1 = display.newImage( "../images/test_crate.png" )
-		crate1.x = 180; crate1.y = -50
-		crate1.myName = "first crate"
-
-		local crate2 = display.newImage( "../images/test_crate.png" )
-		crate2.x = 180; crate2.y = -150
-		crate2.myName = "second crate"
-
-		physics.addBody( crate1, { density=3.0, friction=0.5, bounce=0.3 } )
-		physics.addBody( crate2, { density=3.0, friction=0.5, bounce=0.3 } )
-        
+		local textObj = display.newText("KatAstrophy",0,0,nil,20)
+		textObj.x = display.contentWidth/2
+		textObj.y = display.contentHeight/2
+		--textObj:setReferencePoint(display.CenterRightReferencePoint)
+		--local textHey = display.newText(display.contentHeight,0,0,nil,14)
+		
+		
+		local button= display.newImage("../images/play-button2.png")
+		button.x=display.contentHeight/2 +80
+		button.y=display.contentWidth/2
+		button:scale(.2,.2)
+		
         -----------------------------------------------------------------------------
         
 end

@@ -45,37 +45,35 @@ function scene:enterScene( event )
         -----------------------------------------------------------------------------
                 
         --      INSERT code here (e.g. start timers, load audio, start listeners, etc.)
-		
-		local physics = require( "physics" )
-		physics.start()
 
-		local sky = display.newImage( "../images/test_bkg_clouds.png")
-		sky.x = 0
-		sky.y = 0
-		sky:scale(3,2)
-		
-		-- Make the Signs
-		local SPsign = display.newImage("../images/background_SPsign.png")
-		local MPsign = display.newImage("../images/background_MPsign.png")
-		local settings_Sign = display.newImage("../images/background_Settingssign.png")
-		local help_Sign = display.newImage("../images/background_Helpsign.png")
-		cW = display.contentWidth/2;
-		cH = display.contentHeight/2;
-		
-		SPsign.x = cW; SPsign.y = 45;
-		
-		MPsign.y = cH; MPsign.x = cW+115; MPsign:rotate(90)
-		
-		settings_Sign.x = cW; settings_Sign.y = cH+115; settings_Sign:rotate(180)
-		
-		help_Sign.y = cH; help_Sign.x = cW-115; help_Sign:rotate(270)
-		
-		-- Create the Earth
-		local earth = display.newImage("../images/background_earth.png")
-		earth.x = display.contentWidth/2
-		earth.y = display.contentHeight/2
-		
+		local background = display.newImage( "../images/space.png")
+		background.x = display.contentWidth / 2
+		background.y = display.contentWidth / 2
+		background:scale(1.5,1.5)
+
+		local earthSlice = display.newImage("../images/earth_slice.png" )
+		earthSlice.x = display.contentWidth / 2
+		earthSlice:scale(0.3,0.3)
         
+		local lvl1 = display.newText("1", 0, 0, native.systemFont, 70)
+		lvl1.x = display.contentWidth / 10
+		lvl1.y = display.contentHeight / 3
+		
+		local lvl2 = display.newText("2", 0, 0, native.systemFont, 70)
+		lvl2.x = (display.contentWidth / 10) * 3
+		lvl2.y = display.contentHeight / 3
+		
+		local lvl3 = display.newText("3", 0, 0, native.systemFont, 70)
+		lvl3.x = (display.contentWidth / 10) * 5
+		lvl3.y = display.contentHeight / 3
+		
+		local lvl4 = display.newText("4", 0, 0, native.systemFont, 70)
+		lvl4.x = (display.contentWidth / 10) * 7
+		lvl4.y = display.contentHeight / 3
+		
+		local lvl5 = display.newText("5", 0, 0, native.systemFont, 70)
+		lvl5.x = (display.contentWidth / 10) * 9
+		lvl5.y = display.contentHeight / 3
 end
  
  

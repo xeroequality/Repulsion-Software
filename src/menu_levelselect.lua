@@ -46,12 +46,12 @@ function scene:enterScene( event )
                 
         --      INSERT code here (e.g. start timers, load audio, start listeners, etc.)
 
-		local background = display.newImage( "space.png")
+		local background = display.newImage( "../images/space.png")
 		background.x = display.contentWidth / 2
 		background.y = display.contentHeight / 2
 		background:scale(1.5, 1.5)
 
-		local earthSlice = display.newImage("earth_slice.png" )
+		local earthSlice = display.newImage("..images/earth_slice.png" )
 		earthSlice.x = display.contentWidth / 2
 		earthSlice.y = display.contentHeight / 1.2
 		earthSlice:scale((((0.625/1200)*(display.contentHeight)^2)-53.03),(((0.625/1200)*(display.contentHeight)^2)-53.03))

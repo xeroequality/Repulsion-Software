@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 --
 -- Project: KatAstrophy
 -- Description: 
@@ -177,6 +178,10 @@ function scene:enterScene( event )
 				if MPangle >= 360 then MPangle = MPangle - 360 end
 				if setangle >= 360 then setangle = setangle - 360 end
 				if helpangle >= 360 then helpangle = helpangle - 360 end
+				if SPangle < 0 then SPangle = SPangle + 360 end
+				if MPangle < 0 then MPangle = MPangle + 360 end
+				if setangle < 0 then setangle = setangle + 360 end
+				if helpangle < 0 then helpangle = helpangle + 360 end
 				
 				-- Adjust x and y
 				SPr = SPangle*(math.pi/180);
@@ -255,6 +260,8 @@ scene:addEventListener( "destroyScene", scene )
  
 return scene
 =======
+=======
+>>>>>>> 19f4b093eb31fc84d35feb927cc7b99856053689
 --
 -- Project: KatAstrophy
 -- Description: 
@@ -379,4 +386,7 @@ scene:addEventListener( "destroyScene", scene )
 ---------------------------------------------------------------------------------
  
 return scene
+<<<<<<< HEAD
+>>>>>>> 19f4b093eb31fc84d35feb927cc7b99856053689
+=======
 >>>>>>> 19f4b093eb31fc84d35feb927cc7b99856053689

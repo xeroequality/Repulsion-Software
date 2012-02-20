@@ -47,21 +47,52 @@ function scene:enterScene( event )
                 
         --      INSERT code here (e.g. start timers, load audio, start listeners, etc.)
 		
+		
 		local physics = require( "physics" )
 		physics.start()
+		
+		cW = display.contentWidth/2;
+		cH = display.contentHeight/2;
 
 		local sky = display.newImage( "../images/test_bkg_clouds.png")
 		sky.x = 0
 		sky.y = 0
 		sky:scale(3,2)
 		
+		-- Logo in Background
+		local logo = display.newImage("../images/logo.png");
+		logo.x = cW; logo.y = cH; logo.alpha = 0.75;
+		
+		up = true;
+		bounce_limit = 16;
+		moving = 1;
+		
+		-- Push the Logo Up and Down
+		function bouncyLogo(event)
+		
+			if up == true then
+				logo.y = logo.y - moving;
+				if logo.y <= (cH-bounce_limit) then
+					logo.y = (cH-bounce_limit)
+					up = false;
+				end
+			else
+				logo.y = logo.y + moving;
+				if logo.y >= (cH+bounce_limit) then
+					logo.y = (cH+bounce_limit)
+					up = true;
+				end
+			end
+		
+		end
+		
+		Runtime:addEventListener("enterFrame",bouncyLogo);
+		
 		-- Make the Signs
 		local SPsign = display.newImage("../images/background_SPsign.png")
 		local MPsign = display.newImage("../images/background_MPsign.png")
 		local settings_Sign = display.newImage("../images/background_Settingssign.png")
 		local help_Sign = display.newImage("../images/background_Helpsign.png")
-		cW = display.contentWidth/2;
-		cH = display.contentHeight/2;
 		
 		SPsign.x = cW; SPsign.y = 45;
 		

@@ -252,11 +252,12 @@ function scene:enterScene( event )
 		end
 		
 		sky:addEventListener("touch",rotateStuff);
+		space:addEventListener("touch",rotateStuff);
 		Runtime:addEventListener("enterFrame",rotateAnimation);
 		
 		group:insert(sky)
-		group:insert(logo)
 		group:insert(space)
+		group:insert(logo)
 		group:insert(SPsign)
 		group:insert(MPsign)
 		group:insert(settings_Sign)

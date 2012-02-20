@@ -1,62 +1,59 @@
 main.lua
+    -- intially loaded .lua
 
-menu_splash.lua
-menu_mainmenu.lua
+  menu_splash.lua
+      -- splash screen, display logo
 
-menu_mainmenu_settings.lua
-menu_mainmenu_aboutus.lua
-menu_MP_MPmain.lua
+    menu_mainmenu.lua
+        -- main menu, choose SP, MP, Settings, About
 
-menu_SP_SPmain.lua
-menu_SP_SPachievements.lua
+      menu_mainmenu_settings.lua
+          -- main settings screen
 
-loadingScreen.lua
+      menu_mainmenu_aboutus.lua
+          -- main about us screen
 
-menu_SP_aliens_chapter1.lua
-menu_SP_aliens_chapter1_level1_overlay.lua
-menu_SP_aliens_chapter1_level1.lua
-menu_SP_aliens_chapter1_level2_overlay.lua
-menu_SP_aliens_chapter1_level2.lua
-menu_SP_aliens_chapter1_level3_overlay.lua
-menu_SP_aliens_chapter1_level3.lua
-menu_SP_aliens_chapter1_level4_overlay.lua
-menu_SP_aliens_chapter1_level4.lua
-menu_SP_aliens_chapter1_level5_overlay.lua
-menu_SP_aliens_chapter1_level5.lua
+      menu_mainmenu_multiplayer.lua
+          -- main multiplayer screen (choose which multiplayer setting)
 
-menu_SP_aliens_chapter2.lua
-menu_SP_aliens_chapter2_level1_overlay.lua
-menu_SP_aliens_chapter2_level1.lua
-menu_SP_aliens_chapter2_level2_overlay.lua
-menu_SP_aliens_chapter2_level2.lua
-menu_SP_aliens_chapter2_level3_overlay.lua
-menu_SP_aliens_chapter2_level3.lua
-menu_SP_aliens_chapter2_level1_overlay.lua
-menu_SP_aliens_chapter2_level4.lua
-menu_SP_aliens_chapter2_level1_overlay.lua
-menu_SP_aliens_chapter2_level5.lua
+      menu_mainmenu_singleplayer.lua
+          -- main single player screen (choose aliens / cats)
 
-menu_SP_aliens_chapter3.lua
-menu_SP_aliens_chapter3_level1_overlay.lua
-menu_SP_aliens_chapter3_level1.lua
-menu_SP_aliens_chapter3_level2_overlay.lua
-menu_SP_aliens_chapter3_level2.lua
-menu_SP_aliens_chapter3_level3_overlay.lua
-menu_SP_aliens_chapter3_level3.lua
-menu_SP_aliens_chapter3_level4_overlay.lua
-menu_SP_aliens_chapter3_level4.lua
-menu_SP_aliens_chapter3_level5_overlay.lua
-menu_SP_aliens_chapter3_level5.lua
+          menu_SP_achievements.lua
+              -- single player screen showing achievements
 
-menu_SP_aliens_chapter4.lua
-menu_SP_aliens_chapter4_level1_overlay.lua
-menu_SP_aliens_chapter4_level1.lua
-menu_SP_aliens_chapter4_level2_overlay.lua
-menu_SP_aliens_chapter4_level2.lua
-menu_SP_aliens_chapter4_level3_overlay.lua
-menu_SP_aliens_chapter4_level3.lua
-menu_SP_aliens_chapter4_level4_overlay.lua
-menu_SP_aliens_chapter4_level4.lua
-menu_SP_aliens_chapter4_level5_overlay.lua
-menu_SP_aliens_chapter4_level5.lua
+          menu_SP_aliens_chapter1.lua
+              -- single player menu, aliens chosen, region 1 selected
 
+              menu_SP_aliens_chapter1_level1.lua
+                  -- gameplay implementation for level 1
+
+              menu_SP_aliens_chapter1_level2.lua
+                  -- gameplay implementation for level 2
+
+              menu_SP_aliens_chapter1_level3.lua
+                  -- gameplay implementation for level 3
+
+              menu_SP_aliens_chapter1_level4.lua
+                  -- gameplay implementation for level 4
+
+              menu_SP_aliens_chapter1_level5.lua
+                  -- gameplay implementation for level 5
+
+          menu_SP_aliens_chapter2.lua
+              -- single player menu, aliens chosen, region 2 selected
+
+              menu_SP_aliens_chapter2_level1.lua
+                  -- gameplay implementation for level 1
+
+              menu_SP_aliens_chapter2_level2.lua
+                  -- gameplay implementation for level 2
+
+              menu_SP_aliens_chapter2_level3.lua
+                  -- gameplay implementation for level 3
+
+              menu_SP_aliens_chapter2_level4.lua
+                  -- gameplay implementation for level 4
+
+              menu_SP_aliens_chapter2_level5.lua
+                  -- gameplay implementation for level 5

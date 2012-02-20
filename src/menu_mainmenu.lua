@@ -53,6 +53,7 @@ function scene:enterScene( event )
 		
 		cW = display.contentWidth/2;
 		cH = display.contentHeight/2;
+		pH = cH;
 		w = display.contentWidth;
 		h = display.contentHeight;
 
@@ -64,8 +65,9 @@ function scene:enterScene( event )
 		space.y = h/2
 		
 		-- Logo in Background
+		pH = 115;
 		local logo = display.newImage("../images/logo.png");
-		logo.x = cW; logo.y = cH; logo.alpha = 0.75;
+		logo.x = cW; logo.y = pH; logo.alpha = 0.75;
 		
 		up = true;
 		bounce_limit = 16;
@@ -76,14 +78,14 @@ function scene:enterScene( event )
 		
 			if up == true then
 				logo.y = logo.y - moving;
-				if logo.y <= (cH-bounce_limit) then
-					logo.y = (cH-bounce_limit)
+				if logo.y <= (pH-bounce_limit) then
+					logo.y = (pH-bounce_limit)
 					up = false;
 				end
 			else
 				logo.y = logo.y + moving;
-				if logo.y >= (cH+bounce_limit) then
-					logo.y = (cH+bounce_limit)
+				if logo.y >= (pH+bounce_limit) then
+					logo.y = (pH+bounce_limit)
 					up = true;
 				end
 			end
@@ -104,13 +106,15 @@ function scene:enterScene( event )
 		Runtime:addEventListener("enterFrame",moveSpace);
 		Runtime:addEventListener("enterFrame",bouncyLogo);
 		
+		cH = display.contentHeight;
+		
 		-- Make the Signs
 		local SPsign = display.newImage("../images/background_SPsign.png")
 		local MPsign = display.newImage("../images/background_MPsign.png")
 		local settings_Sign = display.newImage("../images/background_Settingssign.png")
 		local help_Sign = display.newImage("../images/background_Helpsign.png")
 		
-		SPsign.x = cW; SPsign.y = 45;
+		SPsign.x = cW; SPsign.y = cH-115;
 		
 		MPsign.y = cH; MPsign.x = cW+115; MPsign:rotate(90)
 		
@@ -121,7 +125,7 @@ function scene:enterScene( event )
 		-- Create the Earth
 		local earth = display.newImage("../images/background_earth.png")
 		earth.x = display.contentWidth/2
-		earth.y = display.contentHeight/2
+		earth.y = cH;
 		
 		SPangle = 0+270;
 		MPangle = 90+270;
@@ -167,6 +171,13 @@ function scene:enterScene( event )
 		--]]
 		
 		turning = false;
+		fade = 1; down_fade = 0.3;
+		
+		local right_arrow = display.newImage("../images/background_rightarrow.png");
+		local left_arrow = display.newImage("../images/background_leftarrow.png");
+		right_arrow.x = cW+(cW/2); right_arrow.y = (cH-115)+15; right_arrow:scale(0.25,0.25); right_arrow:rotate(30);
+		left_arrow.x = cW-(cW/2); left_arrow.y = (cH-115)+15; left_arrow:scale(0.25,0.25); left_arrow:rotate(-30);
+		
 		
 		function rotateStuff(event)
 		
@@ -190,6 +201,8 @@ function scene:enterScene( event )
 					if MPangle == 270 then MPsign:scale(0.5,0.5) end
 					if setangle == 270 then settings_Sign:scale(0.5,0.5) end
 					if helpangle == 270 then help_Sign:scale(0.5,0.5) end
+					
+					fade = 1;
 						
 						
 				end
@@ -200,6 +213,14 @@ function scene:enterScene( event )
 		function rotateAnimation(event)
 		
 			if turning == true then
+			
+				right_arrow.alpha = fade;
+				left_arrow.alpha = fade;
+				
+				if fade > 0 then
+					fade = fade - down_fade;
+					if fade <= 0 then fade = 0 end
+				end
 			
 				inc = 10;
 				if increment > 0 then
@@ -246,14 +267,28 @@ function scene:enterScene( event )
 					if setangle == 270 then settings_Sign:scale(2,2) end
 					if helpangle == 270 then help_Sign:scale(2,2) end
 				end
+				
+			else
+		
+				right_arrow.alpha = fade;
+				left_arrow.alpha = fade;
+				
+				if fade < 1 then
+					fade = fade + down_fade
+					if fade >= 1 then fade = 1 end
+				end
 
 			end
+			
+		
 		
 		end
 		
 		sky:addEventListener("touch",rotateStuff);
 		space:addEventListener("touch",rotateStuff);
 		Runtime:addEventListener("enterFrame",rotateAnimation);
+		
+		
 		
 		group:insert(sky)
 		group:insert(space)
@@ -263,6 +298,8 @@ function scene:enterScene( event )
 		group:insert(settings_Sign)
 		group:insert(help_Sign)
 		group:insert(earth)
+		group:insert(left_arrow)
+		group:insert(right_arrow)
 		
         
 end

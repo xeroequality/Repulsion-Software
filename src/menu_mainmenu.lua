@@ -53,11 +53,15 @@ function scene:enterScene( event )
 		
 		cW = display.contentWidth/2;
 		cH = display.contentHeight/2;
+		w = display.contentWidth;
+		h = display.contentHeight;
 
-		local sky = display.newImage( "../images/test_bkg_clouds.png")
+		local sky = display.newImage( "../images/space.png")
+		local space = display.newImage("../images/space.png")
 		sky.x = 0
-		sky.y = 0
-		sky:scale(3,2)
+		sky.y = h/2
+		space.x = -w*2
+		space.y = h/2
 		
 		-- Logo in Background
 		local logo = display.newImage("../images/logo.png");
@@ -86,6 +90,18 @@ function scene:enterScene( event )
 		
 		end
 		
+		function moveSpace(event)
+			if sky.x >= 2*w then
+				sky.x = -2*w
+			end
+			if space.x >= 2*w then
+				space.x = -2*w
+			end
+			sky.x = sky.x + 1
+			space.x = space.x + 1
+		end
+		
+		Runtime:addEventListener("enterFrame",moveSpace);
 		Runtime:addEventListener("enterFrame",bouncyLogo);
 		
 		-- Make the Signs

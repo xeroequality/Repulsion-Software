@@ -46,7 +46,7 @@ function scene:enterScene( event )
                 
         --      INSERT code here (e.g. start timers, load audio, start listeners, etc.)
 
-		local sky = display.newImage( "test_bkg_clouds.png")
+		local sky = display.newImage( "../images/test_bkg_clouds.png")
 		sky.x = 0
 		sky.y = 0
 		sky:scale(3,2)

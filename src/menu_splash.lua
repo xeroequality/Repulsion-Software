@@ -55,17 +55,17 @@ function scene:enterScene( event )
         --      INSERT code here (e.g. start timers, load audio, start listeners, etc.)
 		 w = display.contentWidth		 h = display.contentHeight
 
-		local space1 = display.newImage( "space.png" )		space1:setReferencePoint ( display.CenterReferencePoint )
+		local space1 = display.newImage( "../images/space.png" )		space1:setReferencePoint ( display.CenterReferencePoint )
 		space1.x = 0
-		space1.y = h/2		local space2 = display.newImage("space.png" )		--space2:setReferencePoint ( display.CenterReferencePoint )
+		space1.y = h/2		local space2 = display.newImage("../images/space.png" )		--space2:setReferencePoint ( display.CenterReferencePoint )
 		space2.x = -w*2
-		space2.y = h/2				local function moveSpace (event)			if space1.x >= 2*w then				space1.x = -2*w			end			if space2.x >= 2*w then				space2.x = -2*w			end			--print("space1: " .. space1.x)			--print("space2: " .. space2.x)			space1.x = space1.x + 1			space2.x = space2.x + 1		end				local logo = display.newImageRect("logo.png",480,154)		logo.x = w/2		logo.y = h/2-80				local e = display.newImageRect("earth_slice.png",600,185)		e:setReferencePoint ( display.CenterReferencePoint )		e.x = w/2-10; e.y = h-80		local e_light1 = display.newImage("earth_lightsource.png")		e_light1:setReferencePoint( display.CenterReferencePoint )		e_light1.x = 0; e_light1.y = h/2;		local e_light2 = display.newImage("earth_lightsource.png")		e_light2:setReferencePoint( display.CenterReferencePoint )		e_light2.x = -w*2; e_light2.y = h/2;				local function moveLight (event)			if e_light1.x <= -2*w then				e_light1.x = 2*w			end			if e_light2.x <= -2*w then				e_light2.x = 2*w			end			e_light1.x = e_light1.x - 1			e_light2.x = e_light2.x - 1		end
+		space2.y = h/2				local function moveSpace (event)			if space1.x >= 2*w then				space1.x = -2*w			end			if space2.x >= 2*w then				space2.x = -2*w			end			--print("space1: " .. space1.x)			--print("space2: " .. space2.x)			space1.x = space1.x + 1			space2.x = space2.x + 1		end				local logo = display.newImageRect("../images/logo.png",480,154)		logo.x = w/2		logo.y = h/2-80				local e = display.newImageRect("../images/earth_slice.png",600,185)		e:setReferencePoint ( display.CenterReferencePoint )		e.x = w/2-10; e.y = h-80		local e_light1 = display.newImage("../images/earth_lightsource.png")		e_light1:setReferencePoint( display.CenterReferencePoint )		e_light1.x = 0; e_light1.y = h/2;		local e_light2 = display.newImage("../images/earth_lightsource.png")		e_light2:setReferencePoint( display.CenterReferencePoint )		e_light2.x = -w*2; e_light2.y = h/2;				local function moveLight (event)			if e_light1.x <= -2*w then				e_light1.x = 2*w			end			if e_light2.x <= -2*w then				e_light2.x = 2*w			end			e_light1.x = e_light1.x - 1			e_light2.x = e_light2.x - 1		end
 		
 		playBtn = widget.newButton{
 			label="Play",
 			labelColor = { default={255}, over={128} },
-			default="buttonInActive.png",
-			over="buttonActive.png",
+			default="../images/buttonInActive.png",
+			over="../images/buttonActive.png",
 			width=100, height=50,
 			onRelease = onPlayBtnRelease
 		}

@@ -29,8 +29,8 @@ function scene:createScene( event )
  --[[	Use Corona's "Widget" library to create easy buttons			label: text written on the button			labelColor: color of text initially and when pressed			default: default background image for button			over: background image when pressed			width/height: width/height of button image			onRelease: event triggered after button press]]    backBtn = widget.newButton{
 		label="Back",
 		labelColor = { default={255}, over={128} },
-		default="buttonInActive.png",
-		over="buttonActive.png",
+		default="../images/buttonInActive.png",
+		over="../images/buttonActive.png",
 		width=200, height=100,
 		onRelease = onBackBtnRelease
     }	backBtn.view:setReferencePoint( display.CenterReferencePoint )

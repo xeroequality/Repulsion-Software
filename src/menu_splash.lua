@@ -7,7 +7,7 @@
 --
 -- Copyright 2012 Jason Simmons. All Rights Reserved.
 -- 
-local storyboard = require( "storyboard" )
+local storyboard = require( "storyboard" )local widget = require( "widget" )
 local scene = storyboard.newScene()
  
 ----------------------------------------------------------------------------------
@@ -17,8 +17,16 @@ local scene = storyboard.newScene()
 --      Code outside of listener functions (below) will only be executed once,
 --      unless storyboard.removeScene() is called.
 -- 
----------------------------------------------------------------------------------
- 
+---------------------------------------------------------------------------------local playBtn
+
+-- 'onRelease' event listener for playBtn
+local function onPlayBtnRelease()
+	
+	-- go to level1.lua scene
+	storyboard.gotoScene( "menu_mainmenu", "flip", 200 )
+	
+	return true	-- indicates successful touch
+end
 ---------------------------------------------------------------------------------
 -- BEGINNING OF YOUR IMPLEMENTATION
 ---------------------------------------------------------------------------------
@@ -45,45 +53,28 @@ function scene:enterScene( event )
         -----------------------------------------------------------------------------
                 
         --      INSERT code here (e.g. start timers, load audio, start listeners, etc.)
-		
-		local physics = require( "physics" )
-		physics.start()
+		 w = display.contentWidth		 h = display.contentHeight
 
-		local space = display.newImage( "../images/space.png")
-		space.x = display.contentWidth/2
-		space.y = display.contentHeight/2
-		space:scale(1.5, 1.5)
+		local space1 = display.newImage( "space.png" )		space1:setReferencePoint ( display.CenterReferencePoint )
+		space1.x = 0
+		space1.y = h/2		local space2 = display.newImage("space.png" )		--space2:setReferencePoint ( display.CenterReferencePoint )
+		space2.x = -w*2
+		space2.y = h/2				local function moveSpace (event)			if space1.x >= 2*w then				space1.x = -2*w			end			if space2.x >= 2*w then				space2.x = -2*w			end			--print("space1: " .. space1.x)			--print("space2: " .. space2.x)			space1.x = space1.x + 1			space2.x = space2.x + 1		end				local logo = display.newImageRect("logo.png",480,154)		logo.x = w/2		logo.y = h/2-80				local e = display.newImageRect("earth_slice.png",600,185)		e:setReferencePoint ( display.CenterReferencePoint )		e.x = w/2-10; e.y = h-80		local e_light1 = display.newImage("earth_lightsource.png")		e_light1:setReferencePoint( display.CenterReferencePoint )		e_light1.x = 0; e_light1.y = h/2;		local e_light2 = display.newImage("earth_lightsource.png")		e_light2:setReferencePoint( display.CenterReferencePoint )		e_light2.x = -w*2; e_light2.y = h/2;				local function moveLight (event)			if e_light1.x <= -2*w then				e_light1.x = 2*w			end			if e_light2.x <= -2*w then				e_light2.x = 2*w			end			e_light1.x = e_light1.x - 1			e_light2.x = e_light2.x - 1		end
 		
-		local earth = display.newImage("../images/earth_slice.png")
-		earth.x=display.contentWidth/2 -20
-		earth.y=display.contentHeight/5 + 250
-		
-
-		local textObj = display.newText("KatAstrophy",0,0,nil,20)
-		textObj.x = display.contentWidth/2
-		textObj.y = display.contentHeight/2 -120
-		--textObj:setReferencePoint(display.CenterRightReferencePoint)
-		--local textHey = display.newText(display.contentHeight,0,0,nil,14)
-		
-		
-		local button= display.newImage("../images/play-button2.png")
-		button.x=display.contentHeight/2 +80
-		button.y=display.contentWidth/2
-		button:scale(.2,.2)
-		
-		
-		function button:touch( event )
-				--storyboard.gotoScene( "menu_mainmenu", flip, 500 )
-				--local hey = display.newText("hey girl",0,0,nil,20)
-				--button.x=event.x
-				--storyboard.exitScene()
-				storyboard.gotoScene("menu_mainmenu")
-		       
-		end
-
-		button:addEventListener( "touch", button )
-		
-        -----------------------------------------------------------------------------
+		playBtn = widget.newButton{
+			label="Play",
+			labelColor = { default={255}, over={128} },
+			default="buttonInActive.png",
+			over="buttonActive.png",
+			width=100, height=50,
+			onRelease = onPlayBtnRelease
+		}
+		playBtn.view:setReferencePoint( display.CenterReferencePoint )
+		playBtn.view.x = display.contentWidth*0.5
+		playBtn.view.y = display.contentHeight - 125
+		
+		Runtime:addEventListener( "enterFrame", moveSpace )		Runtime:addEventListener( "enterFrame", moveLight )
+        -----------------------------------------------------------------------------        group:insert(space1)        group:insert(space2)        group:insert(e)        group:insert(logo)        group:insert(e_light1)        group:insert(e_light2)        group:insert(playBtn.view)
         
 end
  
@@ -109,7 +100,10 @@ function scene:destroyScene( event )
         
         --      INSERT code here (e.g. remove listeners, widgets, save state, etc.)
         
-        -----------------------------------------------------------------------------
+        -----------------------------------------------------------------------------        if playBtn then
+			playBtn:removeSelf()	-- widgets must be manually removed
+			playBtn = nil
+        end
         
 end
  

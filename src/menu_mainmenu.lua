@@ -44,17 +44,14 @@ function scene:enterScene( event )
         
         -----------------------------------------------------------------------------
                 
-        --      INSERT code here (e.g. start timers, load audio, start listeners, etc.)
-		
-		local physics = require( "physics" )
-		physics.start()
+        --      INSERT code here (e.g. start timers, load audio, start listeners, etc.)
 
-		local sky = display.newImage( "../images/test_bkg_clouds.png")
+		local sky = display.newImage( "test_bkg_clouds.png")
 		sky.x = 0
 		sky.y = 0
 		sky:scale(3,2)
 		
-		-- Make the Signs
+		-- Make the Signs--[[
 		local SPsign = display.newImage("../images/background_SPsign.png")
 		local MPsign = display.newImage("../images/background_MPsign.png")
 		local settings_Sign = display.newImage("../images/background_Settingssign.png")
@@ -73,8 +70,8 @@ function scene:enterScene( event )
 		-- Create the Earth
 		local earth = display.newImage("../images/background_earth.png")
 		earth.x = display.contentWidth/2
-		earth.y = display.contentHeight/2
-		
+		earth.y = display.contentHeight/2]]
+	group:insert(sky)
         
 end
  

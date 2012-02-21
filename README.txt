@@ -6,6 +6,33 @@ Readme, Tips, and Tricks
 	README
 * * * * * * * * * * * * * * * * * * * * * * * * * * * 
 
+***********
+Scaling content to screen height
+***********
+
+Because aspect ratios increase only in width, scaling UI assets based on the width of the screen is asking
+for disaster. Your UI elements will seem like they're all over the place. As such, here is a template
+equation for scaling any individual element by screen height:
+
+                 absolute image height scaled for 480x320
+                __________________________________________
+                                    320
+scale value = |_____________________________________________|  *  screen height
+			
+                          original image height
+
+
+
+Practically applied, this looks like:
+
+element:scale( ( ( scaled height / 320 ) / original height ) * display.contentHeight , ( ( scaled height / 320 ) / original height ) * display.contentHeight )
+
+
+Say we have an image with a 600 pixels height. Scaled to 480x320, the image is brought down to 200 pixels 
+in height. We set up our equation as:
+
+foo:scale( ((200/320)/600)*display.contentHeight , ((200/320)/600)*display.contentHeight )
+
 
 
 

@@ -25,6 +25,8 @@ local function onPlayBtnRelease()
 	-- go to level1.lua scene
 	storyboard.gotoScene( "menu_mainmenu", "flip", 200 )
 	--storyboard.gotoScene( "menu_splash", "fade", 200 )
+	--storyboard.gotoScene( "menu_mainmenu", "flip", 200 )
+	--storyboard.gotoScene( "menu_SP_aliens_chapter1_level1", "fade", 200 )
 	
 	return true	-- indicates successful touch
 end

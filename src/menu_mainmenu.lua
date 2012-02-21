@@ -9,6 +9,7 @@
 -- 
 
 local storyboard = require( "storyboard" )
+local widget = require("widget")
 local scene = storyboard.newScene()
  
 ----------------------------------------------------------------------------------
@@ -19,6 +20,19 @@ local scene = storyboard.newScene()
 --      unless storyboard.removeScene() is called.
 -- 
 ---------------------------------------------------------------------------------
+local selectButton;
+local function nextScreen()
+
+	-- Check which Screen to Goto
+	--if SPangle == 270 then storyboard.gotoScene( "menu_mainmenu_singleplayer", "fade", 200 ) end
+	if SPangle == 270 then storyboard.gotoScene( "menu_splash", "fade", 200 ) end
+	if MPangle == 270 then storyboard.gotoScene( "menu_mainmenu_multiplayer", "fade", 200 ) end
+	if setangle == 270 then storyboard.gotoScene( "menu_mainmenu_settings", "fade", 200 ) end
+	if helpangle == 270 then storyboard.gotoScene( "menu_mainmenu_aboutus", "fade", 200 ) end
+
+	return true;
+
+end
  
 ---------------------------------------------------------------------------------
 -- BEGINNING OF YOUR IMPLEMENTATION
@@ -65,12 +79,12 @@ function scene:enterScene( event )
 		space.y = h/2
 		
 		-- Logo in Background
-		pH = 115;
+		pH = 50;
 		local logo = display.newImage("../images/logo.png");
 		logo.x = cW; logo.y = pH; logo.alpha = 0.75;
 		
 		up = true;
-		bounce_limit = 16;
+		bounce_limit = 10;
 		moving = 1;
 		
 		-- Push the Logo Up and Down
@@ -106,13 +120,16 @@ function scene:enterScene( event )
 		Runtime:addEventListener("enterFrame",moveSpace);
 		Runtime:addEventListener("enterFrame",bouncyLogo);
 		
-		cH = display.contentHeight;
+		cH = display.contentHeight+25;
 		
 		-- Make the Signs
 		local SPsign = display.newImage("../images/background_SPsign.png")
 		local MPsign = display.newImage("../images/background_MPsign.png")
 		local settings_Sign = display.newImage("../images/background_Settingssign.png")
 		local help_Sign = display.newImage("../images/background_Helpsign.png")
+		local UFO = display.newImage("../images/background_UFO.png")
+		
+		UFO.x = 45; UFO.y = cH-145; UFO:scale(0.75,0.75); UFO_bottom = ((96*0.75)/2)+UFO.y;
 		
 		SPsign.x = cW; SPsign.y = cH-115;
 		
@@ -131,6 +148,8 @@ function scene:enterScene( event )
 		MPangle = 90+270;
 		setangle = 180+270;
 		helpangle = 270+270;
+		UFOangle = 0;
+		wobble_way = true;
 		increment = 0.1;
 		r = 115;
 		
@@ -138,37 +157,174 @@ function scene:enterScene( event )
 		settings_Sign:scale(0.5,0.5)
 		help_Sign:scale(0.5,0.5)
 		
-		--[[
-		function rotateStuff(event)
-			earth:rotate(increment)
-			
-			SPangle = SPangle + increment;
-			MPangle = MPangle + increment;
-			setangle = setangle + increment;
-			helpangle = helpangle + increment;
-			if SPangle > 360 then SPangle = SPangle - 360 end
-			if MPangle > 360 then MPangle = MPangle - 360 end
-			if setangle > 360 then setangle = setangle - 360 end
-			if helpangle > 360 then helpangle = helpangle - 360 end
-			
-			SPsign:rotate(increment);
-			MPsign:rotate(increment);
-			settings_Sign:rotate(increment);
-			help_Sign:rotate(increment);
-			
-			-- Adjust x and y
-			SPr = SPangle*(math.pi/180);
-			SPsign.x = (r*math.cos(SPr))+(cW); SPsign.y = (r*math.sin(SPr))+cH;
-			MPr = MPangle*(math.pi/180);
-			MPsign.x = (r*math.cos(MPr))+(cW); MPsign.y = (r*math.sin(MPr))+cH;
-			setr = setangle*(math.pi/180);
-			settings_Sign.x = (r*math.cos(setr))+(cW); settings_Sign.y = (r*math.sin(setr))+cH;
-			helpr = helpangle*(math.pi/180);
-			help_Sign.x = (r*math.cos(helpr))+(cW); help_Sign.y = (r*math.sin(helpr))+cH;
+		-- Wobble the UFO
+		function wobble(event)
+		
+			if wobble_way == true then
+				UFOangle = UFOangle + 3;
+				if UFOangle >= 30 then wobble_way = false end
+				UFO:rotate(3)
+			else
+				UFOangle = UFOangle - 3;
+				if UFOangle <= -30 then wobble_way = true end
+				UFO:rotate(-3)
+			end
+		
 		end
 		
-		Runtime:addEventListener("enterFrame",rotateStuff)
-		--]]
+		Runtime:addEventListener("enterFrame",wobble)
+		
+		-- Box Variables
+		width = 200; height = 50; yStart1 = cH-230; yStart2 = cH - 180;
+		xStart1 = cW-100; xStart2 = cW+100; move_speed = 10;
+		sx1 = cW; ex1 = xStart2-50;
+		sx2 = cW; ex2 = xStart1+50;
+		sy1 = yStart1; ey1 = yStart1;
+		sy2 = yStart2; ey2 = yStart2;
+		
+		S1 = "left"; E1 = "left"; S2 = "right"; E2 = "right";
+		
+		local line1 = display.newLine(sx1,sy1,ex1,ey1);
+		local line2 = display.newLine(sx2,sy2,ex2,ey2);
+		local line3 = display.newLine(0,0,0,0);
+		local line4 = display.newLine(0,0,0,0);
+		local aline1 = display.newLine(45,UFO_bottom,sx1,sy1);
+		local aline2 = display.newLine(45,UFO_bottom,sx2,sy2);
+		line1:setColor(0,255,0); line1.width = 3;
+		line2:setColor(0,255,0); line2.width = 3;
+		line3:setColor(0,255,0); line3.width = 3;
+		line4:setColor(0,255,0); line4.width = 3;
+		aline1:setColor(0,255,0); aline1.width = 3;
+		aline2:setColor(0,255,0); aline2.width = 3;
+		
+		local helpText = display.newText("Protect or Conquer the World in the Single Player Campaign!",xStart1+2,yStart1+2,width-2,height-2,native.systemFont,12);
+		
+		-- Show the Help
+		function help(event)
+		
+			-- Draw Them Lines
+			
+			-- All Lines Right Now
+			line1:removeSelf(); line2:removeSelf();
+			line3:removeSelf(); line4:removeSelf();
+			aline1:removeSelf(); aline2:removeSelf();
+			
+			-- Follow the First two Points
+			if S1 == "left" then
+				sx1 = sx1 - move_speed;
+				if sx1 <= xStart1 then sx1 = xStart1; S1 = "down"; end
+			end
+			if S1 == "down" then
+				sy1 = sy1 + move_speed;
+				if sy1 >= yStart2 then sy1 = yStart2; S1 = "right"; end
+			end
+			if S1 == "right" then
+				sx1 = sx1 + move_speed;
+				if sx1 >= xStart2 then sx1 = xStart2; S1 = "up"; end
+			end
+			if S1 == "up" then
+				sy1 = sy1 - move_speed;
+				if sy1 <= yStart1 then sy1 = yStart1; S1 = "left"; end
+			end
+			
+			-- S2
+			if S2 == "left" then
+				sx2 = sx2 - move_speed;
+				if sx2 <= xStart1 then sx2 = xStart1; S2 = "down"; end
+			end
+			if S2 == "down" then
+				sy2 = sy2 + move_speed;
+				if sy2 >= yStart2 then sy2 = yStart2; S2 = "right"; end
+			end
+			if S2 == "right" then
+				sx2 = sx2 + move_speed;
+				if sx2 >= xStart2 then sx2 = xStart2; S2 = "up"; end
+			end
+			if S2 == "up" then
+				sy2 = sy2 - move_speed;
+				if sy2 <= yStart1 then sy2 = yStart1; S2 = "left"; end
+			end
+			
+			-- E1
+			if E1 == "left" then
+				ex1 = ex1 - move_speed;
+				if ex1 <= xStart1 then ex1 = xStart1; E1 = "down"; end
+			end
+			if E1 == "down" then
+				ey1 = ey1 + move_speed;
+				if ey1 >= yStart2 then ey1 = yStart2; E1 = "right"; end
+			end
+			if E1 == "right" then
+				ex1 = ex1 + move_speed;
+				if ex1 >= xStart2 then ex1 = xStart2; E1 = "up"; end
+			end
+			if E1 == "up" then
+				ey1 = ey1 - move_speed;
+				if ey1 <= yStart1 then ey1 = yStart1; E1 = "left"; end
+			end
+			
+			-- E2
+			if E2 == "left" then
+				ex2 = ex2 - move_speed;
+				if ex2 <= xStart1 then ex2 = xStart1; E2 = "down"; end
+			end
+			if E2 == "down" then
+				ey2 = ey2 + move_speed;
+				if ey2 >= yStart2 then ey2 = yStart2; E2 = "right"; end
+			end
+			if E2 == "right" then
+				ex2 = ex2+ move_speed;
+				if ex2 >= xStart2 then ex2 = xStart2; E2 = "up"; end
+			end
+			if E2 == "up" then
+				ey2 = ey2 - move_speed;
+				if ey2 <= yStart1 then ey2 = yStart1; E2 = "left"; end
+			end
+			
+			-- Assign values
+			if S1 == "down" or S1 == "left" then
+				line1 = display.newLine(group,sx1,yStart1,ex1,yStart1);
+				line3 = display.newLine(group,xStart1,sy1,xStart1,yStart1);
+			else
+				line1 = display.newLine(group,sx1,yStart2,ex1,yStart2);
+				line3 = display.newLine(group,xStart2,sy1,xStart2,yStart2);
+			end
+			if S2 == "down" or S2 == "left" then
+				line2 = display.newLine(group,sx2,yStart1,ex2,yStart1);
+				line4 = display.newLine(group,xStart1,sy2,xStart1,yStart1);
+			else
+				line2 = display.newLine(group,sx2,yStart2,ex2,yStart2);
+				line4 = display.newLine(group,xStart2,sy2,xStart2,yStart2);
+			end
+			aline1 = display.newLine(group,45,UFO_bottom,sx1,sy1);
+			aline2 = display.newLine(group,45,UFO_bottom,sx2,sy2);
+			line1:setColor(0,255,0); line1.width = 3;
+			line2:setColor(0,255,0); line2.width = 3;
+			line3:setColor(0,255,0); line3.width = 3;
+			line4:setColor(0,255,0); line4.width = 3;
+			aline1:setColor(0,255,0); aline1.width = 3; aline1.alpha = 0.5;
+			aline2:setColor(0,255,0); aline2.width = 3; aline2.alpha = 0.5;
+			
+			-- Ensure UFO is On Top
+			group:insert(UFO)
+			
+			-- Display Text
+			if SPangle == 270 then
+				helpText.text = "Protect or Conquer the World in the Single Player Campaign!";
+			end
+			if MPangle == 270 then
+				helpText.text = "Play Against a Friend and Go for the High Score!";
+			end
+			if setangle == 270 then
+				helpText.text = "Change the Game Settings and Options Here!";
+			end
+			if helpangle == 270 then
+				helpText.text = "Check Out the Tutorial Here or Find Out Who Made the Game!";
+			end
+		
+		end
+		
+		Runtime:addEventListener("enterFrame",help)
 		
 		turning = false;
 		fade = 1; down_fade = 0.3;
@@ -288,7 +444,19 @@ function scene:enterScene( event )
 		space:addEventListener("touch",rotateStuff);
 		Runtime:addEventListener("enterFrame",rotateAnimation);
 		
-		
+		nextButton = widget.newButton{
+			label="Play",
+			labelColor = { default={255}, over={128} },
+			default="../images/buttonInActive.png",
+			over="../images/buttonActive.png",
+			width=96; height=96;
+
+			onRelease = nextScreen
+		}
+		nextButton.view:setReferencePoint( display.CenterReferencePoint )
+		nextButton.view.x = cW
+		nextButton.view.y = cH-115
+		nextButton.view.alpha = 0.01	
 		
 		group:insert(sky)
 		group:insert(space)
@@ -300,6 +468,10 @@ function scene:enterScene( event )
 		group:insert(earth)
 		group:insert(left_arrow)
 		group:insert(right_arrow)
+		group:insert(nextButton.view)
+		group:insert(helpText)
+		group:insert(line1); group:insert(line2); group:insert(aline1); group:insert(aline2);
+		group:insert(UFO)
 		
         
 end

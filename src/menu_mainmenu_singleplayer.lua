@@ -11,19 +11,35 @@ local storyboard = require( "storyboard" )
 local widget = require( "widget" )
 local scene = storyboard.newScene()
 
+local buttonLabel
+function buttonyButtons()
+	buttonLabel="prev"
+	return true
+end
+function cattyButton()
+	buttonLabel="cat"
+	return true
+end
+function weirdoButton()
+	buttonLabel="alien"
+	return true
+end
 
 ----------------------------------------------------------------------------------
---previous screen function--
-local prevButton
+--go TO screen function--
+
+
 local function goToScreen()
 
 	-- Check which Screen to Goto
-	storyboard.gotoScene( "menu_mainmenu", "fade", 200 ) 
-	
+	print(buttonLabel)
+	if buttonLabel=="prev" then storyboard.gotoScene( "menu_mainmenu", "fade", 200 ) end
+	if buttonLabel=="cat"  then storyboard.gotoScene( "menu_levelselect", "fade", 200 ) end
+	if buttonLabel=="alien"  then storyboard.gotoScene( "menu_levelselect", "fade", 200 ) end
+
 	return true
 
 end
-
 
 ---------------------------------------------------------------------------------
 -- BEGINNING OF YOUR IMPLEMENTATION
@@ -59,12 +75,9 @@ function scene:enterScene( event )
 		--space1.x = 0
 		--space1.y = h/2
 		
-		
-
-		--Runtime:addEventListener( "enterFrame", moveSpace )
-		--Runtime:addEventListener( "enterFrame", moveLight )
         -----------------------------------------------------------------------------
         --group:insert(space1)
+		
 		
 		prevButton = widget.newButton{
 			label="BACK",
@@ -72,19 +85,60 @@ function scene:enterScene( event )
 			default="../images/background_leftarrow.png",
 			over="../images/background_leftarrow.png",
 			width=96; height=96;
-
+			onPress=buttonyButtons,
 			onRelease = goToScreen
 		}
 		
 		prevButton.view:setReferencePoint( display.CenterReferencePoint )
-		prevButton.view.x = display.contentWidth*0.5
-		prevButton.view.y = display.contentHeight - 125
+		prevButton.view.x = display.contentWidth*0.1
+		prevButton.view.y = display.contentHeight - 280
 		
 		group:insert(prevButton.view)
+		
+		
+		catButton = widget.newButton{
+			label="CATS",
+			labelColor = { default={255}, over={128} },
+			default="../images/cats.png",
+			over="../images/cats.png",
+			width=96; height=96;
+			onPress = cattyButton,
+			onRelease = goToScreen
+		}
+		
+		catButton.view:setReferencePoint( display.CenterReferencePoint )
+		catButton.view.x = display.contentWidth*0.7
+		catButton.view.y = display.contentHeight - 100
+		
+		group:insert(catButton.view) 
+		
+		alienButton = widget.newButton{
+			label="ALIEN",
+			labelColor = { default={255}, over={128} },
+			default="../images/alien.png",
+			over="../images/alien.png",
+			width=96; height=96;
+			onPress = weirdoButton,
+			onRelease = goToScreen
+		}
+		
+		alienButton.view:setReferencePoint( display.CenterReferencePoint )
+		alienButton.view.x = display.contentWidth*0.4
+		alienButton.view.y = display.contentHeight - 100
+		
+		group:insert(alienButton.view)
+		
+		
+		
 		
 end
  
  
+
+
+
+
+
 -- Called when scene is about to move offscreen:
 function scene:exitScene( event )
         local group = self.view

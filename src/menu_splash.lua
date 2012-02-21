@@ -180,6 +180,12 @@ function scene:exitScene( event )
 		Runtime:removeEventListener("enterFrame",transition)
 		Runtime:removeEventListener( "enterFrame", moveSpace )
 		Runtime:removeEventListener( "enterFrame", moveLight )
+		
+		local num = group.numChildren;
+		while num >= 1 do
+			group:remove(num)
+			num = num - 1
+		end
         
 end
  

@@ -74,6 +74,10 @@ function scene:createScene( event )
 		right_arrow = display.newImage("../images/background_rightarrow.png");
 		left_arrow = display.newImage("../images/background_leftarrow.png");
 		earth = display.newImage("../images/background_earth.png")
+		
+		MPsign:scale(0.5,0.5)
+		settings_Sign:scale(0.5,0.5)
+		help_Sign:scale(0.5,0.5)
         
 		group:insert(sky)
 		group:insert(space)
@@ -173,10 +177,6 @@ function scene:enterScene( event )
 		local wobble_way = true;
 		local increment = 0.1;
 		local r = 115;
-		
-		MPsign:scale(0.5,0.5)
-		settings_Sign:scale(0.5,0.5)
-		help_Sign:scale(0.5,0.5)
 		
 		-- Wobble the UFO
 		function wobble(event)

@@ -11,6 +11,7 @@
 local storyboard = require( "storyboard" )
 local widget = require("widget")
 local scene = storyboard.newScene()
+nextSign = "";
  
 ----------------------------------------------------------------------------------
 -- 
@@ -20,17 +21,19 @@ local scene = storyboard.newScene()
 --      unless storyboard.removeScene() is called.
 -- 
 ---------------------------------------------------------------------------------
-local selectButton;
-local function nextScreen()
+--local selectButton;
+function nextScreen()
 
-	if active == true then
+	if nextSign ~= "" then
 
 		-- Check which Screen to Goto
 		--if SPangle == 270 then storyboard.gotoScene( "menu_mainmenu_singleplayer", "fade", 200 ) end
-		if SPangle == 270 then storyboard.gotoScene( "menu_splash", "fade", 200 ) end
-		if MPangle == 270 then storyboard.gotoScene( "menu_mainmenu_multiplayer", "fade", 200 ) end
-		if setangle == 270 then storyboard.gotoScene( "menu_mainmenu_settings", "fade", 200 ) end
-		if helpangle == 270 then storyboard.gotoScene( "menu_mainmenu_aboutus", "fade", 200 ) end
+		print("Here")
+		if nextSign == "SPSign" then storyboard.gotoScene( "menu_splash") end
+		print("After")
+		if nextSign == "MPSign" then storyboard.gotoScene( "menu_mainmenu_multiplayer", "fade", 200 ) end
+		if nextSign == "SettingsSign" then storyboard.gotoScene( "menu_mainmenu_settings", "fade", 200 ) end
+		if nextSign == "HelpSign" then storyboard.gotoScene( "menu_mainmenu_aboutus", "fade", 200 ) end
 		
 	end
 
@@ -41,7 +44,7 @@ end
 ---------------------------------------------------------------------------------
 -- BEGINNING OF YOUR IMPLEMENTATION
 ---------------------------------------------------------------------------------
- 
+
 -- Called when the scene's view does not exist:
 function scene:createScene( event )
         local group = self.view
@@ -53,7 +56,36 @@ function scene:createScene( event )
         --      Example use-case: Restore 'group' from previously saved state.
         
         -----------------------------------------------------------------------------
+		
+		-- Make the Signs
+		SPsign = display.newImage("../images/background_SPsign.png")
+		MPsign = display.newImage("../images/background_MPsign.png")
+		settings_Sign = display.newImage("../images/background_Settingssign.png")
+		help_Sign = display.newImage("../images/background_Helpsign.png")
+		UFO = display.newImage("../images/background_UFO.png")
+		sky = display.newImage( "../images/space.png")
+		space = display.newImage("../images/space.png")
+		line1 = display.newLine(0,0,0,0);
+		line2 = display.newLine(0,0,0,0);
+		line3 = display.newLine(0,0,0,0);
+		line4 = display.newLine(0,0,0,0);
+		aline1 = display.newLine(45,0,0,0);
+		aline2 = display.newLine(45,0,0,0);
+		right_arrow = display.newImage("../images/background_rightarrow.png");
+		left_arrow = display.newImage("../images/background_leftarrow.png");
+		earth = display.newImage("../images/background_earth.png")
         
+		group:insert(sky)
+		group:insert(space)
+		group:insert(SPsign)
+		group:insert(MPsign)
+		group:insert(settings_Sign)
+		group:insert(help_Sign)
+		group:insert(earth)
+		group:insert(left_arrow)
+		group:insert(right_arrow)
+		group:insert(line1); group:insert(line2); group:insert(aline1); group:insert(aline2);
+		group:insert(UFO)
 end
  
  
@@ -69,28 +101,26 @@ function scene:enterScene( event )
 		local physics = require( "physics" )
 		physics.start()
 		
-		active = false;
+		local active = false;
 		
-		cW = display.contentWidth/2;
-		cH = display.contentHeight/2;
-		pH = cH;
-		w = display.contentWidth;
-		h = display.contentHeight;
-
-		local sky = display.newImage( "../images/space.png")
-		local space = display.newImage("../images/space.png")
+		local cW = display.contentWidth/2;
+		local cH = display.contentHeight/2;
+		local pH = cH;
+		local w = display.contentWidth;
+		local h = display.contentHeight;
+		
 		sky.x = 0
 		sky.y = h/2
 		space.x = -w*2
 		space.y = h/2
 		
 		-- Logo in Background
-		pH = 50;
+		local pH = 50;
 		local logo = display.newImage("../images/logo.png");
 		
-		up = true;
-		bounce_limit = 10;
-		moving = 1;
+		local up = true;
+		local bounce_limit = 10;
+		local moving = 1;
 		
 		-- Push the Logo Up and Down
 		function bouncyLogo(event)
@@ -129,28 +159,20 @@ function scene:enterScene( event )
 		Runtime:addEventListener("enterFrame",moveSpace);
 		Runtime:addEventListener("enterFrame",bouncyLogo);
 		
-		cH = display.contentHeight+25;
-		
-		-- Make the Signs
-		local SPsign = display.newImage("../images/background_SPsign.png")
-		local MPsign = display.newImage("../images/background_MPsign.png")
-		local settings_Sign = display.newImage("../images/background_Settingssign.png")
-		local help_Sign = display.newImage("../images/background_Helpsign.png")
-		local UFO = display.newImage("../images/background_UFO.png")
+		local cH = display.contentHeight+25;
 		
 		
 		
 		-- Create the Earth
-		local earth = display.newImage("../images/background_earth.png")
 		
-		SPangle = 0+270;
-		MPangle = 90+270;
-		setangle = 180+270;
-		helpangle = 270+270;
-		UFOangle = 0;
-		wobble_way = true;
-		increment = 0.1;
-		r = 115;
+		local SPangle = 0+270;
+		local MPangle = 90+270;
+		local setangle = 180+270;
+		local helpangle = 270+270;
+		local UFOangle = 0;
+		local wobble_way = true;
+		local increment = 0.1;
+		local r = 115;
 		
 		MPsign:scale(0.5,0.5)
 		settings_Sign:scale(0.5,0.5)
@@ -174,21 +196,15 @@ function scene:enterScene( event )
 		Runtime:addEventListener("enterFrame",wobble)
 		
 		-- Box Variables
-		width = 200; height = 50; yStart1 = cH-230; yStart2 = cH - 180;
-		xStart1 = cW-100; xStart2 = cW+100; move_speed = 10;
-		sx1 = cW; ex1 = xStart2-50;
-		sx2 = cW; ex2 = xStart1+50;
-		sy1 = yStart1; ey1 = yStart1;
-		sy2 = yStart2; ey2 = yStart2;
+		local width = 200; local height = 50; local yStart1 = cH-230; local yStart2 = cH - 180;
+		local xStart1 = cW-100; xStart2 = cW+100; move_speed = 10;
+		local sx1 = cW; local ex1 = xStart2-50;
+		local sx2 = cW; local ex2 = xStart1+50;
+		local sy1 = yStart1; local ey1 = yStart1;
+		local sy2 = yStart2; local ey2 = yStart2;
 		
-		S1 = "left"; E1 = "left"; S2 = "right"; E2 = "right";
+		local S1 = "left"; local E1 = "left"; local S2 = "right"; local E2 = "right";
 		
-		local line1 = display.newLine(sx1,sy1,ex1,ey1);
-		local line2 = display.newLine(sx2,sy2,ex2,ey2);
-		local line3 = display.newLine(0,0,0,0);
-		local line4 = display.newLine(0,0,0,0);
-		local aline1 = display.newLine(45,0,sx1,sy1);
-		local aline2 = display.newLine(45,0,sx2,sy2);
 		line1:setColor(0,255,0); line1.width = 3; line1.alpha = 0;
 		line2:setColor(0,255,0); line2.width = 3; line2.alpha = 0;
 		line3:setColor(0,255,0); line3.width = 3; line3.alpha = 0;
@@ -196,7 +212,7 @@ function scene:enterScene( event )
 		aline1:setColor(0,255,0); aline1.width = 3; aline1.alpha = 0;
 		aline2:setColor(0,255,0); aline2.width = 3; aline2.alpha = 0;
 		
-		local helpText = display.newText("Protect or Conquer the World in the Single Player Campaign!",xStart1+2,yStart1+2,width-2,height-2,native.systemFont,12);
+		local helpText = display.newText(group,"Protect or Conquer the World in the Single Player Campaign!",xStart1+2,yStart1+2,width-2,height-2,native.systemFont,12);
 		helpText.alpha = 0
 		
 		-- Show the Help
@@ -330,11 +346,9 @@ function scene:enterScene( event )
 		
 		Runtime:addEventListener("enterFrame",help)
 		
-		turning = false;
-		fade = 1; down_fade = 0.3;
+		local turning = false;
+		local fade = 1; local down_fade = 0.3;
 		
-		local right_arrow = display.newImage("../images/background_rightarrow.png");
-		local left_arrow = display.newImage("../images/background_leftarrow.png");
 		right_arrow.alpha = 0; left_arrow.alpha = 0; right_arrow.x = 4000; left_arrow.x = 4000;
 		
 		
@@ -471,20 +485,42 @@ function scene:enterScene( event )
 		
 		end
 		
+		-- Check Signage
+		function checkSign(event)
+		
+			if SPangle == 270 then nextSign = "SPSign" end
+			if MPangle == 270 then nextSign = "MPSign" end
+			if setangle == 270 then nextSign = "SettingsSign" end
+			if helpangle == 270 then nextSign = "HelpSign" end
+			if active == false then nextSign = "" end
+		
+		end
+		
+		Runtime:addEventListener("enterFrame",checkSign)
+		
 		sky:addEventListener("touch",rotateStuff);
 		space:addEventListener("touch",rotateStuff);
 		Runtime:addEventListener("enterFrame",rotateAnimation);
 		right_arrow:addEventListener("touch",rotateTap);
 		left_arrow:addEventListener("touch",rotateTap);
 		
+		function clicked()
+		
+			print("Clicked")
+			return true
+			
+		end
+		
 		nextButton = widget.newButton{
 			label="Play",
 			labelColor = { default={255}, over={128} },
 			default="../images/buttonInActive.png",
 			over="../images/buttonActive.png",
-			width=96; height=96;
+			width=96, height=96,
 
-			onRelease = nextScreen
+			onRelease = nextScreen,
+			onPress = clicked
+			
 		}
 		nextButton.view:setReferencePoint( display.CenterReferencePoint )
 		nextButton.view.x = cW
@@ -492,7 +528,10 @@ function scene:enterScene( event )
 		nextButton.view.alpha = 0.01
 
 		-- Intro Scene
-		first = false;
+		local first = false;
+		local maxTime = 50;
+		local moveSpeed = 0;
+		local sceneTime = 0;
 		function intro(event)
 		
 			if active == false then
@@ -506,7 +545,7 @@ function scene:enterScene( event )
 					MPsign.x = 2000; settings_Sign.x = 2000; help_Sign.x = 2000;
 					logo.x = cW; logo.y = (pH-(moveSpeed*maxTime)); logo.alpha = 1;
 					earth.x = display.contentWidth/2; earth.y = (cH+(moveSpeed*maxTime)); earth.alpha = 1;
-					maxTime = 100;
+					maxTime = 50;
 					sceneTime = maxTime;
 				end
 				
@@ -546,20 +585,41 @@ function scene:enterScene( event )
 		
 		Runtime:addEventListener("enterFrame",intro);
 		
-		group:insert(sky)
-		group:insert(space)
+		--Nyan Cat
+		local n = {}
+		n[1] = "../images/background_nyancat1.png";
+		n[2] = "../images/background_nyancat2.png";
+		n[3] = "../images/background_nyancat3.png";
+		n[4] = "../images/background_nyancat4.png";
+		n[5] = "../images/background_nyancat5.png";
+		n[6] = "../images/background_nyancat6.png";
+		local timer = 15;
+		local current = 1;
+		local nyan = display.newImage(group,"../images/background_nyancat1.png");
+		local nx = -70;
+		nyan.x = nx; nyan.y = 50; nyan:scale(0.1,0.1);
+		function nyancat(event)
+		
+			timer = timer - 1;
+			if timer <= 0 then
+				timer = 15;
+				current = current + 1;
+				if current > 6 then current = 1 end
+			end
+			
+			nx = nx + 1;
+			nyan:removeSelf();
+			nyan = display.newImage(group,n[current])
+			nyan.x = nx; nyan.y = 50; nyan:scale(0.1,0.1)
+			
+			if nx >= (display.contentWidth+100) then nx = -100 end
+			--if active == false then nyan.alpha = 0 end
+		
+		end
+		Runtime:addEventListener("enterFrame",nyancat);
+		
 		group:insert(logo)
-		group:insert(SPsign)
-		group:insert(MPsign)
-		group:insert(settings_Sign)
-		group:insert(help_Sign)
-		group:insert(earth)
-		group:insert(left_arrow)
-		group:insert(right_arrow)
 		group:insert(nextButton.view)
-		group:insert(helpText)
-		group:insert(line1); group:insert(line2); group:insert(aline1); group:insert(aline2);
-		group:insert(UFO)
 		
         
 end
@@ -574,7 +634,19 @@ function scene:exitScene( event )
         --      INSERT code here (e.g. stop timers, remove listeners, unload sounds, etc.)
         
         -----------------------------------------------------------------------------
-        
+		local num = group.numChildren;
+		while num >= 1 do
+			group:remove(num)
+			num = num - 1
+		end
+		
+		Runtime:removeEventListener("enterFrame",moveSpace);
+		Runtime:removeEventListener("enterFrame",bouncyLogo);
+		Runtime:removeEventListener("enterFrame",wobble)
+		Runtime:removeEventListener("enterFrame",help)
+		Runtime:removeEventListener("enterFrame",checkSign)
+		Runtime:removeEventListener("enterFrame",intro);
+		Runtime:removeEventListener("enterFrame",nyancat);
 end
  
  
@@ -587,7 +659,10 @@ function scene:destroyScene( event )
         --      INSERT code here (e.g. remove listeners, widgets, save state, etc.)
         
         -----------------------------------------------------------------------------
-        
+        if nextButton then
+			nextButton:removeSelf()	-- widgets must be manually removed
+			nextButton = nil
+        end
 end
  
 ---------------------------------------------------------------------------------

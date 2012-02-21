@@ -56,14 +56,14 @@ function scene:enterScene( event )
         -----------------------------------------------------------------------------
                 
         --      INSERT code here (e.g. start timers, load audio, start listeners, etc.)
-		 w = display.contentWidth		 h = display.contentHeight
-		 active = true;
+		 local w = display.contentWidth		 local h = display.contentHeight
+		 local active = true;
 
 		local space1 = display.newImage( "../images/space.png" )		space1:setReferencePoint ( display.CenterReferencePoint )
 		space1.x = 0
 		space1.y = h/2		local space2 = display.newImage("../images/space.png" )		--space2:setReferencePoint ( display.CenterReferencePoint )
 		space2.x = -w*2
-		space2.y = h/2				local function moveSpace (event)			if space1.x >= 2*w then				space1.x = -2*w			end			if space2.x >= 2*w then				space2.x = -2*w			end			--print("space1: " .. space1.x)			--print("space2: " .. space2.x)			space1.x = space1.x + 1			space2.x = space2.x + 1		end				local logo = display.newImageRect("../images/logo.png",480,154)		logo.x = w/2		logo.y = h/2-80				local e = display.newImageRect("../images/earth_slice.png",600,185)		e:setReferencePoint ( display.CenterReferencePoint )		e.x = w/2-10; e.y = h-80		local e_light1 = display.newImage("../images/earth_lightsource.png")		e_light1:setReferencePoint( display.CenterReferencePoint )		e_light1.x = 0; e_light1.y = h/2;		local e_light2 = display.newImage("../images/earth_lightsource.png")		e_light2:setReferencePoint( display.CenterReferencePoint )		e_light2.x = -w*2; e_light2.y = h/2;				local function moveLight (event)
+		space2.y = h/2				function moveSpace (event)			if space1.x >= 2*w then				space1.x = -2*w			end			if space2.x >= 2*w then				space2.x = -2*w			end			--print("space1: " .. space1.x)			--print("space2: " .. space2.x)			space1.x = space1.x + 1			space2.x = space2.x + 1		end				local logo = display.newImageRect("../images/logo.png",480,154)		logo.x = w/2		logo.y = h/2-80				local e = display.newImageRect("../images/earth_slice.png",600,185)		e:setReferencePoint ( display.CenterReferencePoint )		e.x = w/2-10; e.y = h-80		local e_light1 = display.newImage("../images/earth_lightsource.png")		e_light1:setReferencePoint( display.CenterReferencePoint )		e_light1.x = 0; e_light1.y = h/2;		local e_light2 = display.newImage("../images/earth_lightsource.png")		e_light2:setReferencePoint( display.CenterReferencePoint )		e_light2.x = -w*2; e_light2.y = h/2;				function moveLight (event)
 			if active == true then				if e_light1.x <= -2*w then					e_light1.x = 2*w				end				if e_light2.x <= -2*w then					e_light2.x = 2*w				end				e_light1.x = e_light1.x - 1				e_light2.x = e_light2.x - 1
 			end		end		function makeActive()
 	
@@ -94,6 +94,7 @@ function scene:enterScene( event )
 		Runtime:addEventListener( "enterFrame", moveSpace )		Runtime:addEventListener( "enterFrame", moveLight )
 		
 		-- Remove Stuff
+		active = true;
 		function transition(event)
 		
 			if active == false then
@@ -134,10 +135,10 @@ function scene:enterScene( event )
 		n[4] = "../images/background_nyancat4.png";
 		n[5] = "../images/background_nyancat5.png";
 		n[6] = "../images/background_nyancat6.png";
-		timer = 15;
-		current = 1;
+		local timer = 15;
+		local current = 1;
 		local nyan = display.newImage(group,"../images/background_nyancat1.png");
-		nx = -70;
+		local nx = -70;
 		nyan.x = nx; nyan.y = 50; nyan:scale(0.1,0.1);
 		function nyancat(event)
 		
@@ -175,6 +176,10 @@ function scene:exitScene( event )
         --      INSERT code here (e.g. stop timers, remove listeners, unload sounds, etc.)
         
         -----------------------------------------------------------------------------
+		Runtime:removeEventListener("enterFrame",nyancat);
+		Runtime:removeEventListener("enterFrame",transition)
+		Runtime:removeEventListener( "enterFrame", moveSpace )
+		Runtime:removeEventListener( "enterFrame", moveLight )
         
 end
  

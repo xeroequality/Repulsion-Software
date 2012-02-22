@@ -16,29 +16,16 @@ function buttonyButtons()
 	buttonLabel="prev"
 	return true
 end
-function cattyButton()
-	buttonLabel="cat"
-	return true
-end
-function weirdoButton()
-	buttonLabel="alien"
-	return true
-end
-function winningButton()
-	buttonLabel="crown"
-	return true
-end
 
 ----------------------------------------------------------------------------------
---go TO screen function -> takes you to the right scene--
+--go TO screen function--
+
+
 local function goToScreen()
 
 	-- Check which Screen to Goto
 	print(buttonLabel)
-	if buttonLabel=="prev" then storyboard.gotoScene( "menu_mainmenu", "fade", 200 ) end
-	if buttonLabel=="cat"  then storyboard.gotoScene( "menu_levelselect", "fade", 200 ) end
-	if buttonLabel=="alien"  then storyboard.gotoScene( "menu_levelselect", "fade", 200 ) end
-	if buttonLabel=="crown" then storyboard.gotoScene("menu_achievments", "fade", 200) end 
+	if buttonLabel=="prev" then storyboard.gotoScene( "menu_mainmenu_singleplayer", "fade", 200 ) end
 	return true
 
 end
@@ -80,7 +67,7 @@ function scene:enterScene( event )
         -----------------------------------------------------------------------------
         --group:insert(space1)
 		
--------create buttons that take you to specific scenes 		
+		
 		prevButton = widget.newButton{
 			label="BACK",
 			labelColor = { default={255}, over={128} },
@@ -97,56 +84,14 @@ function scene:enterScene( event )
 		
 		group:insert(prevButton.view)
 		
+--------just posting some image for the time being, going to need to decide what goes here
+--------maybe a table that is populated through DB? 
+		local climb = display.newImage("../images/Achievements.png")
+		climb:setReferencePoint ( display.CenterReferencePoint )
+		climb.x = w - 100
+		climb.y = h/2
 		
-		catButton = widget.newButton{
-			label="CATS",
-			labelColor = { default={255}, over={128} },
-			default="../images/cats.png",
-			over="../images/cats.png",
-			width=96; height=96;
-			onPress = cattyButton,
-			onRelease = goToScreen
-		}
-		
-		catButton.view:setReferencePoint( display.CenterReferencePoint )
-		catButton.view.x = display.contentWidth*0.7
-		catButton.view.y = display.contentHeight - 100
-		
-		group:insert(catButton.view) 
-		
-		alienButton = widget.newButton{
-			label="ALIEN",
-			labelColor = { default={255}, over={128} },
-			default="../images/alien.png",
-			over="../images/alien.png",
-			width=96; height=96;
-			onPress = weirdoButton,
-			onRelease = goToScreen
-		}
-		
-		alienButton.view:setReferencePoint( display.CenterReferencePoint )
-		alienButton.view.x = display.contentWidth*0.4
-		alienButton.view.y = display.contentHeight - 100
-		
-		group:insert(alienButton.view)
-		
-		achievmentsButton = widget.newButton{
-			label="crown",
-			labelColor = { default={255}, over={128} },
-			default="../images/crown.png",
-			over="../images/crown.png",
-			width=96; height=96;
-			onPress = winningButton,
-			onRelease = goToScreen
-		}
-		
-		achievmentsButton.view:setReferencePoint( display.CenterReferencePoint )
-		achievmentsButton.view.x = display.contentWidth*0.9
-		achievmentsButton.view.y = display.contentHeight - 280
-		
-		group:insert(achievmentsButton.view)
-		
-		
+		group:insert(climb)
 end
  
  
@@ -181,19 +126,10 @@ function scene:destroyScene( event )
 			prevButton:removeSelf()	-- widgets must be manually removed
 			prevButton = nil
         end
-		if catButton then
-			catButton:removeSelf()	
-			catButton = nil
-        end
-		if alienButton then
-			alienButton:removeSelf()
-			alienButton = nil
-        end
-		if achievmentsButton then
-			achievmentsButton:removeSelf()	
-			achievmentsButton = nil
-        end
-        
+        if climb then
+			climb:removeSelf()
+			climb = nil
+		end
 end
  
 ---------------------------------------------------------------------------------

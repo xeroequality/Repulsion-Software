@@ -64,7 +64,7 @@ function scene:enterScene( event )
 		backBtn.view.y = display.contentHeight*0.1
         
 		level1Btn = widget.newButton{
-			id="sp_aliens_ch1_level1",
+			id="sp_cats_ch1_level1",
 			label="Level 1",
 			labelColor = { default={255}, over={128} },
 			default="../images/buttonInActive.png",
@@ -77,7 +77,7 @@ function scene:enterScene( event )
 		level1Btn.view.y = display.contentHeight/2
 		
 		level2Btn = widget.newButton{
-			id="sp_aliens_ch1_level2",
+			id="sp_cats_ch1_level2",
 			label="Level 2",
 			labelColor = { default={255}, over={128} },
 			default="../images/buttonInActive.png",
@@ -90,7 +90,7 @@ function scene:enterScene( event )
 		level2Btn.view.y = display.contentHeight/2
 		
 		level3Btn = widget.newButton{
-			id="sp_aliens_ch1_level3",
+			id="sp_cats_ch1_level3",
 			label="Level 3",
 			labelColor = { default={255}, over={128} },
 			default="../images/buttonInActive.png",
@@ -103,7 +103,7 @@ function scene:enterScene( event )
 		level3Btn.view.y = display.contentHeight/2
 		
 		level4Btn = widget.newButton{
-			id="sp_aliens_ch1_level4",
+			id="sp_cats_ch1_level4",
 			label="Level 4",
 			labelColor = { default={255}, over={128} },
 			default="../images/buttonInActive.png",
@@ -116,7 +116,7 @@ function scene:enterScene( event )
 		level4Btn.view.y = display.contentHeight/2
 		
 		level5Btn = widget.newButton{
-			id="sp_aliens_ch1_level5",
+			id="sp_cats_ch1_level5",
 			label="Level 5",
 			labelColor = { default={255}, over={128} },
 			default="../images/buttonInActive.png",

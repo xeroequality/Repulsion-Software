@@ -196,7 +196,7 @@ function scene:enterScene( event )
 		Runtime:addEventListener("enterFrame",wobble)
 		
 		-- Box Variables
-		local width = 200; local height = 50; local yStart1 = cH-230; local yStart2 = cH - 180;
+		local width = 200; local height = 60; local yStart1 = cH-230; local yStart2 = cH - 170;
 		local xStart1 = cW-100; xStart2 = cW+100; move_speed = 10;
 		local sx1 = cW; local ex1 = xStart2-50;
 		local sx2 = cW; local ex2 = xStart1+50;
@@ -301,18 +301,38 @@ function scene:enterScene( event )
 				
 				-- Assign values
 				if S1 == "down" or S1 == "left" then
-					line1 = display.newLine(group,sx1,yStart1,ex1,yStart1);
-					line3 = display.newLine(group,xStart1,sy1,xStart1,yStart1);
+					if sx1 >= (xStart2-60) then
+						line1 = display.newLine(group,sx1,yStart1,ex1,yStart1);
+						line3 = display.newLine(group,xStart2,sy1,xStart2,sy1+(sx1-(xStart2-60)));
+					else
+						line1 = display.newLine(group,sx1,yStart1,ex1,yStart1);
+						line3 = display.newLine(group,xStart1,sy1,xStart1,yStart1);
+					end
 				else
-					line1 = display.newLine(group,sx1,yStart2,ex1,yStart2);
-					line3 = display.newLine(group,xStart2,sy1,xStart2,yStart2);
+					if sx1 <= (xStart1+60) then
+						line1 = display.newLine(group,sx1,yStart2,ex1,yStart2);
+						line3 = display.newLine(group,xStart1,sy1,xStart1,sy1-((xStart1+60)-sx1));
+					else
+						line1 = display.newLine(group,sx1,yStart2,ex1,yStart2);
+						line3 = display.newLine(group,xStart2,sy1,xStart2,yStart2);
+					end
 				end
 				if S2 == "down" or S2 == "left" then
-					line2 = display.newLine(group,sx2,yStart1,ex2,yStart1);
-					line4 = display.newLine(group,xStart1,sy2,xStart1,yStart1);
+					if sx2 >= (xStart2-60) then
+						line2 = display.newLine(group,sx2,yStart1,ex2,yStart1);
+						line4 = display.newLine(group,xStart2,sy2,xStart2,sy2+(sx2-(xStart2-60)));
+					else
+						line2 = display.newLine(group,sx2,yStart1,ex2,yStart1);
+						line4 = display.newLine(group,xStart1,sy2,xStart1,yStart1);
+					end
 				else
-					line2 = display.newLine(group,sx2,yStart2,ex2,yStart2);
-					line4 = display.newLine(group,xStart2,sy2,xStart2,yStart2);
+					if sx2 <= (xStart1+60) then
+						line2 = display.newLine(group,sx2,yStart2,ex2,yStart2);
+						line4 = display.newLine(group,xStart1,sy2,xStart1,sy2-((xStart1+60)-sx2));
+					else
+						line2 = display.newLine(group,sx2,yStart2,ex2,yStart2);
+						line4 = display.newLine(group,xStart2,sy2,xStart2,yStart2);
+					end
 				end
 				aline1 = display.newLine(group,45,UFO_bottom,sx1,sy1);
 				aline2 = display.newLine(group,45,UFO_bottom,sx2,sy2);
@@ -562,7 +582,7 @@ function scene:enterScene( event )
 					right_arrow.x = cW+(cW/2); right_arrow.y = (cH-115)+15; right_arrow:scale(0.25,0.25); right_arrow:rotate(30); right_arrow.alpha = 1;
 					left_arrow.x = cW-(cW/2); left_arrow.y = (cH-115)+15; left_arrow:scale(0.25,0.25); left_arrow:rotate(-30); left_arrow.alpha = 1;
 					
-					UFO.x = 45; UFO.y = cH-145; UFO:scale(0.75,0.75); UFO_bottom = ((96*0.75)/2)+UFO.y;
+					UFO.x = 45; UFO.y = cH-145; UFO:scale(0.75,0.75); UFO_bottom = ((96*0.75)/2)+UFO.y-20;
 			
 					SPsign.x = cW; SPsign.y = cH-115;
 					

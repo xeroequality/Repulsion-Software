@@ -50,7 +50,71 @@ function scene:enterScene( event )
 		playBtn.view.x = display.contentWidth*0.5
 		playBtn.view.y = display.contentHeight - 125
 		
+		--Get the Width and Height of the Screen
+		local w = display.contentWidth
+		local h = display.contentHeight
+		local active = true;
+
+		--Make the Space Backgrounds
+		local space1 = display.newImage( "../images/space.png" )
+		space1:setReferencePoint ( display.CenterReferencePoint )
+		space1.x = 0; space1.y = h/2
+		local space2 = display.newImage("../images/space.png" )
+		space2:setReferencePoint ( display.CenterReferencePoint )
+		space2.x = -w*2; space2.y = h/2
+		
+		--Move the Space Background
+		function moveSpace(event)
+			--Check to See if Any of the Backgrounds Have Moved Past a Certain Point
+			if space1.x >= 2*w then
+				space1.x = -2*w
+			end
+			if space2.x >= 2*w then
+				space2.x = -2*w
+			end
+			--Increment the Backgrounds' X Position
+			space1.x = space1.x + 1
+			space2.x = space2.x + 1
+		end
+		
+		local logo = display.newImageRect("../images/logo.png",480,154)
+		logo.x = w/2; logo.y = h/2-80
+		
+		local e = display.newImageRect("../images/earth_slice.png",600,185)
+		e:setReferencePoint ( display.CenterReferencePoint )
+		e.x = w/2-10; e.y = h-80
+		local e_light1 = display.newImage("../images/earth_lightsource.png")
+		e_light1:setReferencePoint( display.CenterReferencePoint )
+		e_light1.x = 0; e_light1.y = h/2;
+		local e_light2 = display.newImage("../images/earth_lightsource.png")
+		e_light2:setReferencePoint( display.CenterReferencePoint )
+		e_light2.x = -w*2; e_light2.y = h/2;
+		
+		--Move the Lights
+		function moveLight (event)
+			if active == true then
+				if e_light1.x <= -2*w then
+					e_light1.x = 2*w
+				end
+				if e_light2.x <= -2*w then
+					e_light2.x = 2*w
+				end
+				e_light1.x = e_light1.x - 1
+				e_light2.x = e_light2.x - 1
+			end
+		end
+		
+		--Add the Runtime Listeners
+		Runtime:addEventListener("enterFrame",moveSpace)
+		Runtime:addEventListener("enterFrame",moveLight)
+		
+		group:insert(space1)
+		group:insert(space2)
+		group:insert(e)
+		group:insert(logo)
 		group:insert(playBtn.view)
+		group:insert(e_light1)
+		group:insert(e_light2)
         
 end
  
@@ -62,7 +126,15 @@ function scene:exitScene( event )
         -----------------------------------------------------------------------------
         --      INSERT code here (e.g. stop timers, remove listeners, unload sounds, etc.)
         -----------------------------------------------------------------------------
-        
+		--Remove the Runtime Listeners
+		Runtime:removeEventListener("enterFrame",moveSpace)
+		Runtime:removeEventListener("enterFrame",moveLight)
+		
+        local num = group.numChildren;
+		while num >= 1 do
+			group:remove(num)
+			num = num - 1
+		end
 end
  
  

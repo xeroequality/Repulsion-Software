@@ -45,7 +45,7 @@ function scene:enterScene( event )
         --      INSERT code here (e.g. start timers, load audio, start listeners, etc.)
 		-----------------------------------------------------------------------------
 		catBtn = widget.newButton{
-			id="menu_sp_cats_ch1",
+			id="menu_sp_cats_levelselect",
 			label="Cats",
 			labelColor = { default={255}, over={128} },
 			default="../images/buttonInActive.png",
@@ -58,7 +58,7 @@ function scene:enterScene( event )
 		catBtn.view.y = display.contentHeight - 125
 		
 		alienBtn = widget.newButton{
-			id="menu_sp_aliens_ch1",
+			id="menu_sp_aliens_levelselect",
 			label="Aliens",
 			labelColor = { default={255}, over={128} },
 			default="../images/buttonInActive.png",

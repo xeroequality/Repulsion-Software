@@ -3,16 +3,28 @@ local widget = require( "widget" )
 local scene = storyboard.newScene()
  
 ----------------------------------------------------------------------------------
+-- 
 --      NOTE:
+--      
 --      Code outside of listener functions (below) will only be executed once,
 --      unless storyboard.removeScene() is called.
+-- 
 ---------------------------------------------------------------------------------
-local playBtn
+local backBtn
+local level1Btn
+local level2Btn
+local level3Btn
+local level4Btn
+local level5Btn
 
 -- 'onRelease' event listener for playBtn
-local function onPlayBtnRelease()
-	storyboard.gotoScene( "menu_mainmenu", "fade", 200)
+local function onBtnRelease(event)
+	local t = event.target
+	local label = t.id
+	print("released button " .. label)
+	storyboard.gotoScene( label, "fade", 200)
 	return true	-- indicates successful touch
+	
 end
 
 ---------------------------------------------------------------------------------
@@ -36,86 +48,93 @@ function scene:enterScene( event )
         local group = self.view
         
         -----------------------------------------------------------------------------
+                
         -- INSERT code here (e.g. start timers, load audio, start listeners, etc.)
-		-----------------------------------------------------------------------------
-		playBtn = widget.newButton{
-			label="Play",
+		backBtn = widget.newButton{
+			id="menu_sp_main",
+			label="Back",
 			labelColor = { default={255}, over={128} },
 			default="../images/buttonInActive.png",
 			over="../images/buttonActive.png",
-			width=60, height=40,
-			onRelease = onPlayBtnRelease
+			width=80, height=40,
+			onRelease = onBtnRelease
 		}
-		playBtn.view:setReferencePoint( display.CenterReferencePoint )
-		playBtn.view.x = display.contentWidth*0.5
-		playBtn.view.y = display.contentHeight - 125
-		
-		--Get the Width and Height of the Screen
-		local w = display.contentWidth
-		local h = display.contentHeight
-		local active = true;
-
-		--Make the Space Backgrounds
-		local space1 = display.newImage( "../images/space.png" )
-		space1:setReferencePoint ( display.CenterReferencePoint )
-		space1.x = 0; space1.y = h/2
-		local space2 = display.newImage("../images/space.png" )
-		space2:setReferencePoint ( display.CenterReferencePoint )
-		space2.x = -w*2; space2.y = h/2
-		
-		--Move the Space Background
-		function moveSpace(event)
-			--Check to See if Any of the Backgrounds Have Moved Past a Certain Point
-			if space1.x >= 2*w then
-				space1.x = -2*w
-			end
-			if space2.x >= 2*w then
-				space2.x = -2*w
-			end
-			--Increment the Backgrounds' X Position
-			space1.x = space1.x + 1
-			space2.x = space2.x + 1
-		end
-		
-		local logo = display.newImageRect("../images/logo.png",480,154)
-		logo.x = w/2; logo.y = h/2-80
-		
-		local e = display.newImageRect("../images/earth_slice.png",600,185)
-		e:setReferencePoint ( display.CenterReferencePoint )
-		e.x = w/2-10; e.y = h-80
-		local e_light1 = display.newImage("../images/earth_lightsource.png")
-		e_light1:setReferencePoint( display.CenterReferencePoint )
-		e_light1.x = 0; e_light1.y = h/2;
-		local e_light2 = display.newImage("../images/earth_lightsource.png")
-		e_light2:setReferencePoint( display.CenterReferencePoint )
-		e_light2.x = -w*2; e_light2.y = h/2;
-		
-		--Move the Lights
-		function moveLight (event)
-			if active == true then
-				if e_light1.x <= -2*w then
-					e_light1.x = 2*w
-				end
-				if e_light2.x <= -2*w then
-					e_light2.x = 2*w
-				end
-				e_light1.x = e_light1.x - 1
-				e_light2.x = e_light2.x - 1
-			end
-		end
-		
-		--Add the Runtime Listeners
-		Runtime:addEventListener("enterFrame",moveSpace)
-		Runtime:addEventListener("enterFrame",moveLight)
-		
-		group:insert(space1)
-		group:insert(space2)
-		group:insert(e)
-		group:insert(logo)
-		group:insert(playBtn.view)
-		group:insert(e_light1)
-		group:insert(e_light2)
+		backBtn.view:setReferencePoint( display.CenterReferencePoint )
+		backBtn.view.x = display.contentWidth*0.1
+		backBtn.view.y = display.contentHeight*0.1
         
+		level1Btn = widget.newButton{
+			id="sp_aliens_ch1_level1",
+			label="Level 1",
+			labelColor = { default={255}, over={128} },
+			default="../images/buttonInActive.png",
+			over="../images/buttonActive.png",
+			width=80, height=40,
+			onRelease = onBtnRelease
+		}
+		level1Btn.view:setReferencePoint( display.CenterReferencePoint )
+		level1Btn.view.x = display.contentWidth*0.1
+		level1Btn.view.y = display.contentHeight/2
+		
+		level2Btn = widget.newButton{
+			id="sp_aliens_ch1_level2",
+			label="Level 2",
+			labelColor = { default={255}, over={128} },
+			default="../images/buttonInActive.png",
+			over="../images/buttonActive.png",
+			width=80, height=40,
+			onRelease = onBtnRelease
+		}
+		level2Btn.view:setReferencePoint( display.CenterReferencePoint )
+		level2Btn.view.x = display.contentWidth*0.3
+		level2Btn.view.y = display.contentHeight/2
+		
+		level3Btn = widget.newButton{
+			id="sp_aliens_ch1_level3",
+			label="Level 3",
+			labelColor = { default={255}, over={128} },
+			default="../images/buttonInActive.png",
+			over="../images/buttonActive.png",
+			width=80, height=40,
+			onRelease = onBtnRelease
+		}
+		level3Btn.view:setReferencePoint( display.CenterReferencePoint )
+		level3Btn.view.x = display.contentWidth*0.5
+		level3Btn.view.y = display.contentHeight/2
+		
+		level4Btn = widget.newButton{
+			id="sp_aliens_ch1_level4",
+			label="Level 4",
+			labelColor = { default={255}, over={128} },
+			default="../images/buttonInActive.png",
+			over="../images/buttonActive.png",
+			width=80, height=40,
+			onRelease = onBtnRelease
+		}
+		level4Btn.view:setReferencePoint( display.CenterReferencePoint )
+		level4Btn.view.x = display.contentWidth*0.7
+		level4Btn.view.y = display.contentHeight/2
+		
+		level5Btn = widget.newButton{
+			id="sp_aliens_ch1_level5",
+			label="Level 5",
+			labelColor = { default={255}, over={128} },
+			default="../images/buttonInActive.png",
+			over="../images/buttonActive.png",
+			width=80, height=40,
+			onRelease = onBtnRelease
+		}
+		level5Btn.view:setReferencePoint( display.CenterReferencePoint )
+		level5Btn.view.x = display.contentWidth*0.9
+		level5Btn.view.y = display.contentHeight/2
+		
+		group:insert(backBtn.view)
+		group:insert(level1Btn.view)
+		group:insert(level2Btn.view)
+		group:insert(level3Btn.view)
+		group:insert(level4Btn.view)
+		group:insert(level5Btn.view)
+		
 end
  
  
@@ -126,15 +145,7 @@ function scene:exitScene( event )
         -----------------------------------------------------------------------------
         --      INSERT code here (e.g. stop timers, remove listeners, unload sounds, etc.)
         -----------------------------------------------------------------------------
-		--Remove the Runtime Listeners
-		Runtime:removeEventListener("enterFrame",moveSpace)
-		Runtime:removeEventListener("enterFrame",moveLight)
-		
-        local num = group.numChildren;
-		while num >= 1 do
-			group:remove(num)
-			num = num - 1
-		end
+        
 end
  
  
@@ -145,10 +156,30 @@ function scene:destroyScene( event )
         -----------------------------------------------------------------------------
         --      INSERT code here (e.g. remove listeners, widgets, save state, etc.)
         -----------------------------------------------------------------------------
-        if playBtn then
-			playBtn:removeSelf()	-- widgets must be manually removed
-			playBtn=nil
-        end
+		if backBtn then
+			backBtn:removeSelf()
+			backBtn=nil
+		end
+		if level1Btn then
+			level1Btn:removeSelf()
+			level1Btn=nil
+		end
+		if level2Btn then
+			level2Btn:removeSelf()
+			level2Btn=nil
+		end
+		if level3Btn then
+			level3Btn:removeSelf()
+			level3Btn=nil
+		end
+		if level4Btn then
+			level4Btn:removeSelf()
+			level4Btn=nil
+		end
+		if level5Btn then
+			level5Btn:removeSelf()
+			level5Btn=nil
+		end
         
 end
  

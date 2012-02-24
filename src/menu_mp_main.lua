@@ -7,12 +7,19 @@ local scene = storyboard.newScene()
 --      Code outside of listener functions (below) will only be executed once,
 --      unless storyboard.removeScene() is called.
 ---------------------------------------------------------------------------------
-local playBtn
+local localBtn
+local onlineBtn
+local backBtn
+local achievementsBtn
 
 -- 'onRelease' event listener for playBtn
-local function onPlayBtnRelease()
-	storyboard.gotoScene( "menu_mainmenu", "fade", 200)
+local function onBtnRelease(event)
+	local t = event.target
+	local label = t.id
+	print("released button " .. label)
+	storyboard.gotoScene( label, "fade", 200)
 	return true	-- indicates successful touch
+	
 end
 
 ---------------------------------------------------------------------------------
@@ -36,86 +43,65 @@ function scene:enterScene( event )
         local group = self.view
         
         -----------------------------------------------------------------------------
-        -- INSERT code here (e.g. start timers, load audio, start listeners, etc.)
-		-----------------------------------------------------------------------------
-		playBtn = widget.newButton{
-			label="Play",
+                
+        --      INSERT code here (e.g. start timers, load audio, start listeners, etc.)
+		localBtn = widget.newButton{
+			id="menu_mp_local_main",
+			label="Pass N' Play",
 			labelColor = { default={255}, over={128} },
 			default="../images/buttonInActive.png",
 			over="../images/buttonActive.png",
-			width=60, height=40,
-			onRelease = onPlayBtnRelease
+			width=80, height=40,
+			onRelease = onBtnRelease
 		}
-		playBtn.view:setReferencePoint( display.CenterReferencePoint )
-		playBtn.view.x = display.contentWidth*0.5
-		playBtn.view.y = display.contentHeight - 125
+		localBtn.view:setReferencePoint( display.CenterReferencePoint )
+		localBtn.view.x = display.contentWidth*0.25
+		localBtn.view.y = display.contentHeight - 125
 		
-		--Get the Width and Height of the Screen
-		local w = display.contentWidth
-		local h = display.contentHeight
-		local active = true;
-
-		--Make the Space Backgrounds
-		local space1 = display.newImage( "../images/space.png" )
-		space1:setReferencePoint ( display.CenterReferencePoint )
-		space1.x = 0; space1.y = h/2
-		local space2 = display.newImage("../images/space.png" )
-		space2:setReferencePoint ( display.CenterReferencePoint )
-		space2.x = -w*2; space2.y = h/2
+		onlineBtn = widget.newButton{
+			id="menu_mp_online_main",
+			label="Online",
+			labelColor = { default={255}, over={128} },
+			default="../images/buttonInActive.png",
+			over="../images/buttonActive.png",
+			width=80, height=40,
+			onRelease = onBtnRelease
+		}
+		onlineBtn.view:setReferencePoint( display.CenterReferencePoint )
+		onlineBtn.view.x = display.contentWidth*0.25
+		onlineBtn.view.y = display.contentHeight - 200
 		
-		--Move the Space Background
-		function moveSpace(event)
-			--Check to See if Any of the Backgrounds Have Moved Past a Certain Point
-			if space1.x >= 2*w then
-				space1.x = -2*w
-			end
-			if space2.x >= 2*w then
-				space2.x = -2*w
-			end
-			--Increment the Backgrounds' X Position
-			space1.x = space1.x + 1
-			space2.x = space2.x + 1
-		end
-		
-		local logo = display.newImageRect("../images/logo.png",480,154)
-		logo.x = w/2; logo.y = h/2-80
-		
-		local e = display.newImageRect("../images/earth_slice.png",600,185)
-		e:setReferencePoint ( display.CenterReferencePoint )
-		e.x = w/2-10; e.y = h-80
-		local e_light1 = display.newImage("../images/earth_lightsource.png")
-		e_light1:setReferencePoint( display.CenterReferencePoint )
-		e_light1.x = 0; e_light1.y = h/2;
-		local e_light2 = display.newImage("../images/earth_lightsource.png")
-		e_light2:setReferencePoint( display.CenterReferencePoint )
-		e_light2.x = -w*2; e_light2.y = h/2;
-		
-		--Move the Lights
-		function moveLight (event)
-			if active == true then
-				if e_light1.x <= -2*w then
-					e_light1.x = 2*w
-				end
-				if e_light2.x <= -2*w then
-					e_light2.x = 2*w
-				end
-				e_light1.x = e_light1.x - 1
-				e_light2.x = e_light2.x - 1
-			end
-		end
-		
-		--Add the Runtime Listeners
-		Runtime:addEventListener("enterFrame",moveSpace)
-		Runtime:addEventListener("enterFrame",moveLight)
-		
-		group:insert(space1)
-		group:insert(space2)
-		group:insert(e)
-		group:insert(logo)
-		group:insert(playBtn.view)
-		group:insert(e_light1)
-		group:insert(e_light2)
+		backBtn = widget.newButton{
+			id="menu_mainmenu",
+			label="Back",
+			labelColor = { default={255}, over={128} },
+			default="../images/buttonInActive.png",
+			over="../images/buttonActive.png",
+			width=80, height=40,
+			onRelease = onBtnRelease
+		}
+		backBtn.view:setReferencePoint( display.CenterReferencePoint )
+		backBtn.view.x = display.contentWidth*0.75
+		backBtn.view.y = display.contentHeight - 125
         
+		achievementsBtn = widget.newButton{
+			id="menu_achievements",
+			label="Achievements",
+			labelColor = { default={255}, over={128} },
+			default="../images/buttonInActive.png",
+			over="../images/buttonActive.png",
+			width=80, height=40,
+			onRelease = onBtnRelease
+		}
+		achievementsBtn.view:setReferencePoint( display.CenterReferencePoint )
+		achievementsBtn.view.x = display.contentWidth*0.75
+		achievementsBtn.view.y = display.contentHeight - 200
+		
+		group:insert(localBtn.view)
+		group:insert(onlineBtn.view)
+		group:insert(backBtn.view)
+		group:insert(achievementsBtn.view)
+		
 end
  
  
@@ -126,15 +112,7 @@ function scene:exitScene( event )
         -----------------------------------------------------------------------------
         --      INSERT code here (e.g. stop timers, remove listeners, unload sounds, etc.)
         -----------------------------------------------------------------------------
-		--Remove the Runtime Listeners
-		Runtime:removeEventListener("enterFrame",moveSpace)
-		Runtime:removeEventListener("enterFrame",moveLight)
-		
-        local num = group.numChildren;
-		while num >= 1 do
-			group:remove(num)
-			num = num - 1
-		end
+        
 end
  
  
@@ -145,10 +123,22 @@ function scene:destroyScene( event )
         -----------------------------------------------------------------------------
         --      INSERT code here (e.g. remove listeners, widgets, save state, etc.)
         -----------------------------------------------------------------------------
-        if playBtn then
-			playBtn:removeSelf()	-- widgets must be manually removed
-			playBtn=nil
+        if localBtn then
+			localBtn:removeSelf()	-- widgets must be manually removed
+			localBtn=nil
         end
+		if onlineBtn then
+			onlineBtn:removeSelf()
+			onlineBtn=nil
+		end
+		if backBtn then
+			backBtn:removeSelf()
+			backBtn=nil
+		end
+		if achievementsBtn then
+			achievementsBtn:removeSelf()
+			achievementsBtn=nil
+		end
         
 end
  

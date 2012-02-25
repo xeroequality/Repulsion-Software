@@ -92,9 +92,9 @@ function scene:enterScene( event )
 		--Create the Level Select Buttons
 		local lvl = {};
 		lvl[1] = display.newImage("../images/background_greenbutton.png");
-		lvl[2] = display.newImage("../images/background_purplebutton.png");
-		lvl[3] = display.newImage("../images/background_blackwhitebutton.png");
-		lvl[4] = display.newImage("../images/background_yellowbutton.png");
+		lvl[2] = display.newImage("../images/background_greenbutton.png");
+		lvl[3] = display.newImage("../images/background_greenbutton.png");
+		lvl[4] = display.newImage("../images/background_greenbutton.png");
 		lvl[5] = display.newImage("../images/background_bossbutton.png");
 		
 		--Create the Level Texts Too
@@ -106,15 +106,15 @@ function scene:enterScene( event )
 		lvltext[5] = display.newText("5",0,0,"Comic Sans MS",40);
 		
 		--Change the Color of Some of the Level Texts
-		lvltext[3]:setTextColor(150,33,50) --Maroon
-		lvltext[4]:setTextColor(47,79,47) --Dark Green
+		--lvltext[3]:setTextColor(150,33,50) --Maroon
+		--lvltext[4]:setTextColor(47,79,47) --Dark Green
 		
 		--GO Button
 		local GO = display.newImage("../images/background_GOWhite.png");
-		local overlayBack = display.newImage("../images/buttonInActive.png");
+		local overlayBack = display.newImage("../images/background_redX.png");
 		GO.x = w-30; GO.y = h-50; GO.alpha = 0.5; GO:scale(0.8,0.8);
 		backBtn.view.x = 30; backBtn.view.y = h-50;
-		overlayBack.x = 30; overlayBack.y = h-50; overlayBack.alpha = 0; overlayBack:scale(0.4,0.4);
+		overlayBack.x = w-80; overlayBack.y = 60; overlayBack.alpha = 0; overlayBack:scale(0.8,0.8);
 		
 		--Scale it So Each Image is 64x64
 		lvl[1]:scale((2/3),(2/3)); lvl[2]:scale((2/3),(2/3)); lvl[3]:scale((2/3),(2/3)); lvl[4]:scale((2/3),(2/3)); lvl[5]:scale((2/3),(2/3));
@@ -334,7 +334,7 @@ function scene:enterScene( event )
 						now_time = anim_time;
 						nr_scale = (1-r_scale)/anim_time;
 						nr_scale = (nr_scale-r_scale)/r_scale;
-						
+						overlayBack.alpha = 0;
 						for i = 1,oTextL do
 							oText[i].alpha = 0;
 						end

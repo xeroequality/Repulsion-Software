@@ -128,11 +128,11 @@ function scene:enterScene( event )
 		-- Enemy Structure
 		--------------------------------------------
 		
-		local crate1 = display.newImage( "crate.png" )
+		local crate1 = display.newImage( "../images/test_crate.png" )
 		crate1.x = 180; crate1.y = -50
 		crate1.myName = "first crate"
 
-		local crate2 = display.newImage( "crate.png" )
+		local crate2 = display.newImage( "../images/test_crate.png" )
 		crate2.x = 1300; crate2.y = -150
 		crate2.myName = "second crate"
 

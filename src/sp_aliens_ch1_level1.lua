@@ -50,7 +50,7 @@ function scene:enterScene( event )
 		-- repeated floor foreground
 		local floor = myScene:newLayer(
 		{
-			image = "background_chapter1_level1_floor.png",
+			image = "../images/background_chapter1_level1_floor.png",
 			width = 200,               
 			height = 10,
 			bottom = 320,              
@@ -62,7 +62,7 @@ function scene:enterScene( event )
 		-- Foreground (City Scape...)
 		myScene:newLayer(
 		{
-			image = "background_chapter1_level1_foreground.png",
+			image = "../images/background_chapter1_level1_foreground.png",
 			width = 1500,
 			height = 320,
 			top = 0,
@@ -75,7 +75,7 @@ function scene:enterScene( event )
 		-- repeated sky background
 		myScene:newLayer(
 		{
-			image = "background_chapter1_level1_background.png",
+			image = "../images/background_chapter1_level1_background.png",
 			width = 480,
 			height = 320,
 			top = 0,

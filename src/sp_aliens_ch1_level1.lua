@@ -63,13 +63,13 @@ function scene:enterScene( event )
 		myScene:newLayer(
 		{
 			image = "../images/background_chapter1_level1_foreground.png",
-			width = 1500,
-			height = 320,
+			width = 960,
+			height = 332,
 			top = 0,
 			bottom = 320,
 			left = 0,
-			--left = leftHills.width + centerHills.width,
-			speed = 1
+			speed = 1,
+			repeated = "horizontal"
 		} )
 
 		-- repeated sky background

@@ -10,7 +10,7 @@ local scene = storyboard.newScene()
  
 ----------------------------------------------------------------------------------
 -- 
---      NOTE:
+--      NOTE: 
 --      
 --      Code outside of listener functions (below) will only be executed once,
 --      unless storyboard.removeScene() is called.

@@ -55,7 +55,10 @@ physics.start()
 physics.setGravity( 0, 10 )
 
   -- Create a new ScrollView widget:
-local scrollView = widget.newScrollView{ left = display.contentWidth -55, width = 100, height=320, maskFile="../images/mask100x320.png" }
+  w = display.contentWidth;
+  h = display.contentHeight
+local scrollView = display.newRect(w-75,0,150,h);
+scrollView:setFillColor(255,255,255);
 
 local pipe = display.newRect( 150, 0, 120, 80 )
 physics.addBody(pipe, "static", {isSensor = true})
@@ -69,12 +72,25 @@ end
 local floor = display.newRect(0, 300, 400, 20)
 physics.addBody(floor, "static")
 local spawner = display.newRect( display.contentWidth, 40, 40, 40 )
-spawner:setFillColor(150, 100, 0)
-scrollView:insert(spawner)
+spawner:setFillColor(255,0,0)
 
 local obj1 = display.newRect(display.contentWidth, 300, 10, 20)
-obj1:setFillColor(140,20,10)
-scrollView:insert(obj1)
+obj1:setFillColor(0,0,255)
+
+local newy = 0;
+function scroll(event)
+	
+	if event.phase == "began" then
+	newy = event.y
+else
+	spawner.y = spawner.y + (event.y-newy);
+	obj1.y = obj1.y + (event.y-newy);
+	
+	newy = event.y;
+	end
+end
+
+scrollView:addEventListener("touch",scroll)
 
 
 

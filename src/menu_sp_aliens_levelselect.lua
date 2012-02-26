@@ -59,7 +59,7 @@ function scene:enterScene( event )
 		backBtn.view:setReferencePoint( display.CenterReferencePoint )
 		for k = 1, 5 do
 			levelBtn[k] = widget.newButton{
-				id="SP_aliens_chapter1_level"..k,
+				id="sp_aliens_ch1_level"..k,
 				labelColor = { default={255}, over={128} },
 				default="../images/btn_back.png",
 				over="../images/btn_back_pressed.png",

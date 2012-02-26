@@ -76,7 +76,7 @@ function scene:enterScene( event )
 		myScene:newLayer(
 		{
 			image = "../images/background_chapter1_level1_background.png",
-			width = 480,
+			width = 1500,
 			height = 320,
 			top = 0,
 			left = 0,

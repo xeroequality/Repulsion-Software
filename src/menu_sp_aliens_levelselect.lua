@@ -42,7 +42,9 @@ end
 -- Called immediately after scene has moved onscreen:
 function scene:enterScene( event )
         local group = self.view
-        
+        local k;
+		--Set Up the Width and Height Variables
+		local w = display.contentWidth; local h = display.contentHeight;
         -----------------------------------------------------------------------------
                 
         -- INSERT code here (e.g. start timers, load audio, start listeners, etc.)
@@ -55,9 +57,19 @@ function scene:enterScene( event )
 			onRelease = onBtnRelease
 		}
 		backBtn.view:setReferencePoint( display.CenterReferencePoint )
-		
-		--Set Up the Width and Height Variables
-		w = display.contentWidth; h = display.contentHeight;
+		for k = 1, 5 do
+			levelBtn[k] = widget.newButton{
+				id="SP_aliens_chapter1_level"..k,
+				labelColor = { default={255}, over={128} },
+				default="../images/btn_back.png",
+				over="../images/btn_back_pressed.png",
+				width=(140*0.8), height=(87*0.8),
+				onRelease = onBtnRelease
+			}
+			levelBtn[k].view:setReferencePoint( display.CenterReferencePoint )
+			levelBtn[k].view.alpha = 0;
+			levelBtn[k].view.x = w-30; levelBtn[k].view.y = h-50;
+		end
 
 		-- Make the Space Backgrounds
 		local space1 = display.newImage( "../images/space.png" )
@@ -271,6 +283,7 @@ function scene:enterScene( event )
 						local GO = display.newImage(group,"../images/background_GO.png");
 						GO.x = w-30; GO.y = h-50; GO.alpha = 1; GO:scale(0.8,0.8);
 						backBtn.view.alpha = 0; overlayBack.alpha = 1;
+						levelBtn[button].view.alpha = 0.01;
 						
 						--Get Some Info
 						local path = system.pathForFile( "aliens_levelInfo.txt", system.ResourceDirectory )
@@ -310,6 +323,7 @@ function scene:enterScene( event )
 				--If We Are Leaving
 					--First Time Things
 					if once == false then
+						levelBtn[button].view.alpha = 0;
 						once = true;
 						overlayshade.alpha = s_alpha;
 						overlayrect.alpha = 1;
@@ -376,10 +390,14 @@ function scene:enterScene( event )
 		--Insert All the Texts and Images
 		for i = 1,5 do
 			group:insert(lvl[i]);
+			group:insert(levelBtn[i].view);
 		end
 		group:insert(overlayshade);
 		group:insert(overlayrect);
 		group:insert(GO)
+		for i = 1, oTextL do
+			group:insert(oText[i]);
+		end
 		group:insert(backBtn.view)
 		group:insert(overlayBack)
 		
@@ -418,6 +436,12 @@ function scene:destroyScene( event )
 		if backBtn then
 			backBtn:removeSelf()
 			backBtn=nil
+		end
+		for k = 1, 5 do
+			if levelBtn[k] then
+				levelBtn[k]:removeSelf()
+				levelBtn[k]=nil
+			end
 		end
         
 end

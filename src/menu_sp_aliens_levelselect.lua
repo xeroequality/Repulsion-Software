@@ -218,7 +218,7 @@ function scene:enterScene( event )
 		end
 		
 		--Overlay Animation Variables
-		local anim_time = 25; --How Much Time Spent for Overlay Animation (Both Ways)
+		local anim_time = 15; --How Much Time Spent for Overlay Animation (Both Ways)
 		local now_time = 0; --The Current Time for the Current Animation
 		local r_alpha = 0; --Overlay's Starting Alpha Value
 		local s_alpha = 0.7; --Shade Final Alpha Value

@@ -50,7 +50,7 @@ function scene:enterScene( event )
 			label="Pass N' Play",
 			labelColor = { default={255}, over={128} },
 			default="../images/buttonInActive.png",
-			over="../images/buttonActive.png",
+			over="../images/buttonActivepng",
 			width=80, height=40,
 			onRelease = onBtnRelease
 		}
@@ -73,10 +73,9 @@ function scene:enterScene( event )
 		
 		backBtn = widget.newButton{
 			id="menu_mainmenu",
-			label="Back",
 			labelColor = { default={255}, over={128} },
-			default="../images/buttonInActive.png",
-			over="../images/buttonActive.png",
+			default="../images/btn_back.png",
+			over="../images/btn_back_pressed.png",
 			width=80, height=40,
 			onRelease = onBtnRelease
 		}

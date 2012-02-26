@@ -40,7 +40,6 @@ function scene:enterScene( event )
 		-----------------------------------------------------------------------------
 		backBtn = widget.newButton{
 			id="menu_mainmenu",
-			label="Back",
 			labelColor = { default={255}, over={128} },
 			default="../images/buttonInActive.png",
 			over="../images/buttonActive.png",

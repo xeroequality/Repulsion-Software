@@ -124,14 +124,30 @@ function scene:enterScene( event )
 		myScene:addEventListener( "touch", onTouch )
 		
 		
+		--------------------------------------------
+		-- Enemy Structure
+		--------------------------------------------
 		
-		
-		
+		local crate1 = display.newImage( "crate.png" )
+		crate1.x = 180; crate1.y = -50
+		crate1.myName = "first crate"
+
+		local crate2 = display.newImage( "crate.png" )
+		crate2.x = 1300; crate2.y = -150
+		crate2.myName = "second crate"
+
+		physics.addBody( crate1, { density=3.0, friction=0.5, bounce=0.3 } )
+		physics.addBody( crate2, { density=3.0, friction=0.5, bounce=0.3 } )
 		
         -----------------------------------------------------------------------------
         --      INSERT code here (e.g. start timers, load audio, start listeners, etc.)
 		-----------------------------------------------------------------------------
 		group:insert(myScene)
+		group:insert(crate1)
+		group:insert(crate2)
+		physics.start()
+		physics.addBody( floor, "static", { friction=0.5, bounce=0.3 } )
+
 end
  
 -- Called when scene is about to move offscreen:

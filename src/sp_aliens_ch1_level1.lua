@@ -97,16 +97,19 @@ function scene:enterScene( event )
 				myScene.xPrev = event.x
 				myScene.yPrev = event.y
 				
+				
 			elseif phase == "moved" then
 				-- move scene as the event moves
 				myScene:move( event.x - myScene.xPrev, event.y - myScene.yPrev )
 				-- store location as previous
 				myScene.xPrev = event.x
 				myScene.yPrev = event.y
-			
+				
+				
 			elseif phase == "ended" or phase == "cancelled" then
 				-- un-focus scene
 				display.getCurrentStage():setFocus( myScene, nil )
+				
 
 			end
 			

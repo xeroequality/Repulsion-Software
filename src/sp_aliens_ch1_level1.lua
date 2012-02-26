@@ -35,7 +35,7 @@ function scene:enterScene( event )
 		local parallax = require( "parallax" )
 		local w = display.contentWidth
 		local w3 = w * 3
-		local h = display.contentHeight
+		local h = display.contentHeight 
 
 		-- create new parallax scene
 		local myScene = parallax.newScene(

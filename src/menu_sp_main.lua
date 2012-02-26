@@ -40,35 +40,59 @@ end
 -- Called immediately after scene has moved onscreen:
 function scene:enterScene( event )
         local group = self.view
+		
+		--Get the Width and Height of the Screen
+		local w = display.contentWidth
+		local h = display.contentHeight
+		
+		--Make the Space Backgrounds
+		local space1 = display.newImage( "../images/space.png" )
+		space1:setReferencePoint ( display.CenterReferencePoint )
+		space1.x = 0; space1.y = h/2
+		local space2 = display.newImage("../images/space.png" )
+		space2:setReferencePoint ( display.CenterReferencePoint )
+		space2.x = -w*2; space2.y = h/2
+		
+		--Move the Space Background
+		function moveSpace(event)
+			--Check to See if Any of the Backgrounds Have Moved Past a Certain Point
+			if space1.x >= 2*w then
+				space1.x = -2*w
+			end
+			if space2.x >= 2*w then
+				space2.x = -2*w
+			end
+			--Increment the Backgrounds' X Position
+			space1.x = space1.x + 1
+			space2.x = space2.x + 1
+		end
         
         -----------------------------------------------------------------------------
         --      INSERT code here (e.g. start timers, load audio, start listeners, etc.)
 		-----------------------------------------------------------------------------
 		catBtn = widget.newButton{
 			id="menu_sp_cats_levelselect",
-			label="Cats",
 			labelColor = { default={255}, over={128} },
-			default="../images/buttonInActive.png",
-			over="../images/buttonActive.png",
-			width=80, height=40,
+			default="../images/btn_chooseCats.png",
+			over="../images/btn_chooseCats.png",
+			width=280, height=195,
 			onRelease = onBtnRelease
 		}
 		catBtn.view:setReferencePoint( display.CenterReferencePoint )
-		catBtn.view.x = display.contentWidth*0.25
-		catBtn.view.y = display.contentHeight - 125
+		catBtn.view.x = (w/2)+70
+		catBtn.view.y = (h/2)+30
 		
 		alienBtn = widget.newButton{
 			id="menu_sp_aliens_levelselect",
-			label="Aliens",
 			labelColor = { default={255}, over={128} },
-			default="../images/buttonInActive.png",
-			over="../images/buttonActive.png",
-			width=80, height=40,
+			default="../images/btn_chooseAliens.png",
+			over="../images/btn_chooseAliens.png",
+			width=280, height=195,
 			onRelease = onBtnRelease
 		}
 		alienBtn.view:setReferencePoint( display.CenterReferencePoint )
-		alienBtn.view.x = display.contentWidth*0.25
-		alienBtn.view.y = display.contentHeight - 200
+		alienBtn.view.x = (w/2)-80
+		alienBtn.view.y = (h/2)+30
 		
 		backBtn = widget.newButton{
 			id="menu_mainmenu",
@@ -79,22 +103,26 @@ function scene:enterScene( event )
 			onRelease = onBtnRelease
 		}
 		backBtn.view:setReferencePoint( display.CenterReferencePoint )
-		backBtn.view.x = display.contentWidth*0.75
-		backBtn.view.y = display.contentHeight - 125
+		backBtn.view.x = 70
+		backBtn.view.y = 50
         
 		achievementsBtn = widget.newButton{
 			id="menu_achievements",
-			label="Achievements",
 			labelColor = { default={255}, over={128} },
-			default="../images/buttonInActive.png",
-			over="../images/buttonActive.png",
-			width=80, height=40,
+			default="../images/btn_achievements.png",
+			over="../images/btn_achievements_pressed.png",
+			width=64, height=64,
 			onRelease = onBtnRelease
 		}
 		achievementsBtn.view:setReferencePoint( display.CenterReferencePoint )
-		achievementsBtn.view.x = display.contentWidth*0.75
-		achievementsBtn.view.y = display.contentHeight - 200
+		achievementsBtn.view.x = w-70
+		achievementsBtn.view.y = 50
 		
+		--Runtime Listeners
+		Runtime:addEventListener("enterFrame",moveSpace)
+		
+		group:insert(space1)
+		group:insert(space2)
 		group:insert(catBtn.view)
 		group:insert(alienBtn.view)
 		group:insert(backBtn.view)
@@ -110,7 +138,14 @@ function scene:exitScene( event )
         -----------------------------------------------------------------------------
         --      INSERT code here (e.g. stop timers, remove listeners, unload sounds, etc.)
         -----------------------------------------------------------------------------
-        
+        --Remove the Runtime Listeners
+		Runtime:removeEventListener("enterFrame",moveSpace)
+		
+        local num = group.numChildren;
+		while num >= 1 do
+			group:remove(num)
+			num = num - 1
+		end
 end
  
  

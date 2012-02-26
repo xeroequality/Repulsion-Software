@@ -53,6 +53,10 @@ function scene:enterScene( event )
 		local w = display.contentWidth
 		local h = display.contentHeight
 		local active = true;
+		
+		--O FORTUNA!!!!
+		local o_fortuna = audio.loadStream("../sound/O Fortuna.mp3");
+		local o_play = audio.play(o_fortuna);
 
 		--Make the Space Backgrounds
 		local space1 = display.newImage( "../images/space.png" )

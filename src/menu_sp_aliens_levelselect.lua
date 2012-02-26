@@ -48,11 +48,10 @@ function scene:enterScene( event )
         -- INSERT code here (e.g. start timers, load audio, start listeners, etc.)
 		backBtn = widget.newButton{
 			id="menu_sp_main",
-			label="Back",
 			labelColor = { default={255}, over={128} },
-			default="../images/buttonInActive.png",
-			over="../images/buttonActive.png",
-			width=80, height=40,
+			default="../images/btn_back.png",
+			over="../images/btn_back_pressed.png",
+			width=96, height=32,
 			onRelease = onBtnRelease
 		}
 		backBtn.view:setReferencePoint( display.CenterReferencePoint )
@@ -91,23 +90,11 @@ function scene:enterScene( event )
 		
 		--Create the Level Select Buttons
 		local lvl = {};
-		lvl[1] = display.newImage("../images/background_greenbutton.png");
-		lvl[2] = display.newImage("../images/background_greenbutton.png");
-		lvl[3] = display.newImage("../images/background_greenbutton.png");
-		lvl[4] = display.newImage("../images/background_greenbutton.png");
-		lvl[5] = display.newImage("../images/background_bossbutton.png");
-		
-		--Create the Level Texts Too
-		local lvltext = {};
-		lvltext[1] = display.newText("1",0,0,"Comic Sans MS",40);
-		lvltext[2] = display.newText("2",0,0,"Comic Sans MS",40);
-		lvltext[3] = display.newText("3",0,0,"Comic Sans MS",40);
-		lvltext[4] = display.newText("4",0,0,"Comic Sans MS",40);
-		lvltext[5] = display.newText("5",0,0,"Comic Sans MS",40);
-		
-		--Change the Color of Some of the Level Texts
-		--lvltext[3]:setTextColor(150,33,50) --Maroon
-		--lvltext[4]:setTextColor(47,79,47) --Dark Green
+		lvl[1] = display.newImage("../images/btn_level1.png");
+		lvl[2] = display.newImage("../images/btn_level2.png");
+		lvl[3] = display.newImage("../images/btn_level3.png");
+		lvl[4] = display.newImage("../images/btn_level4.png");
+		lvl[5] = display.newImage("../images/btn_level5.png");
 		
 		--GO Button
 		local GO = display.newImage("../images/background_GOWhite.png");
@@ -130,19 +117,18 @@ function scene:enterScene( event )
 		local lvlpos = {};
 		
 		lvl[1].y = yy; lvl[2].y = yy; lvl[3].y = yy; lvl[4].y = yy; lvl[5].y = yy;
-		lvltext[1].y = yy; lvltext[2].y = yy; lvltext[3].y = yy; lvltext[4].y = yy; lvltext[5].y = yy;
 		
 		--Place the Level Select Buttons Based on the Numbers Declared Above
 		xx = xx + s + (iw/2); --First, Position of lvl1 Button
-		lvl[1].x = xx; lvltext[1].x = xx; lvlpos[1] = xx;
+		lvl[1].x = xx; lvlpos[1] = xx;
 		xx = xx + (iw/2) + b + (iw/2); --Add the Break Length and the Length of a Button
-		lvl[2].x = xx; lvltext[2].x = xx; lvlpos[2] = xx;
+		lvl[2].x = xx; lvlpos[2] = xx;
 		xx = xx + (iw/2) + b + (iw/2); --Do This Until All the Buttons are Placed
-		lvl[3].x = xx; lvltext[3].x = xx; lvlpos[3] = xx;
+		lvl[3].x = xx; lvlpos[3] = xx;
 		xx = xx + (iw/2) + b + (iw/2);
-		lvl[4].x = xx; lvltext[4].x = xx; lvlpos[4] = xx;
+		lvl[4].x = xx; lvlpos[4] = xx;
 		xx = xx + (iw/2) + b + (iw/2);
-		lvl[5].x = xx; lvltext[5].x = xx; lvlpos[5] = xx;
+		lvl[5].x = xx; lvlpos[5] = xx;
 		
 		--bouncefactor denotes how far up/down them buttons bounce
 		--bouncedir tells which direction the buttons are bouncing
@@ -153,7 +139,7 @@ function scene:enterScene( event )
 		--Adjust Them Buttons
 		local loc = bouncefactor;
 		for i = 1, 5 do
-			lvl[i].y = (yy-loc); lvltext[i].y = (yy-loc);
+			lvl[i].y = (yy-loc);
 			loc = loc - ((2*bouncefactor)/5);		
 		end
 		
@@ -169,18 +155,14 @@ function scene:enterScene( event )
 				for i = 1, 5 do				
 					if bouncedir[i] == "up" then					
 						lvl[i].y = lvl[i].y - bouncespeed;
-						lvltext[i].y = lvltext[i].y - bouncespeed;						
 						if lvl[i].y <= (yy-bouncefactor) then
 							lvl[i].y = (yy-bouncefactor);
-							lvltext[i].y = (yy-bouncefactor);
 							bouncedir[i] = "down";
 						end						
 					else					
 						lvl[i].y = lvl[i].y + bouncespeed;
-						lvltext[i].y = lvltext[i].y + bouncespeed;						
 						if lvl[i].y >= (yy+bouncefactor) then
 							lvl[i].y = (yy+bouncefactor);
-							lvltext[i].y = (yy+bouncefactor);
 							bouncedir[i] = "up";
 						end						
 					end					
@@ -237,7 +219,7 @@ function scene:enterScene( event )
 		--Make the Overlay Rectangle
 		local overlayshade = display.newRect(-w,0,w*3,h); --The Shady Part of the Screen
 		overlayshade:setFillColor(0,0,0); overlayshade.alpha = 0;
-		local overlayrect = display.newImageRect("../images/background_brownishbox.png",r_w,r_h);
+		local overlayrect = display.newImageRect("../images/overlay_grey.png",r_w,r_h);
 		overlayrect.alpha = 0; overlayrect.x = (w/2); overlayrect.y = (h/2);
 		
 		--Level Information
@@ -393,7 +375,7 @@ function scene:enterScene( event )
 		group:insert(earth)
 		--Insert All the Texts and Images
 		for i = 1,5 do
-			group:insert(lvl[i]); group:insert(lvltext[i]);
+			group:insert(lvl[i]);
 		end
 		group:insert(overlayshade);
 		group:insert(overlayrect);

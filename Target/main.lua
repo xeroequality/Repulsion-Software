@@ -48,8 +48,8 @@ function createCrosshair(event) -- creates crosshair when a touch event begins
 		if not (showCrosshair) then										-- helps ensure that only one crosshair appears
 		print('show crosshair')
 			crosshair = display.newImage( "crosshair.png" )				-- prints crosshair	
-			crosshair.x = 200
-			crosshair.y = 100
+			crosshair.x = 60
+			crosshair.y = 320
 			showCrosshair = transition.to( crosshair, { alpha=1, xScale=0.5, yScale=0.5, time=200 } )
 			crosshair.rotation = nil
 			startRotation = function()
@@ -78,7 +78,6 @@ function fire( event )
 		crosshair.isFocus = true
 		crosshairLine = nil
 		--cannonLine = nil
-		
 	elseif crosshair.isFocus then
 		if "moved" == phase then
 			
@@ -87,13 +86,13 @@ function fire( event )
 				--cannonLine.parent:remove( cannonLine ) -- erase previous line, if any
 			end		
 				
-			crosshairLine = display.newLine(crosshair.x,crosshair.y+105, event.x,event.y) -- draws the line from the crosshair
+			crosshairLine = display.newLine(crosshair.x,crosshair.y, event.x,event.y) -- draws the line from the crosshair
 			crosshairLine:setColor( 255, 255, 255, 50 )
 			crosshairLine.width = 4
 			--cannonLine = display.newLine( cannon.x,cannon.y, event.x-cannon.x,event.y-cannon.y ) -- draws the line for the cannon
 			--cannonLine:setColor( 255, 255, 255, 50 )
 			--cannonLine.width = 8
-				--cannon.rotation = (-event.y), (-event.x)
+				--cannon.rotation =(-event.x),(-event.y)
 				--transition.to( cannon, { rotation =  crosshair.x - event.x, crosshair.y - event.y, time = 0} )
 			
 		elseif "ended" == phase or "cancelled" == phase then 						-- have this happen after collision is detected.

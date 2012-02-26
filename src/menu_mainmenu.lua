@@ -64,8 +64,8 @@ function scene:enterScene( event )
 		
 		--Set Up the Logo
 		local pH = 50+40;
-		local logo = display.newImage("../images/logo.png");
-		logo.x = cW; logo.y = pH; logo.alpha = 0.75;
+		local logo = display.newImage("../images/logo2.png");
+		logo.x = cW; logo.y = h/6; logo.alpha = 0.75;
 		
 		local up = true; --Which Direction is the Logo Bouncing?
 		local bounce_limit = 10; --How Far Can the Logo Bounce?
@@ -221,20 +221,20 @@ function scene:enterScene( event )
 		end
 		
 		--The Earth and the Wooden Signs
-		local SPsign = display.newImage("../images/background_SPsign.png") --The Single Player Sign
-		local MPsign = display.newImage("../images/background_MPsign.png") --The Multi-Player Sign
-		local settings_Sign = display.newImage("../images/background_Settingssign.png") --The Settings Sign
-		local help_Sign = display.newImage("../images/background_Helpsign.png") --The Help Sign
-		local earth = display.newImage("../images/background_earth.png") --The Earth
+		local SPsign = display.newImage("../images/sign_sp2.png") --The Single Player Sign
+		local MPsign = display.newImage("../images/sign_mp2.png") --The Multi-Player Sign
+		local settings_Sign = display.newImage("../images/sign_settings2.png") --The Settings Sign
+		local help_Sign = display.newImage("../images/sign_about.png") --The Help Sign
+		local earth = display.newImage("../images/earth.png") --The Earth
 		
 		local right_arrow = display.newImage("../images/background_rightarrow.png"); --The Right Arrow; for Clockwise
 		local left_arrow = display.newImage("../images/background_leftarrow.png"); --The Left Arrow; for Counterclockwise
 		
 		--Adjust the Positions and the Rotations
-		SPsign.x = pW; SPsign.y = cH-115;					
-		MPsign.y = cH; MPsign.x = pW+115; MPsign:rotate(90)
-		settings_Sign.x = pW; settings_Sign.y = cH+115; settings_Sign:rotate(180)
-		help_Sign.y = cH; help_Sign.x = pW-115; help_Sign:rotate(270)
+		SPsign.x = pW; SPsign.y = cH-150;					
+		MPsign.y = cH; MPsign.x = pW+150; MPsign:rotate(90)
+		settings_Sign.x = pW; settings_Sign.y = cH+150; settings_Sign:rotate(180)
+		help_Sign.y = cH; help_Sign.x = pW-150; help_Sign:rotate(270)
 		earth.x = pW; earth.y = cH;
 		
 		right_arrow.x = pW+(cW/2); right_arrow.y = (cH-115)+15; right_arrow:scale(0.25,0.25); right_arrow:rotate(30); right_arrow.alpha = 1;
@@ -262,7 +262,7 @@ function scene:enterScene( event )
 			--Once the Event Has Ended, the World Isn't Already Turning, and the Scene is Ready
 			if event.phase == "ended" and turning == false and active == true then
 				--Find Out How Far the Finger Swipe Was
-				distance = math.sqrt( (event.x-event.xStart)^2 + (event.y-event.yStart)^2 )
+				local distance = math.sqrt( (event.x-event.xStart)^2 + (event.y-event.yStart)^2 )
 				--If It's Far Enough
 				if distance >= 25 then
 					--Figure Out Which Direction We Should Go
@@ -352,13 +352,13 @@ function scene:enterScene( event )
 				-- Adjust x and y
 				--Get the Radians from All the Angle Variables and Use Polar Coordinates to Adjust the Positions
 				SPr = SPangle*(math.pi/180);
-				SPsign.x = (r*math.cos(SPr))+(pW); SPsign.y = (r*math.sin(SPr))+cH;
+				SPsign.x = (r*math.cos(SPr))+(pW); SPsign.y = (r*math.sin(SPr))+cH-35;
 				MPr = MPangle*(math.pi/180);
-				MPsign.x = (r*math.cos(MPr))+(pW); MPsign.y = (r*math.sin(MPr))+cH;
+				MPsign.x = (r*math.cos(MPr))+(pW); MPsign.y = (r*math.sin(MPr))+cH-35;
 				setr = setangle*(math.pi/180);
-				settings_Sign.x = (r*math.cos(setr))+(pW); settings_Sign.y = (r*math.sin(setr))+cH;
+				settings_Sign.x = (r*math.cos(setr))+(pW); settings_Sign.y = (r*math.sin(setr))+cH-35;
 				helpr = helpangle*(math.pi/180);
-				help_Sign.x = (r*math.cos(helpr))+(pW); help_Sign.y = (r*math.sin(helpr))+cH;
+				help_Sign.x = (r*math.cos(helpr))+(pW); help_Sign.y = (r*math.sin(helpr))+cH-35;
 				--Are We Done?
 				if increment == 0 then
 					turning = false --Stop Turning

@@ -39,11 +39,10 @@ function scene:enterScene( event )
         -- INSERT code here (e.g. start timers, load audio, start listeners, etc.)
 		-----------------------------------------------------------------------------
 		playBtn = widget.newButton{
-			label="Play",
 			labelColor = { default={255}, over={128} },
-			default="../images/buttonInActive.png",
-			over="../images/buttonActive.png",
-			width=60, height=40,
+			default="../images/btn_play.png",
+			over="../images/btn_play_pressed.png",
+			width=96, height=32,
 			onRelease = onPlayBtnRelease
 		}
 		playBtn.view:setReferencePoint( display.CenterReferencePoint )
@@ -77,7 +76,7 @@ function scene:enterScene( event )
 			space2.x = space2.x + 1
 		end
 		
-		local logo = display.newImageRect("../images/logo.png",480,154)
+		local logo = display.newImageRect("../images/logo2.png",480,48)
 		logo.x = w/2; logo.y = h/2-80
 		
 		local e = display.newImageRect("../images/earth_slice.png",600,185)

@@ -28,6 +28,7 @@ end
 -- Called immediately after scene has moved onscreen:
 function scene:enterScene( event )
         local group = self.view
+		physics.start()
         
 		------------------------------------------------
 		-- Parralax Environment
@@ -46,19 +47,7 @@ function scene:enterScene( event )
 			left = 0,
 			repeated = false
 		} )
-
-		-- repeated floor foreground
-		local floor = myScene:newLayer(
-		{
-			image = "../images/background_chapter1_level1_floor.png",
-			width = 200,               
-			height = 10,
-			bottom = 320,              
-			left = 0,
-			speed = 3.0,
-			repeated = "horizontal"
-		} )
-
+		
 		-- Foreground (City Scape...)
 		myScene:newLayer(
 		{
@@ -85,6 +74,14 @@ function scene:enterScene( event )
 		} )
 
 
+		-- repeated floor foreground
+		local floor = display.newImage("../images/background_chapter1_level1_floor.png")
+		floor.x = 0
+		floor.y = h
+		floor.width = 1500
+		floor.myName = "floor"
+		
+		physics.addBody( floor, "static", { friction=0.5, bounce=0.3 } )
 
 		------------------------------------------------
 		-- Functions
@@ -117,6 +114,7 @@ function scene:enterScene( event )
 			
 		end
 
+		
 
 		--------------------------------------------
 		-- Events
@@ -127,26 +125,26 @@ function scene:enterScene( event )
 		--------------------------------------------
 		-- Enemy Structure
 		--------------------------------------------
-		
 		local crate1 = display.newImage( "../images/test_crate.png" )
-		crate1.x = 180; crate1.y = -50
+		crate1.x = 180; crate1.y = 100
 		crate1.myName = "first crate"
 
 		local crate2 = display.newImage( "../images/test_crate.png" )
-		crate2.x = 1300; crate2.y = -150
+		crate2.x = 180; crate2.y = 0
 		crate2.myName = "second crate"
 
 		physics.addBody( crate1, { density=3.0, friction=0.5, bounce=0.3 } )
 		physics.addBody( crate2, { density=3.0, friction=0.5, bounce=0.3 } )
 		
+		
         -----------------------------------------------------------------------------
         --      INSERT code here (e.g. start timers, load audio, start listeners, etc.)
 		-----------------------------------------------------------------------------
+
 		group:insert(myScene)
 		group:insert(crate1)
 		group:insert(crate2)
-		physics.start()
-		physics.addBody( floor, "static", { friction=0.5, bounce=0.3 } )
+		group:insert(floor)
 
 end
  

@@ -74,7 +74,7 @@ function scene:enterScene( event )
 			id="menu_sp_cats_levelselect",
 			labelColor = { default={255}, over={128} },
 			default="../images/btn_chooseCats.png",
-			over="../images/btn_chooseCats.png",
+			over="../images/btn_chooseCats_pressed.png",
 			width=280, height=195,
 			onRelease = onBtnRelease
 		}
@@ -86,7 +86,7 @@ function scene:enterScene( event )
 			id="menu_sp_aliens_levelselect",
 			labelColor = { default={255}, over={128} },
 			default="../images/btn_chooseAliens.png",
-			over="../images/btn_chooseAliens.png",
+			over="../images/btn_chooseAliens_pressed.png",
 			width=280, height=195,
 			onRelease = onBtnRelease
 		}

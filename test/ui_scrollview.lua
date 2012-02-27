@@ -2,6 +2,7 @@ local storyboard = require( "storyboard" )
 local widget = require( "widget" )
 local scrollview = require( "scrollview" )
 local physics = require( "physics" )
+local parallax = require( "parallax" )
 local scene = storyboard.newScene()
  
 ----------------------------------------------------------------------------------
@@ -17,6 +18,14 @@ local scene = storyboard.newScene()
 -- Called when the scene's view does not exist:
 function scene:createScene( event )
         local group = self.view
+		W = display.contentWidth
+		H = display.contentHeight
+		
+        -- background = display.newRect(0,0,W,H)
+		-- background:setFillColor(255)
+		
+		-- group:insert(background)
+		physics.start()
  
         -----------------------------------------------------------------------------
         --      CREATE display objects and add them to 'group' here.
@@ -24,11 +33,101 @@ function scene:createScene( event )
         -----------------------------------------------------------------------------
 		W = display.contentWidth
 		H = display.contentHeight
+				
+		------------------------------------------------
+		-- Parralax Environment
+		------------------------------------------------
+		local w3 = W * 3
+		local screenOffsetW = display.contentWidth - display.viewableContentWidth - display.screenOriginX
+		local adjustX = ( display.contentWidth + screenOffsetW * 2 )
 		
-        background = display.newRect(0,0,W*3,H)
-		background:setFillColor(255)
 		
-		group:insert(background)
+
+		-- create new parallax scene
+		local myScene = parallax.newScene(
+		{
+			width = 1500,
+			height = H,
+			bottom = H,
+			left = 0,
+			repeated = false,
+			group = group
+		} )
+		
+		-- Foreground (City Scape...)
+		myScene:newLayer(
+		{
+			image = "../images/background_chapter1_level1_foreground.png",
+			width = 960,
+			height = H,
+			top = 50,
+			bottom = H,
+			left = 0,
+			speed = 0.7,
+			repeated = "horizontal"
+		} )
+		
+		-- Second Foreground (City Scape...)
+		myScene:newLayer(
+		{
+			image = "../images/background_chapter1_level1_foreground.png",
+			width = 960,
+			height = H,
+			top = 0,
+			bottom = H,
+			left = -300,
+			speed = 0.6,
+			repeated = "horizontal"
+		} )
+
+		-- repeated sky background
+		myScene:newLayer(
+		{
+			image = "../images/background_chapter1_level1_background.png",
+			width = 1500,
+			height = H,
+			top = 0,
+			left = 0,
+			speed = 0.5,
+			repeated = "horizontal"
+		} )
+
+		------------------------------------------------
+		-- Functions
+		-----------------------------------------------
+
+		--Shift the Scene
+		local newx = 0;
+		function shiftScene(event)
+			if event.phase == "began" then
+				newx = event.x
+				myScene.xPrev = event.x
+			end
+			for i=2,group.numChildren do
+				local child = group[i]
+				
+				-- Move within Screen Limits
+				if (group[1].x + (event.x-newx)) > 0 then
+					-- child.x = 0
+				elseif (group[1].x + (event.x-newx)) < - (display.contentWidth + 7.75) then
+					-- child.x = w3
+				else
+					child.x = child.x + (event.x-newx)
+				end
+				
+				myScene:move( event.x - myScene.xPrev, 0 )
+				-- store location as previous
+				myScene.xPrev = event.x
+			end
+			newx = event.x
+			
+		end
+
+		--------------------------------------------
+		-- Events
+		--------------------------------------------
+		myScene:addEventListener("touch", shiftScene)
+
 end
  
  
@@ -304,19 +403,6 @@ function scene:enterScene( event )
 		end
 		Runtime:addEventListener("enterFrame",updateMONEY)
 		
-		--Shift the Scene
-		local newx = 0;
-		local function shiftScene(event)
-			if event.phase == "began" then
-				newx = event.x
-			end
-			for i=1,group.numChildren do
-			  local child = group[i]
-			  child.x = child.x + (event.x-newx)
-			end
-			newx = event.x
-		end
-		background:addEventListener("touch",shiftScene)
 		
 		local once = false
 		--[[

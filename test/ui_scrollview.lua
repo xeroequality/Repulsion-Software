@@ -25,7 +25,7 @@ function scene:createScene( event )
 		W = display.contentWidth
 		H = display.contentHeight
 		
-        local background = display.newRect(0,0,W,H)
+        background = display.newRect(0,0,W,H)
 		background:setFillColor(255)
 		
 		group:insert(background)
@@ -42,7 +42,7 @@ function scene:enterScene( event )
 		physics.start()
 		local slideBtn
 		
-		local floor = display.newRect(0,H-10,W,10)
+		local floor = display.newRect(0,H-10,W*20,10)
 		floor:setFillColor(0)
 		physics.addBody(floor, "static", {friction=0.9, bounce=0.05} )
 		group:insert(floor)
@@ -159,6 +159,7 @@ function scene:enterScene( event )
 					target:setLinearVelocity(0,0)
 					target.angularVelocity = 0
 				end
+				focus = event.target;
 			elseif target.isFocus then
 				if phase == "moved" then
 					target.x = event.x - target.x0
@@ -176,6 +177,7 @@ function scene:enterScene( event )
 					--target:removeEventListener(dragItem)
 				end
 			end
+			focus = target
 			return true
 		end
 		
@@ -191,7 +193,15 @@ function scene:enterScene( event )
 		end
 		Runtime:addEventListener("enterFrame",fallenItem);--]]
 		local physicalObj = {}
+		local stats = {}
+		--Stats are {HP,Cost,Basic Resistance,FireR,WaterR,ExplosiveR,ElectricR,RecursiveDamage}
+		local HPMax = {50,25,20,9001}
 		local nowPlace = 1;
+		local focus = 0;
+		local function damage(self,event)
+			HP[self.id] = HP[self.id] - event.force;
+			print(event.force)
+		end
 		-- Event for selecting an item from scrollView
 		local function pickItem (event)
 			local phase = event.phase
@@ -214,8 +224,8 @@ function scene:enterScene( event )
 				newObj:scale(1/3,1/3)
 				newObj.x = event.x
 				newObj.y = event.y
-				newObj.id = target.id
-				physicalObj[nowPlace] = newObj;
+				newObj.id = nowPlace
+				stats[nowPlace] = {HPMax[target.id],cost[target.id],1,1,0,1,0.75,0};
 				nowPlace = nowPlace + 1;
 				newObj:addEventListener("touch",dragItem)
 				display.getCurrentStage():setFocus(newObj)
@@ -231,6 +241,7 @@ function scene:enterScene( event )
 					newObj:setLinearVelocity(0,0)
 					newObj.angularVelocity = 0
 				end
+				focus = newObj;
 				group:insert(newObj)
 			end
 			
@@ -246,6 +257,8 @@ function scene:enterScene( event )
 					else
 						newObj.bodyType = "dynamic"
 					end
+					newObj.collision = damage
+				newObj:addEventListener( "collision", newObj )
 					display.getCurrentStage():setFocus(nil)
 					newObj.isFocus = false
 					--target:removeEventListener(dragItem)
@@ -255,6 +268,18 @@ function scene:enterScene( event )
 			--
 			return true
 		end
+		
+		--Focus HP
+		local HPText = display.newText("HP: ",0,0,native.systemFont,16);
+		HPText.x = display.contentWidth/2+120; HPText.y = 100; HPText:setTextColor(255,0,255);
+		function showHP(event)
+			if focus ~= 0 then
+				HPText.text = "This Object's HP is "..stats[focus.id][1].."\nCost: "..stats[focus.id][2].."\nBasicR: "..stats[focus.id][3];
+				HPText.text = HPText.text.."\nFireR: "..stats[focus.id][4].."\nWaterR: "..stats[focus.id][5].."\nExplosiveR: "..stats[focus.id][6];
+				HPText.text = HPText.text.."\nElectricR: "..stats[focus.id][7].."\nRecursive Damage: "..stats[focus.id][8];
+			end
+		end
+		Runtime:addEventListener("enterFrame",showHP);
 		
 		scroll_item1:addEventListener("touch",pickItem)
 		scroll_item2:addEventListener("touch",pickItem)
@@ -278,6 +303,21 @@ function scene:enterScene( event )
 			MONEY.text = "You Have $"..wallet;
 		end
 		Runtime:addEventListener("enterFrame",updateMONEY)
+		
+		--Shift the Scene
+		local newx = 0;
+		local function shiftScene(event)
+			if event.phase == "began" then
+				newx = event.x
+			end
+			for i=1,group.numChildren do
+			  local child = group[i]
+			  child.x = child.x + (event.x-newx)
+			end
+			newx = event.x
+			print("Active")
+		end
+		background:addEventListener("touch",shiftScene)
 		
 		group:insert(scrollView)
 		group:insert(slideBtn.view)

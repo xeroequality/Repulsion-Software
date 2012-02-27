@@ -75,7 +75,7 @@ function scene:enterScene( event )
 
 
 		-- repeated floor foreground
-		local floor = display.newImage("../images/background_chapter1_level1_floor.png")
+		local floor = display.newImageRect("../images/background_chapter1_level1_floor.png",480,10)
 		floor.x = 0
 		floor.y = h
 		floor.width = 1500

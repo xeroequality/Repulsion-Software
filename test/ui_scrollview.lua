@@ -49,6 +49,7 @@ function scene:enterScene( event )
 		
 		local scroll_topBound = 0
 		local scroll_bottomBound = 0
+		local wallet = 1000;
 		
 		
 		-- Options to be inserted into the scrollView:
@@ -80,6 +81,9 @@ function scene:enterScene( event )
 		scroll_item4.x = 35
 		scroll_item4.y = 3*H - 35
 		
+		local cost = {200,50,100,50}
+		local costs = {50,200,100,50}
+		
 		-- Create scrollView
 			-- "isOpen" is for the whether it is "out" (visible) or "in" (offscreen)
 			-- Insert all items that belong to scrollView
@@ -90,6 +94,15 @@ function scene:enterScene( event )
 		scrollView:insert(scroll_item2)
 		scrollView:insert(scroll_item3)
 		scrollView:insert(scroll_item4)
+		
+		local scroll_text = {};
+		for i = 1, 4 do
+			scroll_text[i] = display.newText("$"..costs[i],0,0,native.systemFont,12);
+			scroll_text[i].x = 35; scroll_text[i].y = H*(i-1)+35
+			scroll_text[i]:setReferencePoint(display.CenterReferencePoint)
+			scrollView:insert(scroll_text[i]);
+			scroll_text[i]:setTextColor(0,0,0)
+		end
 
 		-- Event for when open/close button is pressed
 			-- If scrollView is "open", close it
@@ -166,11 +179,24 @@ function scene:enterScene( event )
 			return true
 		end
 		
+		--[[Check for Fallen Objects
+		local function fallenItem(event)
+			for i = 1, nowPlace do
+				local u = physicalObj[i];
+				if u.y >= (display.contentHeight*3) then
+					wallet = wallet + cost[u.id];
+					u:removeSelf();
+				end
+			end
+		end
+		Runtime:addEventListener("enterFrame",fallenItem);--]]
+		local physicalObj = {}
+		local nowPlace = 1;
 		-- Event for selecting an item from scrollView
 		local function pickItem (event)
 			local phase = event.phase
 			local target = event.target
-			if phase == "began" then
+			if phase == "began" and wallet >= cost[target.id] then
 				if target.id == 1 then
 					newObj = display.newImage("wood_box.png")
 					newObj.shape={-37,-37,37,-37,37,37,-37,37}
@@ -184,13 +210,49 @@ function scene:enterScene( event )
 					print("null target")
 					return true
 				end
+				wallet = wallet - cost[target.id]
 				newObj:scale(1/3,1/3)
 				newObj.x = event.x
 				newObj.y = event.y
+				newObj.id = target.id
+				physicalObj[nowPlace] = newObj;
+				nowPlace = nowPlace + 1;
 				newObj:addEventListener("touch",dragItem)
 				display.getCurrentStage():setFocus(newObj)
+				
+				--Drag This Object
+				display.getCurrentStage():setFocus(newObj)
+				newObj.isFocus = true
+				newObj.x0 = event.x - newObj.x
+				newObj.y0 = event.y - newObj.y
+				-- If physics is already applied to target, make it kinematic
+				if newObj.bodyType then
+					newObj.bodyType = "kinematic"
+					newObj:setLinearVelocity(0,0)
+					newObj.angularVelocity = 0
+				end
+				group:insert(newObj)
 			end
-			group:insert(newObj)
+			
+			if newObj.isFocus then
+				if phase == "moved" then
+					newObj.x = event.x - newObj.x0
+					newObj.y = event.y - newObj.y0
+				elseif phase == "ended" or phase == "cancelled" then
+					-- If it doesn't already have a bodyType, then add it to physics
+					-- If it does, set it's body type to dynamic
+					if not newObj.bodyType then
+						physics.addBody(newObj, "dynamic", {friction=0.9, shape=newObj.shape })
+					else
+						newObj.bodyType = "dynamic"
+					end
+					display.getCurrentStage():setFocus(nil)
+					newObj.isFocus = false
+					--target:removeEventListener(dragItem)
+				end
+			end
+			
+			--
 			return true
 		end
 		
@@ -208,8 +270,18 @@ function scene:enterScene( event )
 		slideBtn.y = H/2
 		slideBtn.x = scroll_bkg.width
 		
+		local MONEY = display.newText("You Have $"..wallet,0,0,native.systemFont,12);
+		MONEY.x = display.contentWidth/2; MONEY.y = display.contentHeight/8;
+		MONEY:setTextColor(255,0,0)
+		
+		function updateMONEY(event)
+			MONEY.text = "You Have $"..wallet;
+		end
+		Runtime:addEventListener("enterFrame",updateMONEY)
+		
 		group:insert(scrollView)
 		group:insert(slideBtn.view)
+		group:insert(MONEY)
 end
  
  

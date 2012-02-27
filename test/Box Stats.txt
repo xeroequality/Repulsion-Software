@@ -1,0 +1,41 @@
+Format:
+Name of Material Type
+Base Image
+Damaged Image
+Vertices
+XScale
+YScale
+Max HP
+Cost
+Basic Resistance
+Fire Resistance
+Water Resistance
+Explosive Resistance
+Electric Resistance
+Bounce
+Density
+Friction
+Radius
+Exit Sprite
+End
+
+Wood Plank
+wood_plank.png
+wood_plank.png
+{-
+0.333333333
+0.333333333
+100
+50
+1
+1
+1
+1
+1
+1
+1
+0.9
+0
+???
+End
+

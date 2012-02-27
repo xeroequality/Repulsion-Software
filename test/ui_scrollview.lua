@@ -25,7 +25,7 @@ function scene:createScene( event )
 		W = display.contentWidth
 		H = display.contentHeight
 		
-        background = display.newRect(0,0,W,H)
+        background = display.newRect(0,0,W*3,H)
 		background:setFillColor(255)
 		
 		group:insert(background)
@@ -315,13 +315,178 @@ function scene:enterScene( event )
 			  child.x = child.x + (event.x-newx)
 			end
 			newx = event.x
-			print("Active")
 		end
 		background:addEventListener("touch",shiftScene)
 		
-		group:insert(scrollView)
-		group:insert(slideBtn.view)
+		local once = false
+		--[[
+		newObj:scale(1/3,1/3)
+		newObj = display.newImage("wood_box.png")
+					newObj.shape={-37,-37,37,-37,37,37,-37,37}
+				elseif target.id == 2 then
+					newObj = display.newImage("wood_plank.png")
+					newObj.shape={-37,-7,37,-7,37,7,-37,7}
+				elseif target.id == 3 then
+					newObj = display.newImage("stone.png")
+					newObj.shape={-37,-37,37,-37,37,37,-37,37}
+				else
+				--]]
+		function makeAlienStructure(event)
+			if once == false then
+				once = true;
+				local objs = {};
+				local index = 1;
+				local baseX = 300;
+				local baseY = (H-10);
+				
+				--Get Some Info
+				local path = system.pathForFile( "Alien Structure.txt", system.ResourceDirectory )
+				local mpath = system.pathForFile( "Box Stats.txt", system.ResourceDirectory )
+				local mfile = io.open( mpath, "r" )
+				local file = io.open( path, "r" )
+				local saveData; local mData;
+				local str = "";
+				local commencement = false; --Start Getting Some Data
+				local mStart = false; --Material Commencement
+				local linenum = 0; local mLineNum = 0;
+				for line in file:lines() do
+					saveData = line;
+					
+					--Find the Level Info
+					print(saveData)
+					if commencement == false then
+						if saveData == "Start" then commencement = true end --If This is it, then Continue
+					else
+						linenum = linenum + 1;
+						--Make the Material
+						if linenum == 1 then
+							mStart = false;
+							if saveData == "Wood Plank" then
+								--Get That Info from Box Stats.txt
+								for otherline in mfile:lines() do
+									mData = otherline;
+									print("MMM "..mData)
+									if mStart == false then
+										if mData == saveData then
+											mStart = true;
+											mLineNum = 0;
+											stats[nowPlace] = {};
+										end
+									else
+										mLineNum = mLineNum + 1;
+										--Get the Base Image
+										if mLineNum == 1 then
+											objs[index] = display.newImage(mData);
+											objs[index].id = nowPlace;
+										end
+										--Get the Damaged Image
+										--Make the Vertices
+										if mLineNum == 3 then
+											objs[index].shape={-37,-7,37,-7,37,7,-37,7}
+										end
+										--Get the XScale
+										if mLineNum == 4 then
+											n = tonumber(mData)
+											objs[index]:scale(n,1);
+										end
+										--Get the YScale
+										if mLineNum == 5 then
+											n = tonumber(mData)
+											objs[index]:scale(1,n);
+										end
+										--Get the HP
+										if mLineNum == 6 then
+											n = tonumber(mData)
+											stats[nowPlace][1] = n
+										end
+										--Get the Cost
+										if mLineNum == 7 then
+											n = tonumber(mData)
+											stats[nowPlace][2] = n
+										end
+										--Get the Basic Resistance
+										if mLineNum >= 8 and mLineNum <= 12 then
+											n = tonumber(mData)
+											stats[nowPlace][3+(mLineNum-8)] = n
+										end
+										--Get the Bounce
+										if mLineNum == 13 then
+											n = tonumber(mData)
+											b = n
+										end
+										--Get the Density
+										if mLineNum == 14 then
+											n = tonumber(mData)
+											d = n
+										end
+										--Get the Friction
+										if mLineNum == 15 then
+											n = tonumber(mData)
+											f = n
+										end
+										--Get the Radius
+										if mLineNum == 16 then
+											n = tonumber(mData)
+											if n == 0 then
+												physics.addBody(objs[index], "dynamic", {bounce = b, density = d, friction = f, shape=objs[index].shape })
+											else
+												physics.addBody(objs[index], "dynamic", {bounce = b, density = d, friction = f, radius = n, shape=objs[index].shape })
+											end
+										end
+										--Get the Exit Sprite
+										--Exit
+										if mLineNum == 18 then
+											mStart = false;
+											mLineNum = 0;
+										end
+									end
+								end
+							end
+							if saveData == "Wood Box" then
+								objs[index] = display.newImage("wood_box.png");
+								objs[index].shape={-37,-37,37,-37,37,37,-37,37}
+								objs[index]:scale(1/3,1/3);
+							end
+						end
+						--Close mfile and Reopen
+						io.close(mfile);
+						mfile = io.open( mpath, "r" )
+						--Get the X Coordinate
+						if linenum == 2 then
+							n = tonumber(saveData)
+							objs[index].x = baseX+n;
+						end
+						--Get the Y Coordinate
+						if linenum == 3 then
+							n = tonumber(saveData)
+							objs[index].y = baseY+n;
+						end
+						--Get the Rotation Angle
+						if linenum == 4 then
+							n = tonumber(saveData)
+							objs[index]:rotate(n);
+						end
+						if linenum == 5 then
+							commencement = false;
+							linenum = 0;
+							group:insert(objs[index]);
+							index = index + 1;
+							nowPlace = nowPlace + 1;
+						end
+					end
+					
+				end
+				io.close( mfile )
+				io.close( file )
+				
+			end
+		end
+		Runtime:addEventListener("enterFrame",makeAlienStructure)
+		
+		--group:insert(scrollView)
+		--group:insert(slideBtn.view)
 		group:insert(MONEY)
+		group:insert(HPText)
 end
  
  

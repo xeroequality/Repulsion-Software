@@ -135,12 +135,12 @@ function scene:enterScene( event )
 		local function dragItem (event)
 			local phase = event.phase
 			local target = event.target
-			print(target.name)
 			if phase == "began" then
 				display.getCurrentStage():setFocus(target)
 				target.isFocus = true
 				target.x0 = event.x - target.x
 				target.y0 = event.y - target.y
+				-- If physics is already applied to target, make it kinematic
 				if target.bodyType then
 					target.bodyType = "kinematic"
 					target:setLinearVelocity(0,0)
@@ -151,7 +151,13 @@ function scene:enterScene( event )
 					target.x = event.x - target.x0
 					target.y = event.y - target.y0
 				elseif phase == "ended" or phase == "cancelled" then
-					physics.addBody(target, "dynamic", {friction=0.9, shape=target.shape })
+					-- If it doesn't already have a bodyType, then add it to physics
+					-- If it does, set it's body type to dynamic
+					if not target.bodyType then
+						physics.addBody(target, "dynamic", {friction=0.9, shape=target.shape })
+					else
+						target.bodyType = "dynamic"
+					end
 					display.getCurrentStage():setFocus(nil)
 					target.isFocus = false
 					--target:removeEventListener(dragItem)

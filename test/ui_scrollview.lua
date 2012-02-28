@@ -400,6 +400,8 @@ function scene:enterScene( event )
 		local enemy = Enemy.level1
 		for i=1,enemy.numObjects do
 			local obj = {}
+			local baseX = enemy.baseX;
+			local baseY = enemy.baseY;
 			obj.type = enemy.types[i]
 			-- first clone: so obj.img refers to proper image
 			-- second clone: to pass data to object
@@ -407,8 +409,8 @@ function scene:enterScene( event )
 			obj = display.newImage(obj.img)
 			obj = Materials.clone(obj)
 			obj:scale(obj.scaleX,obj.scaleY)
-			obj.x = enemy.x_vals[i]
-			obj.y = enemy.y_vals[i]
+			obj.x = enemy.x_vals[i]+baseX;
+			obj.y = enemy.y_vals[i]+baseY;
 			obj.rotation = enemy.rotations[i]
 			physics.addBody(obj, {density=obj.density,friction=obj.friction,bounce=obj.bounce,shape=obj.shape} )
 			group:insert(obj)

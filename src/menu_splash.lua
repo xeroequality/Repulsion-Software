@@ -55,7 +55,8 @@ function scene:enterScene( event )
 		local active = true;
 		
 		--O FORTUNA!!!!
-		local o_fortuna = audio.loadStream("../sound/O Fortuna.mp3");
+		-- local o_fortuna = audio.loadStream("../sound/O Fortuna.mp3");
+		local o_fortuna = audio.loadStream("../sound/Warriors & Knights.mp3");
 		local o_play = audio.play(o_fortuna);
 
 		--Make the Space Backgrounds

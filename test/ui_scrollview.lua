@@ -124,6 +124,9 @@ function scene:enterScene( event )
 		--------------------------------------------
 		--                PRESETS                 --
 		--------------------------------------------
+		local music_bg = audio.loadStream("../sound/Bounty 30.mp3");
+		local o_play = audio.play(music_bg);
+		
 		physics.start()
 		local slideBtn
 		--------------------

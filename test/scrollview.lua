@@ -20,10 +20,10 @@ function new(params)
  
         function scrollView:touch(event) 
                 local phase = event.phase      
-                print(phase)
+                --print(phase)
                                                 
                 if( phase == "began" ) then
-                                print(scrollView.y)
+                                --print(scrollView.y)
                         self.startPos = event.y
                         self.prevPos = event.y                                       
                         self.delta, self.velocity = 0, 0

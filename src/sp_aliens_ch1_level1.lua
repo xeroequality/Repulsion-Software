@@ -47,8 +47,8 @@ function scene:createScene( event )
 		myScene:newLayer(
 		{
 			image = "../images/background_chapter1_level1_foreground.png",
-			width = 960, height = H,
-			top = 50, bottom = H,
+			width = 320, height = 106,
+			top = 234, bottom = H,
 			left = 0,
 			speed = 0.7,
 			repeated = "horizontal"
@@ -57,9 +57,9 @@ function scene:createScene( event )
 		myScene:newLayer(
 		{
 			image = "../images/background_chapter1_level1_foreground.png",
-			width = 960, height = H,
-			top = 0, bottom = H,
-			left = -300,
+			width = 320, height = 106,
+			top = 214, bottom = H,
+			left = -106,
 			speed = 0.6,
 			repeated = "horizontal"
 		} )

@@ -22,7 +22,7 @@ Material.wood_plank = {
 		explosive=1,
 		electric=1
 	},
-	bounce=0.05,
+	bounce=0,
 	density=0.8,
 	friction=0.9
 }
@@ -43,7 +43,7 @@ Material.wood_box = {
 		explosive=1,
 		electric=1
 	},
-	bounce=0.05,
+	bounce=0,
 	density=2.0,
 	friction=0.9
 }
@@ -64,7 +64,7 @@ Material.stone = {
 		explosive=1,
 		electric=1
 	},
-	bounce=0.10,
+	bounce=0,
 	density=8.0,
 	friction=0.9
 }

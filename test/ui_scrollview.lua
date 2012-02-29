@@ -139,7 +139,7 @@ function scene:enterScene( event )
 		---------
 		-- Floor
 		---------
-		local floor = display.newRect(-5*W,H-10,W*11,10)
+		local floor = display.newRect(-5*W,H-10,W*11,100)
 		floor:setFillColor(0)
 		physics.addBody(floor, "static", {friction=0.9, bounce=0.05} )
 		group:insert(floor)
@@ -272,12 +272,14 @@ function scene:enterScene( event )
 				if phase == "moved" then
 					target.x = event.x - target.x0
 					target.y = event.y - target.y0
+					-- Player can remove object and add money back by dropping below floor
+					--[[ GLITCHES WITH PARALLAX...
 					if target.y > H then
-						-- Player can remove object and add money back by dropping below floor
 						wallet = wallet + target.cost
 						target:removeSelf()
 						return true
 					end
+					]]
 				elseif phase == "ended" or phase == "cancelled" then
 					-- If it doesn't already have a bodyType, then add it to physics
 					-- If it does, set it's body type to dynamic

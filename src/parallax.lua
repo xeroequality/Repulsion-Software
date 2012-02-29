@@ -407,7 +407,9 @@ local function newScene( params )
     local screenOffsetW = display.contentWidth - display.viewableContentWidth - display.screenOriginX
     local screenOffsetH = display.contentHeight - display.viewableContentHeight - display.screenOriginY
     
-    local Group = display.newGroup()
+    -- local Group = display.newGroup()
+	local Group = params.group
+	
     
     local width    = params.width
     local height   = params.height

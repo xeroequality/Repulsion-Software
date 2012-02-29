@@ -48,8 +48,8 @@ function createCrosshair(event) -- creates crosshair when a touch event begins
 		if not (showCrosshair) then										-- helps ensure that only one crosshair appears
 		print('show crosshair')
 			crosshair = display.newImage( "crosshair.png" )				-- prints crosshair	
-			crosshair.x = 60
-			crosshair.y = 320
+			crosshair.x = 200
+			crosshair.y = 120
 			showCrosshair = transition.to( crosshair, { alpha=1, xScale=0.5, yScale=0.5, time=200 } )
 			crosshair.rotation = nil
 			startRotation = function()
@@ -86,7 +86,7 @@ function fire( event )
 				--cannonLine.parent:remove( cannonLine ) -- erase previous line, if any
 			end		
 				
-			crosshairLine = display.newLine(crosshair.x,crosshair.y, event.x,event.y) -- draws the line from the crosshair
+			crosshairLine = display.newLine(crosshair.x/.5,crosshair.y/.5, event.x,event.y) -- draws the line from the crosshair
 			crosshairLine:setColor( 255, 255, 255, 50 )
 			crosshairLine.width = 4
 			--cannonLine = display.newLine( cannon.x,cannon.y, event.x-cannon.x,event.y-cannon.y ) -- draws the line for the cannon

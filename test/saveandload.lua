@@ -468,7 +468,7 @@ function scene:enterScene( event )
 					if child.child ~= nil then
 						--Save the Structure
 						num = num + 1;
-						xvals[index] = child.x;
+						xvals[index] = child.x+group[1].x;
 						yvals[index] = child.y;
 						rotation[index] = child.rotation;
 						types[index] = child.type;
@@ -537,7 +537,7 @@ function scene:enterScene( event )
 				save:setFillColor(0,0,255);
 			end
 		end
-		local save = display.newRect(0,0,100,100)
+		local save = display.newRect(group,0,0,100,100)
 		save.x = 100; save.y = 50;
 		local load = display.newRect(group,200,50,100,100)
 		load:setFillColor(255,0,0);

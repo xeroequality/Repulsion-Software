@@ -149,6 +149,21 @@ function scene:enterScene( event )
 		local wallet = 1000;
 		
 		--------------------------------------------
+		--              Overlays                  --
+		--------------------------------------------
+		local goodoverlay = display.newImage("../images/greenoverlay.png")
+		goodoverlay:setReferencePoint ( display.CenterReferencePoint )
+		goodoverlay.x = 160; goodoverlay.y = H/2;
+		goodoverlay.alpha = .25
+		goodoverlay.width = 745
+		
+		local badoverlay = display.newImage("../images/redoverlay.png")
+		badoverlay:setReferencePoint ( display.CenterReferencePoint )
+		badoverlay.x = 700; badoverlay.y = H/2;
+		badoverlay.alpha = .25
+		badoverlay.width = 675
+		
+		--------------------------------------------
 		--              SCROLLVIEW                --
 		--------------------------------------------
 		local scroll_topBound = 0
@@ -274,6 +289,12 @@ function scene:enterScene( event )
 				if phase == "moved" then
 					target.x = event.x - target.x0
 					target.y = event.y - target.y0
+					--Player can only place item in their area
+					if target.x > badoverlay.x - badoverlay.width/2 then
+						wallet = wallet + target.cost
+						target:removeSelf()
+						return true
+					end
 					-- Player can remove object and add money back by dropping below floor
 					--[[ GLITCHES WITH PARALLAX...
 					if target.y > H then
@@ -422,6 +443,8 @@ function scene:enterScene( event )
 		--group:insert(slideBtn.view)
 		group:insert(MONEY)
 		group:insert(HPText)
+		group:insert(goodoverlay)
+		group:insert(badoverlay)
 end
  
  

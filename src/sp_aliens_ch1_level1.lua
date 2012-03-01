@@ -124,10 +124,10 @@ function scene:enterScene( event )
 		--------------------------------------------
 		--                PRESETS                 --
 		--------------------------------------------
-		local prev_music = audio.loadStream("O fortuna.mp3")
-		local music_bg = audio.loadStream("../sound/Bounty 30.mp3")
-		audio.stop(prev_music)
-		local o_play = audio.play(music_bg)
+		local prev_music = audio.loadStream("../sound/O fortuna.mp3")
+        local music_bg = audio.loadStream("../sound/Bounty 30.ogg")
+        audio.fadeOut(prev_music, { time=5000 })
+        local o_play = audio.play(music_bg, { fadein=5000 } )
 		
 		physics.start()
 		local slideBtn
@@ -434,7 +434,7 @@ function scene:exitScene( event )
         -----------------------------------------------------------------------------
 		--Remove the Runtime Listeners
 		scrollGroup:removeEventListener(scroll)
-		
+				
 end
  
  

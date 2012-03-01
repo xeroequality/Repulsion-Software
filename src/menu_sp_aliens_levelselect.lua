@@ -423,6 +423,7 @@ function scene:exitScene( event )
 			group:remove(num)
 			num = num - 1
 		end
+		
 end
  
  

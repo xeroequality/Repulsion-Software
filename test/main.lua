@@ -5,4 +5,4 @@ display.setStatusBar( display.HiddenStatusBar )
 local storyboard = require "storyboard"
 
 -- load menu screen
-storyboard.gotoScene( "ui_scrollview" )
+storyboard.gotoScene( "saveandload" )

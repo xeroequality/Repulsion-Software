@@ -424,8 +424,6 @@ function scene:exitScene( event )
 			num = num - 1
 		end
 		
-		audio.fadeOut({time=3000})
-		
 end
  
  

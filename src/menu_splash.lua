@@ -57,7 +57,7 @@ function scene:enterScene( event )
 		--O FORTUNA!!!!
 		-- local o_fortuna = audio.loadStream("../sound/O Fortuna.mp3");
 		local o_fortuna = audio.loadStream("../sound/O Fortuna.mp3");
-		local o_play = audio.play(o_fortuna);
+		local o_play = audio.play(o_fortuna, {channel= 1, loops=-1, fadein=0});
 
 		--Make the Space Backgrounds
 		local space1 = display.newImage( "../images/space.png" )

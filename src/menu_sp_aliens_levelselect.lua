@@ -423,6 +423,9 @@ function scene:exitScene( event )
 			group:remove(num)
 			num = num - 1
 		end
+		
+		audio.fadeOut({time=3000})
+		
 end
  
  

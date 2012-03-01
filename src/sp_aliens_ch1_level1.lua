@@ -433,7 +433,7 @@ function scene:exitScene( event )
         -----------------------------------------------------------------------------
 		--Remove the Runtime Listeners
 		scrollGroup:removeEventListener(scroll)
-		
+		audio.fadeOut({time=3000})		
 end
  
  

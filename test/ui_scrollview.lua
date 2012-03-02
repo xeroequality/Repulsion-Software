@@ -394,7 +394,184 @@ function scene:enterScene( event )
 			MONEY.text = "You Have $"..wallet;
 		end
 		Runtime:addEventListener("enterFrame",updateMONEY)
-		
+		--------------------------------------
+		-- 		Impliments the cannon		--
+		--------------------------------------
+		local cannonBase    = nil
+		local cannon        = nil
+		local cannonGroup   = nil
+		local cannonBase2    = nil
+		local cannon2        = nil
+		local cannonGroup2   = nil
+		local shooterx = nil
+		local shootery = nil
+
+		forceMultiplier = 20
+
+		function onTouch(event)
+			print(event.x,event.y)
+		end
+
+		function createCrosshair(event) -- creates crosshair when a touch event begins
+			-- creates the crosshair
+			shooterx = event.target.x
+			shootery = event.target.y
+			print('shooterx: ' .. event.target.x)
+			local phase = event.phase
+			print('Cannon touched')
+			if (phase == 'began') then
+				print('Cannon touched')
+				if not (showCrosshair) then										-- helps ensure that only one crosshair appears
+				print('show crosshair')
+					crosshair = display.newImage( "crosshair.png" )				-- prints crosshair	
+					crosshair.x = display.contentWidth - 300
+					crosshair.y = display.contentHeight - 200
+					showCrosshair = transition.to( crosshair, { alpha=1, xScale=0.5, yScale=0.5, time=200 } )
+					crosshair.rotation = nil
+					startRotation = function()
+						crosshair.rotation = crosshair.rotation + 4
+					end
+					Runtime:addEventListener( "enterFrame", startRotation )
+				end
+			end
+			interface:insert(crosshair)
+			crosshair:addEventListener('touch',fire)
+		end
+
+		function fire( event )
+			local phase = event.phase
+			if "began" == phase then
+				print('crosshair touched')
+				print ('crosshair.x = ')
+				print (crosshair.x)
+				print ('crosshair.y = ')
+				print (crosshair.y)
+				print ('event.x = ')
+				print (event.x)
+				print ('event.y = ')
+				print (event.y)
+				display.getCurrentStage():setFocus( crosshair )
+				crosshair.isFocus = true
+				crosshairLine = nil
+				--cannonLine = nil
+			elseif crosshair.isFocus then
+				if "moved" == phase then
+					
+					if ( crosshairLine ) then
+						crosshairLine.parent:remove( crosshairLine ) -- erase previous line, if any
+						--cannonLine.parent:remove( cannonLine ) -- erase previous line, if any
+					end		
+						
+					crosshairLine = display.newLine(crosshair.x,crosshair.y, event.x,event.y) -- draws the line from the crosshair
+					crosshairLine:setColor( 0, 255, 0, 200 )
+					crosshairLine.width = 8
+					--cannonLine = display.newLine( cannon.x,cannon.y, event.x-cannon.x,event.y-cannon.y ) -- draws the line for the cannon
+					--cannonLine:setColor( 255, 255, 255, 50 )
+					--cannonLine.width = 8
+						--cannon.rotation =(-event.x),(-event.y)
+						--transition.to( cannon, { rotation =  crosshair.x - event.x, crosshair.y - event.y, time = 0} )
+					
+				elseif "ended" == phase or "cancelled" == phase then 						-- have this happen after collision is detected.
+				display.getCurrentStage():setFocus( nil )
+					crosshair.isFocus = false
+					
+					local stopRotation = function()
+						Runtime:removeEventListener( "enterFrame", startRotation )
+					end
+
+				-- make a new image
+				bullet = display.newImage('cannonball.png')             
+				
+				-- determine a point along the cannon barrel in world coordinates
+				--cannon.x, cannon.y = cannonBarrel:localToContent(70,0)
+				
+				-- move the image
+				
+				bullet.x = shooterx+110
+				bullet.y = shootery	
+				
+				-- apply physics to the cannonball
+				physics.addBody( bullet, { density=3.0, friction=0.2, bounce=0.05, radius=15 } )
+				
+
+				print ('event.x = ')
+				print (event.x)
+				print ('event.y = ')
+				print (event.y)
+				-- fire the cannonball            
+					bullet:applyForce( (event.x - crosshair.x)*forceMultiplier, (event.y - (crosshair.y))*forceMultiplier, bullet.x, bullet.y )
+
+				-- make sure that the cannon is on top of the 
+				--cannonGroup:toFront()
+				local hideCrosshair = transition.to( crosshair, { alpha=0, xScale=1.0, yScale=1.0, time=0, onComplete=stopRotation} )
+					showCrosshair = false									-- helps ensure that only one crosshair appears
+				
+				if ( crosshairLine ) then	
+					crosshairLine.parent:remove( crosshairLine ) -- erase previous line, if any
+					--cannonLine.parent:remove( cannonLine ) -- erase previous line, if any
+				end
+			end
+			end
+			-- Stop further propagation of touch event
+			--return true
+		end
+
+		function makeCannon()
+			-- makes first cannon
+			-- create a couple of display groups
+			interface = display.newGroup()
+			--	interface.rotation = 90
+			--  interface:translate(300,5)
+			display.getCurrentStage():insert(interface)
+			
+			cannonGroup = display.newGroup()
+			cannonBarrel = display.newGroup()
+			cannonGroup2 = display.newGroup()
+			cannonBarrel2 = display.newGroup()
+			interface:insert(cannonGroup) -- makes cannon touchable, must go before the cannon barrel or translate doesn't work
+			interface:insert(cannonGroup2) -- makes cannon touchable, must go before the cannon barrel or translate doesn't work
+
+
+			-- load the images
+			cannon      = display.newImage('cannon_sm.png')
+			cannonBase  = display.newImage('cannon_base_sm.png')
+			cannon2      = display.newImage('cannon_sm.png')
+			cannonBase2  = display.newImage('cannon_base_sm.png')    
+			-- use a separate group to offset the registration point of the barrel
+			cannonBarrel:insert(cannon)
+			cannon:translate(-52,-30)
+			cannonBarrel2:insert(cannon2)
+			cannon2:translate(-52,-30)
+				
+			cannonBarrel:translate(60,0)
+			cannonGroup:insert(cannonBarrel)
+			cannonGroup:insert(cannonBase)
+			cannonBarrel2:translate(60,0)
+			cannonGroup2:insert(cannonBarrel2)
+			cannonGroup2:insert(cannonBase2)    
+			
+			-- rotate and move the cannon to the bottom-left corner
+			cannonGroup:translate(30, 240)
+			cannonGroup2:translate(150, 240)
+
+			-- add the cannons to the stage and creat touch event for the crosshair
+			display.getCurrentStage():insert(cannonGroup)
+			display.getCurrentStage():insert(cannonGroup2)
+			showCrosshair = false 										-- helps ensure that only one crosshair appears
+			cannonGroup:addEventListener('touch',createCrosshair)
+			cannonGroup2:addEventListener('touch',createCrosshair)
+		end
+
+		function init()
+			display.setStatusBar(display.HiddenStatusBar)
+			physics = require('physics')
+			physics.start()
+			physics.setGravity(0,9.81)    
+			makeCannon()
+		end
+
+		init()
+				
 		----------------------------------------------
 		--           GENERATE ENEMY BASE            --
 		----------------------------------------------

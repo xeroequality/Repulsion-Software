@@ -127,7 +127,8 @@ function scene:enterScene( event )
 		local prev_music = audio.loadStream("../sound/O fortuna.mp3")
         local music_bg = audio.loadStream("../sound/Bounty 30.ogg")
         audio.fadeOut(prev_music, { time=5000 })
-        local o_play = audio.play(music_bg, {duration=5000, fadein=5000 } )
+        local o_play = audio.play(music_bg, { fadein=5000 } )
+		
 		physics.start()
 		local slideBtn
 		--------------------
@@ -277,7 +278,6 @@ function scene:enterScene( event )
 		local function dragItem (event)
 			local phase = event.phase
 			local target = event.target
-			if scrollView.isOpen then
 			if phase == "began" then
 				display.getCurrentStage():setFocus(target)
 				target.isFocus = true
@@ -320,7 +320,6 @@ function scene:enterScene( event )
 					target.isFocus = false
 					--target:removeEventListener(dragItem)
 				end
-			end
 			end
 			focus = target
 			return true
@@ -425,10 +424,10 @@ function scene:enterScene( event )
 		----------------------------------------------
 		--           GENERATE ENEMY BASE            --
 		----------------------------------------------
-		
 		-- In future levels, the ONLY thing that needs to change is the first line:
+		cannonballGroup = display.newGroup()
+		group:insert(cannonballGroup)
 		local enemy = Enemy.level1
-		objGroup = display.newGroup()
 		for i=1,enemy.numObjects do
 			local obj = {}
 			local baseX = enemy.baseX;
@@ -444,40 +443,27 @@ function scene:enterScene( event )
 			obj.y = enemy.y_vals[i]+baseY;
 			obj.rotation = enemy.rotations[i]
 			physics.addBody(obj, {density=obj.density,friction=obj.friction,bounce=obj.bounce,shape=obj.shape} )
-			objGroup:insert(obj)
+			group:insert(obj)
 		end
 		
-		--objGroup:addEventListener('collision', removeball)
-
 		--group:insert(scrollView)
 		--group:insert(slideBtn.view)
 		group:insert(MONEY)
 		group:insert(HPText)
 		group:insert(goodoverlay)
 		group:insert(badoverlay)
-		group:insert(objGroup)
 		group:insert(cannonGroup)
-		group:insert(cannonballGroup)
-
+		--group:insert(cannonballGroup)
 
 end
-function removeball(event)
-	--if event.phase == 'began' then
-			-- make the target active, so that it falls
-			-- actually resetting of the target happens n the update function
-			--if event.phase == 'began' then
-			print('here')
-					--timer.performWithDelay(1000, cannonball:removeSelf())
-					--timer.performWithDelay(8000, cannonball.parent:remove(cannonball))
-	--end
-end
+
 		----------------------------------------------
 		--           		Cannon		            --
 		----------------------------------------------
 		local cannonBase    = nil
 		local cannon        = nil
 		cannonGroup   = nil
-		--cannonballGroup = nil
+		cannonball = nil
 
 		forceMultiplier = 10
 
@@ -485,9 +471,11 @@ end
 			-- create a couple of display groups
 			interface = display.newGroup()
 			cannonGroup = display.newGroup()
-			cannonballGroup = display.newGroup()
-			interface:insert(cannonGroup)
-	
+
+			interface:insert(cannonGroup) -- makes cannon touchable, must go before the cannon barrel or translate doesn't work
+			--interface:insert(cannonballGroup)
+
+
 			-- load the images
 			cannon      = display.newImage('../images/cannon_sm.png')
 			cannonBase  = display.newImage('../images/cannon_base_sm.png')
@@ -497,9 +485,10 @@ end
 			cannon:translate(8,-30)
 
 			
-			-- move the cannon to the right spot
+			-- rotate and move the cannon to the bottom-left corner
 			cannonGroup.x = 240
 			cannonGroup.y = 240
+			--group:insert(cannonGroup)
 
 			-- add the cannons to the stage and creat touch event for the crosshair
 			--display.getCurrentStage():insert(cannonGroup)
@@ -509,6 +498,8 @@ end
 
 				function createCrosshair(event) -- creates crosshair when a touch event begins
 			-- creates the crosshair
+			--shooterx = cannonGroup.x
+			--shootery = cannonGroup.y
 			local phase = event.phase
 			if (phase == 'began') then
 				if not (showCrosshair) then										-- helps ensure that only one crosshair appears
@@ -554,47 +545,53 @@ end
 					
 				elseif "ended" == phase or "cancelled" == phase then 						-- have this happen after collision is detected.
 				display.getCurrentStage():setFocus( nil )
-				crosshair.isFocus = false
+					crosshair.isFocus = false
 					
-				local stopRotation = function()
-					Runtime:removeEventListener( "enterFrame", startRotation )
-				end
+					local stopRotation = function()
+						Runtime:removeEventListener( "enterFrame", startRotation )
+					end
 
 				-- make a new image
-				cannonball = display.newImage('../images/cannonball.png')				
-
+				cannonball = display.newImage('../images/cannonball.png')             
 				
 
-
 				-- move the image
-				cannonball.x = 350
-				cannonball.y = 240
-				cannonballGroup:insert(cannonball)
+				--cannonballGroup:insert(cannonball)
+				cannonballGroup.x = cannonGroup.x+110
+				cannonballGroup.y = cannonGroup.y
 
 
 				-- apply physics to the cannonball
 				physics.addBody( cannonball, { density=3.0, friction=0.2, bounce=0.05, radius=15 } )
 
 				-- fire the cannonball            
-				cannonball:applyForce( (event.x - crosshair.x)*forceMultiplier, (event.y - (crosshair.y))*forceMultiplier, cannonball.x, cannonball.y )
-				local cannonfire = audio.loadSound("../sound/Single_cannon_shot.wav")
-				local cannonfire = audio.play(cannonfire )
+					cannonball:applyForce( (event.x - crosshair.x)*forceMultiplier, (event.y - (crosshair.y))*forceMultiplier, cannonball.x, cannonball.y )
+					--timer.performWithDelay(10, cannonball:removeSelf())
+				group:insert(cannonballGroup)
+
 				-- make sure that the cannon is on top of the 
 				local hideCrosshair = transition.to( crosshair, { alpha=0, xScale=1.0, yScale=1.0, time=0, onComplete=stopRotation} )
-				showCrosshair = false									-- helps ensure that only one crosshair appears
+					showCrosshair = false									-- helps ensure that only one crosshair appears
 				
 				if ( crosshairLine ) then	
 					crosshairLine.parent:remove( crosshairLine ) -- erase previous line, if any
 					--cannonLine.parent:remove( cannonLine ) -- erase previous line, if any
 				end
-				-- interface:insert(cannonballGroup)
-				-- cannonballGroup:addEventListener('touch', removeBall)
 			end
-
+			--interface:insert(cannonballGroup)
+			--cannonballGroup:addEventListener('touch',removeBall)
 			end
 		end
 		
-		makeCannon()
+		function init()
+			--display.setStatusBar(display.HiddenStatusBar)
+			physics = require('physics')
+			physics.start()
+			physics.setGravity(0,9.81)    
+			makeCannon()
+		end
+
+		init()
  
 -- Called when scene is about to move offscreen:
 function scene:exitScene( event )

@@ -561,7 +561,7 @@ end
 				end
 
 				-- make a new image
-				cannonball = display.newImage('../images/cannonball.png')				
+				cannonball = display.newImage('../images/cannonball.png')			
 
 				
 
@@ -574,6 +574,7 @@ end
 
 				-- apply physics to the cannonball
 				physics.addBody( cannonball, { density=3.0, friction=0.2, bounce=0.05, radius=15 } )
+				cannonball.isBullet = true
 
 				-- fire the cannonball            
 				cannonball:applyForce( (event.x - crosshair.x)*forceMultiplier, (event.y - (crosshair.y))*forceMultiplier, cannonball.x, cannonball.y )

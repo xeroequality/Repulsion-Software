@@ -590,6 +590,12 @@ end
 					end		
 						
 					crosshairLine = display.newLine(crosshair.x,crosshair.y, event.x,event.y) -- draws the line from the crosshair
+					local cannonRotation = (180/math.pi)*math.atan((event.y-crosshair.y)/(event.x-crosshair.x))
+					if (event.x < crosshair.x) then
+						cannon.rotation = cannonRotation + 180
+					else
+						cannon.rotation = cannonRotation
+					end
 					crosshairLine:setColor( 0, 255, 0, 200 )
 					crosshairLine.width = 8
 					

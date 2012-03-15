@@ -516,7 +516,7 @@ end
 		local cannon        = nil
 		cannonGroup   = nil
 		--cannonballGroup = nil
-		cballExists = false
+		cballExists = false -- cball is short for cannonball
 
 		forceMultiplier = 10
 

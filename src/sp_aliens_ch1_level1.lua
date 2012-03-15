@@ -174,7 +174,7 @@ function scene:enterScene( event )
 		local item1 = display.newImage("../images/ui_item_wooden_plank.png")
 			item1.id=wood_plank.id
 			item1:setReferencePoint(display.CenterReferencePoint)
-			item1.x = 0; item1.y = 35 + 150
+			item1.x = 0; item1.y = 35
 			item1.text = display.newText("$"..wood_plank.cost,0,0,native.systemFont,28)
 			item1.text:scale(0.5,0.5)
 			item1.text:setTextColor(0)
@@ -190,7 +190,7 @@ function scene:enterScene( event )
 		local item3 = display.newImage("../images/ui_item_stone.png")
 			item3.id=stone.id
 			item3:setReferencePoint(display.CenterReferencePoint)
-			item3.x = 0; item3.y = 2*H +150
+			item3.x = 0; item3.y = 2*H
 			item3.text = display.newText("$"..stone.cost,0,0,native.systemFont,28)
 			item3.text:scale(0.5,0.5)
 			item3.text:setTextColor(0)
@@ -198,7 +198,7 @@ function scene:enterScene( event )
 		local item4 = display.newImage("../images/ui_item_null.png")
 			item4.id=4
 			item4:setReferencePoint(display.CenterReferencePoint)
-			item4.x = 0; item4.y = 3*H - 35 +150
+			item4.x = 0; item4.y = 3*H - 35
 		
 		local cost = {wood_plank.cost,wood_box.cost,stone.cost}
 		
@@ -239,7 +239,7 @@ function scene:enterScene( event )
 		local play_button = widget.newButton{
 			default="../images/ui_play_button.png",
 			over="../images/ui_play_button_pressed.png",
-			left=-30, top=5,
+			left=45, top=5,
 			width=60, height=60,
 			onRelease=playUI				--onRelease call game start function
 		}
@@ -248,7 +248,7 @@ function scene:enterScene( event )
 		local menu_button = widget.newButton{
 			default="../images/ui_menu_button.png",
 			over="../images/ui_menu_button_pressed.png",
-			left=-30, top=78,
+			left=115, top=5,
 			width=60, height=60,
 			onRelease=menuUI				--onRelease call game start function
 		}
@@ -266,7 +266,7 @@ function scene:enterScene( event )
 			if scrollView.isOpen then
 				print("closing scrollView")
 				scrollView.isOpen = false
-				transition.to(static_menu, {time=300, x=-85} )
+				transition.to(static_menu, {time=300, y=-85} )
 				transition.to(scrollView, {time=300, x=-85} )
 
 				if slideBtn then
@@ -287,7 +287,7 @@ function scene:enterScene( event )
 			elseif not scrollView.isOpen then
 				print("opening scrollView")
 				scrollView.isOpen = true
-				transition.to(static_menu, {time=300, x=0} )
+				transition.to(static_menu, {time=300, y=0} )
 				transition.to(scrollView, {time=300, x=0} )
 				if slideBtn then
 					slideBtn:removeSelf()

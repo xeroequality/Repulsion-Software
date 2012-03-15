@@ -165,11 +165,12 @@ function scene:enterScene( event )
 		--------------------------------------------
 		--              SCROLLVIEW                --
 		--------------------------------------------
-		local scroll_topBound = 0
+		local scroll_topBound = 150				-- Sets the top side of the 
 		local scroll_bottomBound = 0
+		--local x_button_padding = -6			-- Should use this to move stuff over to eliminate gap
 		
 		local scroll_bkg = display.newImage("../images/ui_bkg_buildmenu.png")
-		scroll_bkg.x = 0
+		scroll_bkg.x = -2
 		local item1 = display.newImage("../images/ui_item_wooden_plank.png")
 			item1.id=wood_plank.id
 			item1:setReferencePoint(display.CenterReferencePoint)
@@ -207,6 +208,7 @@ function scene:enterScene( event )
 		local scrollView = scrollview.new{ top=scroll_topBound, bottom=scroll_bottomBound }
 		scrollView.isOpen = true
 		scrollView:insert(scroll_bkg)
+		--scrollView:insert(static_menu)
 		scrollView:insert(item1)
 		scrollView:insert(item1.text)
 		scrollView:insert(item2)
@@ -215,6 +217,47 @@ function scene:enterScene( event )
 		scrollView:insert(item3.text)
 		scrollView:insert(item4)
 
+		--------------------------------------------
+		--             STATIC MENUS               --
+		--------------------------------------------
+		static_menu = display.newGroup()
+		
+		-- local static_buttons_bkg = display.newImage("../images/ui_bkg_static_buttons.png")
+		-- static_buttons_bkg.x = -2				-- -2 to eliminate gap by the edge of the screen
+		-- static_buttons_bkg.y = 75
+		-- static_menu:insert(static_buttons_bkg)
+		
+		local function playUI (event)
+			print('clicked play')
+		end
+		
+		local function menuUI (event)
+				-- Need to create a overlay and shade effect and pause the game when the menu button is pressed
+			print('clicked menu')
+		end
+		
+		local play_button = widget.newButton{
+			default="../images/ui_play_button.png",
+			over="../images/ui_play_button_pressed.png",
+			left=-30, top=5,
+			width=60, height=60,
+			onRelease=playUI				--onRelease call game start function
+		}
+		static_menu:insert(play_button.view)
+		
+		local menu_button = widget.newButton{
+			default="../images/ui_menu_button.png",
+			over="../images/ui_menu_button_pressed.png",
+			left=-30, top=78,
+			width=60, height=60,
+			onRelease=menuUI				--onRelease call game start function
+		}
+		static_menu:insert(menu_button.view)
+		
+		
+		--------------------------------------------
+		--             	   Slide UI               --
+		--------------------------------------------
 		
 		-- Event for when open/close button is pressed
 			-- If scrollView is "open", close it
@@ -223,7 +266,9 @@ function scene:enterScene( event )
 			if scrollView.isOpen then
 				print("closing scrollView")
 				scrollView.isOpen = false
+				transition.to(static_menu, {time=300, x=-85} )
 				transition.to(scrollView, {time=300, x=-85} )
+
 				if slideBtn then
 					slideBtn:removeSelf()
 					slideBtn = widget.newButton{
@@ -242,6 +287,7 @@ function scene:enterScene( event )
 			elseif not scrollView.isOpen then
 				print("opening scrollView")
 				scrollView.isOpen = true
+				transition.to(static_menu, {time=300, x=0} )
 				transition.to(scrollView, {time=300, x=0} )
 				if slideBtn then
 					slideBtn:removeSelf()
@@ -270,6 +316,7 @@ function scene:enterScene( event )
 		slideBtn.y = H/2
 		slideBtn.x = scroll_bkg.width-45
 		
+		
 		--------------------------------------------
 		--               ITEM DRAG                --
 		--------------------------------------------
@@ -277,7 +324,7 @@ function scene:enterScene( event )
 		local function dragItem (event)
 			local phase = event.phase
 			local target = event.target
-			if scrollView.isOpen then
+			if scrollView.isOpen then						-- need an and if touch.y is less than 150 so that it doesnt work when the scrollview is above the static button area
 			if phase == "began" then
 				display.getCurrentStage():setFocus(target)
 				target.isFocus = true
@@ -448,13 +495,13 @@ function scene:enterScene( event )
 		end
 		
 		--objGroup:addEventListener('collision', removeball)
-
-		--group:insert(scrollView)
-		--group:insert(slideBtn.view)
-		group:insert(MONEY)
-		group:insert(HPText)
 		group:insert(goodoverlay)
 		group:insert(badoverlay)
+		-- group:insert(scrollView)
+		-- group:insert(static_menu)
+		-- group:insert(slideBtn.view)
+		group:insert(MONEY)
+		group:insert(HPText)
 		group:insert(objGroup)
 		group:insert(cannonGroup)
 		group:insert(cannonballGroup)
@@ -561,7 +608,7 @@ end
 				end
 
 				-- make a new image
-				cannonball = display.newImage('../images/cannonball.png')			
+				cannonball = display.newImage('../images/cannonball.png')				
 
 				
 
@@ -588,8 +635,8 @@ end
 					crosshairLine.parent:remove( crosshairLine ) -- erase previous line, if any
 					--cannonLine.parent:remove( cannonLine ) -- erase previous line, if any
 				end
-				-- interface:insert(cannonballGroup)
-				-- cannonballGroup:addEventListener('touch', removeBall)
+				--interface:insert(cannonballGroup)
+				--cannonballGroup:addEventListener('collision', removeBall)
 			end
 
 			end

@@ -1,5 +1,6 @@
 local storyboard = require( "storyboard" )
 local widget 	 = require( "widget" )
+--local levelUI 	 = require( "levelUI")
 local scrollview = require( "scrollview" )
 local physics 	 = require( "physics" )
 local parallax 	 = require( "parallax" )
@@ -503,8 +504,8 @@ function scene:enterScene( event )
 		group:insert(MONEY)
 		group:insert(HPText)
 		group:insert(objGroup)
-		group:insert(cannonGroup)
 		group:insert(cannonballGroup)
+		group:insert(cannonGroup)
 
 
 end
@@ -596,7 +597,7 @@ end
 					--cannonLine:setColor( 255, 255, 255, 50 )
 					--cannonLine.width = 8
 						
-					--cannon.rotation =(-event.x),(-event.y)
+					--cannon.rotation =
 					--transition.to( cannon, { rotation =  crosshair.x - event.x, crosshair.y - event.y, time = 0} )
 					
 				elseif "ended" == phase or "cancelled" == phase then 						-- have this happen after collision is detected.
@@ -614,7 +615,7 @@ end
 
 
 				-- move the image
-				cannonball.x = 350
+				cannonball.x = 300
 				cannonball.y = 240
 				cannonballGroup:insert(cannonball)
 

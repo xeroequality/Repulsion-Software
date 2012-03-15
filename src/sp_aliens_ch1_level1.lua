@@ -165,7 +165,7 @@ function scene:enterScene( event )
 		--------------------------------------------
 		--              SCROLLVIEW                --
 		--------------------------------------------
-		local scroll_topBound = 150				-- Sets the top side of the 
+		local scroll_topBound = 0				-- Sets the top side of the 
 		local scroll_bottomBound = 0
 		--local x_button_padding = -6			-- Should use this to move stuff over to eliminate gap
 		
@@ -174,7 +174,7 @@ function scene:enterScene( event )
 		local item1 = display.newImage("../images/ui_item_wooden_plank.png")
 			item1.id=wood_plank.id
 			item1:setReferencePoint(display.CenterReferencePoint)
-			item1.x = 0; item1.y = 35
+			item1.x = 0; item1.y = 35 + 150
 			item1.text = display.newText("$"..wood_plank.cost,0,0,native.systemFont,28)
 			item1.text:scale(0.5,0.5)
 			item1.text:setTextColor(0)
@@ -190,7 +190,7 @@ function scene:enterScene( event )
 		local item3 = display.newImage("../images/ui_item_stone.png")
 			item3.id=stone.id
 			item3:setReferencePoint(display.CenterReferencePoint)
-			item3.x = 0; item3.y = 2*H
+			item3.x = 0; item3.y = 2*H +150
 			item3.text = display.newText("$"..stone.cost,0,0,native.systemFont,28)
 			item3.text:scale(0.5,0.5)
 			item3.text:setTextColor(0)
@@ -198,7 +198,7 @@ function scene:enterScene( event )
 		local item4 = display.newImage("../images/ui_item_null.png")
 			item4.id=4
 			item4:setReferencePoint(display.CenterReferencePoint)
-			item4.x = 0; item4.y = 3*H - 35
+			item4.x = 0; item4.y = 3*H - 35 +150
 		
 		local cost = {wood_plank.cost,wood_box.cost,stone.cost}
 		

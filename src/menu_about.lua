@@ -46,12 +46,21 @@ function scene:enterScene( event )
 			width=80, height=40,
 			onRelease = onBackBtnRelease
 		}
-		backBtn.view:setReferencePoint( display.CenterReferencePoint )
-		backBtn.view.x = display.contentWidth*0.25
-		backBtn.view.y = display.contentHeight - 200
+    backBtn.view:setReferencePoint( display.CenterReferencePoint )
+		backBtn.view.x = display.contentWidth*0.75
+		backBtn.view.y = display.contentHeight -250
 		
 		group:insert(backBtn.view)
-		
+                
+        local textObj = display.newText("", 0,0, (2*(display.contentWidth)),(1.8*(display.contentHeight)),native.systemFont,24);
+        textObj.alpha = 1;
+        
+        textObj.x = (display.contentWidth/2);
+        textObj.y = (display.contentHeight-170);        
+        textObj:scale(.5,.5)
+        textObj.text="About Us \n \n Team Members: \n Neeti Pathak \n Phillip Lee Fatt \n Jason Simmons \n David Greene \n Travis Smith \n Nickolas Wilson \n Matt Martin \n Christopher Collazo \n Scott Davis \n \n Questions/Suggestions? Email us at RepulsionSoftware@gmail.com \n \n We are a group a students from the Univerity of Florida enrolled in the Introduction to Software Engineering class, where our main objective is to learn the process of developing software from the ground up. We hope you enjoy playing our game and welcome your feedback!"
+        
+        group:insert(textObj)
 end
  
  

@@ -87,6 +87,11 @@ function scene:destroyScene( event )
 			backBtn=nil
 		end
         
+        if textObj then
+            textObj:removeSelf()
+            textObj=nil
+        end
+        
 end
  
 ---------------------------------------------------------------------------------

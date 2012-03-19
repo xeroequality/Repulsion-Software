@@ -70,7 +70,8 @@ function scene:enterScene( event )
         mySlider1.x = display.contentWidth * 0.5
         mySlider1.y = display.contentHeight * 0.5
         -- insert the slider widget into a group:
-        group:insert( mySlider1.view )
+        group:insert(valueVol)
+        group:insert( mySlider1.view)
         
         --Create the slider for Sound Effects Control
         local valueSFX = display.newText("Your Sound Effects",display.contentWidth *.50,display.contentHeight * 0.75,"Helvetica",16)  
@@ -89,7 +90,8 @@ function scene:enterScene( event )
         mySlider2.x = display.contentWidth * 0.5
         mySlider2.y = display.contentHeight * 0.7
         -- insert the slider widget into a group:
-        group:insert( mySlider2.view )
+        group:insert(valueSFX)
+        group:insert( mySlider2.view)
 
 end
  
@@ -98,6 +100,13 @@ end
 function scene:exitScene( event )
         local group = self.view
         
+        
+        local num = group.numChildren;
+		while num >= 1 do
+			group:remove(num)
+			num = num - 1
+		end
+
         -----------------------------------------------------------------------------
         --      INSERT code here (e.g. stop timers, remove listeners, unload sounds, etc.)
         -----------------------------------------------------------------------------
@@ -116,6 +125,16 @@ function scene:destroyScene( event )
 			backBtn:removeSelf()
 			backBtn=nil
 		end
+        
+        if mySlider1 then
+            mySlider1:removeSelf()
+            mySlider1=nil
+        end
+        
+        if mySlider2 then
+            mySlider2:removeSelf()
+            mySlider2=nil
+        end
         
 end
  

@@ -7,7 +7,7 @@ local parallax 	 = require( "parallax" )
 local Materials  = require( "materials" )
 local Enemy 	 = require( "enemybase" )
 local scene 	 = storyboard.newScene()
- 
+local cannonfired
 ----------------------------------------------------------------------------------
 --      NOTE:
 --      Code outside of listener functions (below) will only be executed once,
@@ -135,7 +135,7 @@ function scene:enterScene( event )
 		local prev_music = audio.loadStream("../sound/O fortuna.mp3")
         local music_bg = audio.loadStream("../sound/Bounty 30.ogg")
         audio.fadeOut(prev_music, { time=5000 })
-        --local o_play = audio.play(music_bg, {fadein=5000 } )
+        o_play = audio.play(music_bg, {channel=3,fadein=5000 } )
 		physics.start()
 		local slideBtn
 		--------------------
@@ -815,7 +815,7 @@ end
 				-- fire the cannonball            
 				cannonball:applyForce( (event.x - crosshair.x)*forceMultiplier, (event.y - (crosshair.y))*forceMultiplier, cannonball.x, cannonball.y )
 				local cannonfire = audio.loadSound("../sound/Single_cannon_shot.wav")
-				local cannonfire = audio.play(cannonfire )
+				cannonfired = audio.play(cannonfire,{channel=2} )
 				-- make sure that the cannon is on top of the 
 				local hideCrosshair = transition.to( crosshair, { alpha=0, xScale=1.0, yScale=1.0, time=0, onComplete=stopRotation} )
 				showCrosshair = false									-- helps ensure that only one crosshair appears

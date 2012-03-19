@@ -30,6 +30,10 @@ function scene:createScene( event )
         -----------------------------------------------------------------------------
 		W = display.contentWidth
 		H = display.contentHeight
+		
+		--Overlay Variables
+		overlay = false; --Is the Overlay Up?
+		overlay_activity = false; --Is There Overlay Animation Going On?
 				
 		------------------------------------------------
 		--                  PARRALAX                  --
@@ -82,27 +86,30 @@ function scene:createScene( event )
 		--Shift the Scene
 		local newx = 0;
 		function shiftScene(event)
-			if event.phase == "began" then
-				newx = event.x
-				myScene.xPrev = event.x
-			end
-			for i=2,group.numChildren do
-				local child = group[i]
-				
-				-- Move within Screen Limits
-				if (group[1].x + (event.x-newx)) > 0 then
-					-- child.x = 0
-				elseif (group[1].x + (event.x-newx)) < - (display.contentWidth + 7.75) then
-					-- child.x = W*3
-				else
-					child.x = child.x + (event.x-newx)
+			if overlay == false then
+				if event.phase == "began" then
+					newx = event.x
+					myScene.xPrev = event.x
 				end
-				
-				myScene:move( event.x - myScene.xPrev, 0 )
-				-- store location as previous
-				myScene.xPrev = event.x
+				for i=2,group.numChildren do
+					local child = group[i]
+					
+					-- Move within Screen Limits
+					if (group[1].x + (event.x-newx)) > 0 then
+						-- child.x = 0
+					elseif (group[1].x + (event.x-newx)) < - (display.contentWidth + 7.75) then
+						-- child.x = W*3
+					else if child.movy == nil then
+							child.x = child.x + (event.x-newx)
+						end
+					end
+					
+					myScene:move( event.x - myScene.xPrev, 0 )
+					-- store location as previous
+					myScene.xPrev = event.x
+				end
+				newx = event.x
 			end
-			newx = event.x
 			
 		end
 
@@ -128,7 +135,7 @@ function scene:enterScene( event )
 		local prev_music = audio.loadStream("../sound/O fortuna.mp3")
         local music_bg = audio.loadStream("../sound/Bounty 30.ogg")
         audio.fadeOut(prev_music, { time=5000 })
-        local o_play = audio.play(music_bg, {fadein=5000 } )
+        --local o_play = audio.play(music_bg, {fadein=5000 } )
 		physics.start()
 		local slideBtn
 		--------------------
@@ -218,43 +225,14 @@ function scene:enterScene( event )
 		scrollView:insert(item3.text)
 		scrollView:insert(item4)
 
-		--------------------------------------------
-		--             STATIC MENUS               --
-		--------------------------------------------
-		static_menu = display.newGroup()
+		--Overlay Variables
+		overlay = false; --Is the Overlay Up?
+		overlay_activity = false; --Is There Overlay Animation Going On?
 		
-		-- local static_buttons_bkg = display.newImage("../images/ui_bkg_static_buttons.png")
-		-- static_buttons_bkg.x = -2				-- -2 to eliminate gap by the edge of the screen
-		-- static_buttons_bkg.y = 75
-		-- static_menu:insert(static_buttons_bkg)
-		
-		local function playUI (event)
-			print('clicked play')
-		end
-		
-		local function menuUI (event)
-				-- Need to create a overlay and shade effect and pause the game when the menu button is pressed
-			print('clicked menu')
-		end
-		
-		local play_button = widget.newButton{
-			default="../images/ui_play_button.png",
-			over="../images/ui_play_button_pressed.png",
-			left=45, top=5,
-			width=60, height=60,
-			onRelease=playUI				--onRelease call game start function
-		}
-		static_menu:insert(play_button.view)
-		
-		local menu_button = widget.newButton{
-			default="../images/ui_menu_button.png",
-			over="../images/ui_menu_button_pressed.png",
-			left=115, top=5,
-			width=60, height=60,
-			onRelease=menuUI				--onRelease call game start function
-		}
-		static_menu:insert(menu_button.view)
-		
+		local play_button = display.newImage("../images/ui_play_button.png");
+		play_button.x = 45+30; play_button.y = 35; play_button.static = "Yes";
+		local menu_button = display.newImage("../images/ui_menu_button.png");
+		menu_button.x = 115+30; menu_button.y = 35; play_button.static = "Yes";
 		
 		--------------------------------------------
 		--             	   Slide UI               --
@@ -269,6 +247,8 @@ function scene:enterScene( event )
 				scrollView.isOpen = false
 				transition.to(static_menu, {time=300, y=-85} )
 				transition.to(scrollView, {time=300, x=-85} )
+				transition.to(play_button, {time=300, y=-35} )
+				transition.to(menu_button, {time=300, y=-35} )
 
 				if slideBtn then
 					slideBtn:removeSelf()
@@ -290,6 +270,8 @@ function scene:enterScene( event )
 				scrollView.isOpen = true
 				transition.to(static_menu, {time=300, y=0} )
 				transition.to(scrollView, {time=300, x=0} )
+				transition.to(play_button, {time=300, y=35} )
+				transition.to(menu_button, {time=300, y=35} )
 				if slideBtn then
 					slideBtn:removeSelf()
 					slideBtn = widget.newButton{
@@ -304,6 +286,12 @@ function scene:enterScene( event )
 					transition.to( goodoverlay, { alpha=.25, xScale=1.0, yScale=1.0, time=0} )
 					transition.to( badoverlay, { alpha=.25, xScale=1.0, yScale=1.0, time=0} )
 				end
+				--Close Overlay if Up
+				if overlay == true and overlay_activity == false then
+					overlay = false;
+					overlay_activity = true;
+					print("Here")
+				end
 			end
 			return true
 		end
@@ -316,6 +304,205 @@ function scene:enterScene( event )
 		}
 		slideBtn.y = H/2
 		slideBtn.x = scroll_bkg.width-45
+		
+		--------------------------------------------
+		--             STATIC MENUS               --
+		--------------------------------------------
+		static_menu = display.newGroup()
+		
+		-- local static_buttons_bkg = display.newImage("../images/ui_bkg_static_buttons.png")
+		-- static_buttons_bkg.x = -2				-- -2 to eliminate gap by the edge of the screen
+		-- static_buttons_bkg.y = 75
+		-- static_menu:insert(static_buttons_bkg)
+		
+		local function playUI (event)
+			print('clicked play')
+		end
+		
+		local function menuUI (event)
+				-- Need to create a overlay and shade effect and pause the game when the menu button is pressed
+			if event.phase == "began" then
+				if overlay == false and overlay_activity == false then --Put Up the Overlay
+					print('clicked menu')
+					overlay_activity = true;
+					overlay = true;
+				end
+			end
+		end
+		
+		play_button:addEventListener("tap",playUI);
+		menu_button:addEventListener("touch",menuUI);
+		
+		--Set Up the Width and Height Variables
+		local w = display.contentWidth; local h = display.contentHeight;
+		--Overlay Animation Variables
+		local anim_time = 15; --How Much Time Spent for Overlay Animation (Both Ways)
+		local now_time = 0; --The Current Time for the Current Animation
+		local b = 25; local iw = 96*(2/3);
+		local r_alpha = 0; --Overlay's Starting Alpha Value
+		local s_alpha = 0.7; --Shade Final Alpha Value
+		local r_scale = 0.75; --Overlay's Starting Scale
+		local nr_scale = r_scale; --Overlay's Current Scale
+		local once = false; --Preliminary Things Before Animating
+		local r_w = (5*iw)+(2*b); --Length of the Overlay Rectangle
+		local r_h = 256; --Height of the Overlay Rectangle
+		
+		--Make the Overlay Rectangle
+		local overlayshade = display.newRect(-w,0,w*3,h); --The Shady Part of the Screen
+		overlayshade:setFillColor(0,0,0); overlayshade.alpha = 0;
+		local overlayrect = display.newImageRect("../images/overlay_grey.png",r_w,r_h);
+		overlayrect.alpha = 0; overlayrect.x = (w/2); overlayrect.y = (h/2);
+		
+		--Buttons
+		local pauseText = display.newText("PAUSE",(w/2)-60,(h/2)-(r_h/2),"Arial Black",30);
+		local backBtn= display.newImage("../images/btn_back.png");
+		backBtn.x = (w/2); backBtn.y = (h/2)+(r_h/2)-30;
+		local restartBtn = display.newImage("../images/btn_restart_level.png");
+		restartBtn.x = (w/2); restartBtn.y = (h/2)+(r_h/2)-110;
+		local exitBtn = display.newImage("../images/btn_exit_level.png");
+		exitBtn.x = (w/2); exitBtn.y = (h/2)+(r_h/2)-70;
+		
+		backBtn.alpha = 0;
+		pauseText.alpha = 0;
+		restartBtn.alpha = 0;
+		exitBtn.alpha = 0;
+		
+		overlayshade.movy = "Yes"; overlayrect.movy = "Yes";
+		pauseText.movy = "Yes"; backBtn.movy = "Yes"; restartBtn.movy = "Yes"; exitBtn.movy = "Yes";
+		
+		local function back_to_main(event)
+			if event.phase == "began" and backBtn.alpha > 0 then
+				scrollView.isOpen = true
+				transition.to(static_menu, {time=300, y=0} )
+				transition.to(scrollView, {time=300, x=0} )
+				transition.to(play_button, {time=300, y=35} )
+				transition.to(menu_button, {time=300, y=35} )
+				if slideBtn then
+					slideBtn:removeSelf()
+					slideBtn = widget.newButton{
+						default="../images/ui_btn_buildmenu_left.png",
+						over="../images/ui_btn_buildmenu_left_pressed.png",
+						width=35, height=35,
+						onRelease=slideUI
+					}
+					slideBtn.y = H/2
+					slideBtn.x = -35
+					transition.to(slideBtn, {time=300, x=scroll_bkg.width-45} )
+					transition.to( goodoverlay, { alpha=.25, xScale=1.0, yScale=1.0, time=0} )
+					transition.to( badoverlay, { alpha=.25, xScale=1.0, yScale=1.0, time=0} )
+				end
+				--Close Overlay if Up
+				if overlay == true and overlay_activity == false then
+					overlay = false;
+					overlay_activity = true;
+					print("Here")
+				end
+			end
+		end
+		
+		backBtn:addEventListener("touch",back_to_main);
+		
+		local function overlay_animation(event)
+			--Check to See If We Need to Animate
+			if overlay_activity == true then			
+				--Are We Going Into the Overlay?
+				if overlay == true then
+					--First Time Things
+					if once == false then
+						once = true;
+						overlayshade.alpha = 0;
+						overlayrect.alpha = r_alpha;
+						now_time = anim_time;
+						overlayrect:scale(r_scale,r_scale);
+						nr_scale = (1-r_scale)/anim_time;
+						nr_scale = (nr_scale+r_scale)/r_scale;
+						
+						--Close SlideView
+						if scrollView.isOpen == true then
+							scrollView.isOpen = false
+							transition.to(static_menu, {time=300, y=-85} )
+							transition.to(scrollView, {time=300, x=-85} )
+							transition.to(play_button, {time=300, y=-35} )
+							transition.to(menu_button, {time=300, y=-35} )
+
+							if slideBtn then
+								slideBtn:removeSelf()
+								slideBtn = widget.newButton{
+									default="../images/ui_btn_buildmenu_right.png",
+									over="../images/ui_btn_buildmenu_right_pressed.png",
+									width=35, height=35,
+									onRelease=slideUI
+								}
+								slideBtn.y = H/2
+								slideBtn.x = scroll_bkg.width-45
+								transition.to(slideBtn, {time=300, x=-35} )
+								transition.to( goodoverlay, { alpha=0, xScale=1.0, yScale=1.0, time=300} )
+								transition.to( badoverlay, { alpha=0, xScale=1.0, yScale=1.0, time=300} )
+
+							end
+						end
+					end
+					--Control Visibility of the Overlay Shade
+					overlayshade.alpha = overlayshade.alpha + (s_alpha/anim_time)
+					--Control Visibility of the Overlay Rectangle
+					overlayrect.alpha = overlayrect.alpha + ((1-r_alpha)/anim_time)
+					--Control Scaling of the Overlay Rectangle
+					overlayrect:scale(nr_scale,nr_scale);
+					--Countdown the Timer
+					now_time = now_time - 1;
+					--Is Time Up?
+					if now_time <= 0 then
+						overlay_activity = false;
+						once = false;
+						overlayshade.alpha = s_alpha;
+						overlayrect.alpha = 1;
+						
+						--Display Buttons
+						backBtn.alpha = 1;
+						pauseText.alpha = 1;
+						restartBtn.alpha = 1;
+						exitBtn.alpha = 1;
+						
+					end				
+				else
+				--If We Are Leaving
+					--First Time Things
+					if once == false then
+						once = true;
+						overlayshade.alpha = s_alpha;
+						overlayrect.alpha = 1;
+						now_time = anim_time;
+						nr_scale = (1-r_scale)/anim_time;
+						nr_scale = (nr_scale-r_scale)/r_scale;
+						
+						--Remove Buttons
+						backBtn.alpha = 0;
+						pauseText.alpha = 0;
+						restartBtn.alpha = 0;
+						exitBtn.alpha = 0;
+					end
+					--Control Visibility of the Overlay Shade
+					overlayshade.alpha = overlayshade.alpha - (s_alpha/(anim_time+5))
+					--Control Visibility of the Overlay Rectangle
+					overlayrect.alpha = overlayrect.alpha - ((1-r_alpha)/(anim_time+5))
+					--Control Scaling of the Overlay Rectangle
+					overlayrect:scale(nr_scale,nr_scale);
+					--Countdown the Timer
+					now_time = now_time - 1;
+					--Is Time Up?
+					if now_time <= 0 then
+						overlay_activity = false;
+						overlayshade.alpha = 0;
+						overlayrect.alpha = 0;
+						once = false;
+						overlayrect:scale((1/r_scale),(1/r_scale));
+					end	
+				end
+			else
+				once = false;
+			end
+		end
+		--Runtime Listener at Bottom of enterScene
 		
 		
 		--------------------------------------------
@@ -506,6 +693,14 @@ function scene:enterScene( event )
 		group:insert(objGroup)
 		group:insert(cannonballGroup)
 		group:insert(cannonGroup)
+		group:insert(overlayshade)
+		group:insert(overlayrect)
+		group:insert(backBtn)
+		group:insert(pauseText);
+		group:insert(restartBtn);
+		group:insert(exitBtn);
+		
+		Runtime:addEventListener("enterFrame",overlay_animation)
 
 end
 
@@ -549,7 +744,7 @@ end
 		function createCrosshair(event) -- creates crosshair when a touch event begins
 			-- creates the crosshair
 			local phase = event.phase
-			if (phase == 'began') then
+			if (phase == 'began' and overlay == false) then
 				if not (cballExists) then
 					if not (showCrosshair) then										-- helps ensure that only one crosshair appears
 						crosshair = display.newImage( "../images/crosshair.png" )				-- prints crosshair	
@@ -656,7 +851,30 @@ function scene:exitScene( event )
         -----------------------------------------------------------------------------
 		--Remove the Runtime Listeners
 		scrollGroup:removeEventListener(scroll)
-				
+		
+		Runtime:removeEventListener("enterFrame",overlay_animation)
+        
+		local num = group.numChildren;
+		while num >= 1 do
+			group:remove(num)
+			num = num - 1
+		end
+		local num = interface.numChildren;
+		while num >= 1 do
+			interface:remove(num)
+			num = num - 1
+		end
+		local num = cannonGroup.numChildren;
+		while num >= 1 do
+			cannonGroup:remove(num)
+			num = num - 1
+		end
+		local num = cannonballGroup.numChildren;
+		while num >= 1 do
+			cannonballGroup:remove(num)
+			num = num - 1
+		end
+		
 end
  
  

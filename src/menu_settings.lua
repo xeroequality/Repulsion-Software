@@ -9,10 +9,14 @@ local scene = storyboard.newScene()
 --      unless storyboard.removeScene() is called.
 ---------------------------------------------------------------------------------
 local backBtn
-
+local testBtn
 -- 'onRelease' event listener for playBtn
 local function onBackBtnRelease()
 	storyboard.gotoScene( "menu_mainmenu", "fade", 200)
+	return true	-- indicates successful touch
+end
+local function onTestBtnRelease()
+	cannonfired = audio.play(cannonfire,{channel=2})
 	return true	-- indicates successful touch
 end
 
@@ -94,6 +98,21 @@ function scene:enterScene( event )
         -- insert the slider widget into a group:
         group:insert(valueSFX)
         group:insert( mySlider2.view)
+        
+         testBtn = widget.newButton{
+			id="tester",
+			labelColor = { default={255}, over={128} },
+			--default="../images/btn_back.png",
+			--over="../images/btn_back_pressed.png",
+			width=80, height=40,
+			onRelease = onTestBtnRelease
+		}
+		testBtn.view:setReferencePoint( display.CenterReferencePoint )
+		testBtn.view.x = display.contentWidth*0.75
+		testBtn.view.y = display.contentHeight - 200
+		
+		group:insert(testBtn.view)
+
 
 end
  
@@ -126,6 +145,11 @@ function scene:destroyScene( event )
 		if backBtn then
 			backBtn:removeSelf()
 			backBtn=nil
+		end
+        
+        if testBtn then
+			testBtn:removeSelf()
+			testBtn=nil
 		end
         
         if mySlider1 then

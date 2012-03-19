@@ -1,5 +1,6 @@
 local storyboard = require( "storyboard" )
 local widget = require( "widget" )
+widget.setTheme("theme_ios")
 local scene = storyboard.newScene()
  
 ----------------------------------------------------------------------------------
@@ -18,7 +19,7 @@ end
 ---------------------------------------------------------------------------------
 -- BEGINNING OF YOUR IMPLEMENTATION
 ---------------------------------------------------------------------------------
- 
+local mySlider 
 -- Called when the scene's view does not exist:
 function scene:createScene( event )
         local group = self.view
@@ -51,7 +52,45 @@ function scene:enterScene( event )
 		backBtn.view.y = display.contentHeight - 200
 		
 		group:insert(backBtn.view)
-		
+        
+		-- Create the slider for the volume control
+        local valueVol = display.newText("Your Volume",display.contentWidth *.55,display.contentHeight * 0.55,"Helvetica",16)
+          
+        local sliderListener1 = function( event )
+            id = "Volume";
+            local sliderObj1 = event.target;
+            valueVol.text=event.target.value;
+            print( "New value is: " .. event.target.value )
+        end
+        -- Create the slider widget
+        mySlider1 = widget.newSlider{
+            callback=sliderListener1
+        }
+        -- Center the slider widget on the screen:
+        mySlider1.x = display.contentWidth * 0.5
+        mySlider1.y = display.contentHeight * 0.5
+        -- insert the slider widget into a group:
+        group:insert( mySlider1.view )
+        
+        --Create the slider for Sound Effects Control
+        local valueSFX = display.newText("Your Sound Effects",display.contentWidth *.50,display.contentHeight * 0.75,"Helvetica",16)  
+        
+        local sliderListener2 = function( event )
+            id = "Sound Effects";
+            local sliderObj2 = event.target;
+            valueSFX.text=event.target.value;
+            print( "New value is: " .. event.target.value )
+        end
+        -- Create the slider widget
+        mySlider2 = widget.newSlider{
+            callback=sliderListener2
+        }
+        -- Center the slider widget on the screen:
+        mySlider2.x = display.contentWidth * 0.5
+        mySlider2.y = display.contentHeight * 0.7
+        -- insert the slider widget into a group:
+        group:insert( mySlider2.view )
+
 end
  
  

@@ -61,6 +61,7 @@ function scene:enterScene( event )
             local sliderObj1 = event.target;
             valueVol.text=event.target.value;
             print( "New value is: " .. event.target.value )
+            audio.setVolume((event.target.value/100),{channel=1})
         end
         -- Create the slider widget
         mySlider1 = widget.newSlider{
@@ -81,6 +82,7 @@ function scene:enterScene( event )
             local sliderObj2 = event.target;
             valueSFX.text=event.target.value;
             print( "New value is: " .. event.target.value )
+            audio.setVolume((event.target.value/100),{channel=2})
         end
         -- Create the slider widget
         mySlider2 = widget.newSlider{

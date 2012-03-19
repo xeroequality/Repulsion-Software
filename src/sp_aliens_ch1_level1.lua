@@ -128,7 +128,7 @@ function scene:enterScene( event )
 		local prev_music = audio.loadStream("../sound/O fortuna.mp3")
         local music_bg = audio.loadStream("../sound/Bounty 30.ogg")
         audio.fadeOut(prev_music, { time=5000 })
-        local o_play = audio.play(music_bg, {duration=5000, fadein=5000 } )
+        local o_play = audio.play(music_bg, {fadein=5000 } )
 		physics.start()
 		local slideBtn
 		--------------------
@@ -507,18 +507,8 @@ function scene:enterScene( event )
 		group:insert(cannonballGroup)
 		group:insert(cannonGroup)
 
+end
 
-end
-function removeball(event)
-	--if event.phase == 'began' then
-			-- make the target active, so that it falls
-			-- actually resetting of the target happens n the update function
-			--if event.phase == 'began' then
-			print('here')
-					--timer.performWithDelay(1000, cannonball:removeSelf())
-					--timer.performWithDelay(8000, cannonball.parent:remove(cannonball))
-	--end
-end
 		----------------------------------------------
 		--           		Cannon		            --
 		----------------------------------------------
@@ -526,6 +516,7 @@ end
 		local cannon        = nil
 		cannonGroup   = nil
 		--cannonballGroup = nil
+		cballExists = false
 
 		forceMultiplier = 10
 
@@ -555,23 +546,25 @@ end
 			cannonGroup:addEventListener('touch',createCrosshair)
 		end
 
-				function createCrosshair(event) -- creates crosshair when a touch event begins
+		function createCrosshair(event) -- creates crosshair when a touch event begins
 			-- creates the crosshair
 			local phase = event.phase
 			if (phase == 'began') then
-				if not (showCrosshair) then										-- helps ensure that only one crosshair appears
-					crosshair = display.newImage( "../images/crosshair.png" )				-- prints crosshair	
-					crosshair.x = display.contentWidth - 300
-					crosshair.y = display.contentHeight - 200
-					showCrosshair = transition.to( crosshair, { alpha=1, xScale=0.5, yScale=0.5, time=200 } )
-					startRotation = function()
-						crosshair.rotation = crosshair.rotation + 4
+				if not (cballExists) then
+					if not (showCrosshair) then										-- helps ensure that only one crosshair appears
+						crosshair = display.newImage( "../images/crosshair.png" )				-- prints crosshair	
+						crosshair.x = display.contentWidth - 300
+						crosshair.y = display.contentHeight - 200
+						showCrosshair = transition.to( crosshair, { alpha=1, xScale=0.5, yScale=0.5, time=200 } )
+						startRotation = function()
+							crosshair.rotation = crosshair.rotation + 4
+						end
+						Runtime:addEventListener( "enterFrame", startRotation )
+						interface:insert(crosshair)
+						crosshair:addEventListener('touch',fire)
 					end
-					Runtime:addEventListener( "enterFrame", startRotation )
 				end
 			end
-			interface:insert(crosshair)
-			crosshair:addEventListener('touch',fire)
 		end
 
 		function fire( event )
@@ -590,9 +583,9 @@ end
 					end		
 						
 					crosshairLine = display.newLine(crosshair.x,crosshair.y, event.x,event.y) -- draws the line from the crosshair
-					local cannonRotation = (180/math.pi)*math.atan((event.y-crosshair.y)/(event.x-crosshair.x))
+					local cannonRotation = (180/math.pi)*math.atan((event.y-crosshair.y)/(event.x-crosshair.x)) -- rotates the cannon based on the trajectory line
 					if (event.x < crosshair.x) then
-						cannon.rotation = cannonRotation + 180
+						cannon.rotation = cannonRotation + 180  -- since arctan goes from -pi/2 to pi/2, this is necessary to make the cannon point backwards
 					else
 						cannon.rotation = cannonRotation
 					end
@@ -602,9 +595,6 @@ end
 					--cannonLine = display.newLine( cannon.x,cannon.y, event.x-cannon.x,event.y-cannon.y ) -- draws the line for the cannon
 					--cannonLine:setColor( 255, 255, 255, 50 )
 					--cannonLine.width = 8
-						
-					--cannon.rotation =
-					--transition.to( cannon, { rotation =  crosshair.x - event.x, crosshair.y - event.y, time = 0} )
 					
 				elseif "ended" == phase or "cancelled" == phase then 						-- have this happen after collision is detected.
 				display.getCurrentStage():setFocus( nil )
@@ -615,16 +605,13 @@ end
 				end
 
 				-- make a new image
-				cannonball = display.newImage('../images/cannonball.png')				
-
-				
-
+				cannonball = display.newImage('../images/cannonball.png')	
+				cballExists = true
 
 				-- move the image
 				cannonball.x = 300
 				cannonball.y = 240
 				cannonballGroup:insert(cannonball)
-
 
 				-- apply physics to the cannonball
 				physics.addBody( cannonball, { density=3.0, friction=0.2, bounce=0.05, radius=15 } )
@@ -643,10 +630,19 @@ end
 					--cannonLine.parent:remove( cannonLine ) -- erase previous line, if any
 				end
 				--interface:insert(cannonballGroup)
-				--cannonballGroup:addEventListener('collision', removeBall)
+				
+				cannonball:addEventListener('collision', removeball)
+				
 			end
 
 			end
+		end
+		
+		local deleteBall = function() cannonball:removeSelf() cballExists = false end
+		function removeball()
+			cannonball:removeEventListener('collision', removeball)  -- makes it so it only activates on the first collision
+			print('deleting the ball...')
+			timer.performWithDelay(5000, deleteBall, 1)	
 		end
 		
 		makeCannon()

@@ -18,10 +18,10 @@ local function onBtnRelease(event)
 	local t = event.target
 	local label = t.id
 	print("released button " .. label)
-	storyboard.gotoScene( label, "fade", 200)
+	storyboard.gotoScene( label, "zoomInOutFade", 250)
 	return true
 end
-
+--fade and 200 before 
 ---------------------------------------------------------------------------------
 -- BEGINNING OF YOUR IMPLEMENTATION
 ---------------------------------------------------------------------------------
@@ -439,8 +439,9 @@ function scene:enterScene( event )
 		aline2:setColor(0,255,0); aline2.width = 3; aline2.alpha = 0;
 		
 		--Make the Help Text
-		local helpText = display.newText("Protect or Conquer the World in the Single Player Campaign!",xStart1+2,yStart1+2,width-2,height-2,native.systemFont,12);
+		local helpText = display.newText("Protect or Conquer the World in the Single Player Campaign!",xStart1+2,yStart1+2,(2*(width-2)),(2*(height-2)),native.systemFont,24);
 		helpText.alpha = 1; helpText.x = xStart1+(width/2)+2; helpText.y = yStart1+(height/2)+2;
+            helpText:scale(.5,.5)
 		
 		-- Show the Help and Move Them Lasers
 		function help(event)

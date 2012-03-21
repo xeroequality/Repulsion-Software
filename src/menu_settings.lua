@@ -15,8 +15,12 @@ local function onBackBtnRelease()
 	storyboard.gotoScene( "menu_mainmenu", "fade", 200)
 	return true	-- indicates successful touch
 end
-local function onTestBtnRelease()
+function onTestBtnRelease()
+    cannonfire = audio.loadSound("../sound/Single_cannon_shot.wav")
+    --cannonfired = audio.play(cannonfire,{channel=2} )
+    print(cannonfire)
 	cannonfired = audio.play(cannonfire,{channel=2})
+    print( "hello")
 	return true	-- indicates successful touch
 end
 

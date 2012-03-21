@@ -8,6 +8,7 @@ local Materials  = require( "materials" )
 local Enemy 	 = require( "enemybase" )
 local scene 	 = storyboard.newScene()
 local cannonfired
+local cannonfire
 ----------------------------------------------------------------------------------
 --      NOTE:
 --      Code outside of listener functions (below) will only be executed once,
@@ -1085,7 +1086,7 @@ end
 
 				-- fire the cannonball            
 				cannonball:applyForce( (event.x - crosshair.x)*forceMultiplier, (event.y - (crosshair.y))*forceMultiplier, cannonball.x, cannonball.y )
-				local cannonfire = audio.loadSound("../sound/Single_cannon_shot.wav")
+				cannonfire = audio.loadSound("../sound/Single_cannon_shot.wav")
 				cannonfired = audio.play(cannonfire,{channel=2} )
 				-- make sure that the cannon is on top of the 
 				local hideCrosshair = transition.to( crosshair, { alpha=0, xScale=1.0, yScale=1.0, time=0, onComplete=stopRotation} )

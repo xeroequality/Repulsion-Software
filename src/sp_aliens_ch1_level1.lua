@@ -158,7 +158,6 @@ function scene:enterScene( event )
 		--------------------
 		local wood_plank = Materials.wood_plank
 		local wood_box = Materials.wood_box
-		local stone = Materials.stone
 		
 		---------
 		-- Floor
@@ -210,20 +209,9 @@ function scene:enterScene( event )
 			item2.text:scale(0.5,0.5)
 			item2.text:setTextColor(0)
 			item2.text.x=0; item2.text.y=item2.y
-		local item3 = display.newImage("../images/ui_item_stone.png")
-			item3.id=stone.id
-			item3:setReferencePoint(display.CenterReferencePoint)
-			item3.x = 0; item3.y = 2*H
-			item3.text = display.newText("$"..stone.cost,0,0,native.systemFont,28)
-			item3.text:scale(0.5,0.5)
-			item3.text:setTextColor(0)
-			item3.text.x=0; item3.text.y=item3.y
-		local item4 = display.newImage("../images/ui_item_null.png")
-			item4.id=4
-			item4:setReferencePoint(display.CenterReferencePoint)
-			item4.x = 0; item4.y = 3*H - 35
+
 		
-		local cost = {wood_plank.cost,wood_box.cost,stone.cost}
+		local cost = {wood_plank.cost,wood_box.cost}
 		
 		-- Create scrollView
 			-- "isOpen" is for the whether it is "out" (visible) or "in" (offscreen)
@@ -236,9 +224,6 @@ function scene:enterScene( event )
 		scrollView:insert(item1.text)
 		scrollView:insert(item2)
 		scrollView:insert(item2.text)
-		scrollView:insert(item3)
-		scrollView:insert(item3.text)
-		scrollView:insert(item4)
 
 		--Overlay Variables
 		overlay = false; --Is the Overlay Up?
@@ -857,9 +842,6 @@ function scene:enterScene( event )
 					elseif target.id == 2 then
 						newObj = display.newImage("../images/wood_box.png")
 						newObj.type = "wood_box"
-					elseif target.id == 3 then
-						newObj = display.newImage("../images/stone.png")
-						newObj.type = "stone"
 					else
 						print("null target")
 						return true
@@ -913,8 +895,6 @@ function scene:enterScene( event )
 		
 		item1:addEventListener("touch",pickItem)
 		item2:addEventListener("touch",pickItem)
-		item3:addEventListener("touch",pickItem)
-		item4:addEventListener("touch",pickItem)
 		
 		--Focus HP
 		local HPText = display.newText("",0,0,native.systemFont,32);

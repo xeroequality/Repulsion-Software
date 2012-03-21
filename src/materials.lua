@@ -48,26 +48,6 @@ Material.wood_box = {
 	friction=0.9
 }
 
-Material.stone = {
-	id=3,
-	img="../images/stone.png",
-	img_dmg="../images/stone.png",
-	shape={-37,-37,37,-37,37,37,-37,37},
-	scaleX=(1/3),
-	scaleY=(1/3),
-	maxHP=100,
-	cost=100,
-	resist={
-		basic=1,
-		fire=1,
-		water=1,
-		explosive=1,
-		electric=1
-	},
-	bounce=0,
-	density=8.0,
-	friction=0.9
-}
 
 -- Clone method:
 -- Pass in an object with a "type" that matches the material,
@@ -78,8 +58,6 @@ Material.clone = function(obj)
 			cloner = Material.wood_plank
 		elseif obj.type == "wood_box" then
 			cloner = Material.wood_box
-		elseif obj.type == "stone" then
-			cloner = Material.stone
 		end
 			obj.id=cloner.id
 			obj.img=cloner.img

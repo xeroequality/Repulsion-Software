@@ -1252,7 +1252,7 @@ function scene:exitScene( event )
         --      INSERT code here (e.g. stop timers, remove listeners, unload sounds, etc.)
         -----------------------------------------------------------------------------
 		--Remove the Runtime Listeners
-		scrollGroup:removeEventListener(scroll)
+		--scrollGroup:removeEventListener(scroll)
 		
 		Runtime:removeEventListener("enterFrame",overlay_animation)
 		Runtime:removeEventListener("enterFrame",success)
@@ -1267,16 +1267,21 @@ function scene:exitScene( event )
 			interface:remove(num)
 			num = num - 1
 		end
+		--[[
 		local num = cannonGroup.numChildren;
 		while num >= 1 do
-			cannonGroup:remove(num)
-			num = num - 1
+			if cannonGroup[num] ~= nil then
+				cannonGroup:remove(num)
+				num = num - 1
+			end
 		end
 		local num = cannonballGroup.numChildren;
 		while num >= 1 do
-			cannonballGroup:remove(num)
-			num = num - 1
-		end
+			if cannonballGroup[num] ~= nil then
+				cannonballGroup:remove(num)
+				num = num - 1
+			end
+		end--]]
 		
 end
  

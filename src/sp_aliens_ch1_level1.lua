@@ -355,6 +355,7 @@ function scene:enterScene( event )
 		overlayshade:setFillColor(0,0,0); overlayshade.alpha = 0;
 		local overlayrect = display.newImageRect("../images/overlay_grey.png",r_w,r_h);
 		overlayrect.alpha = 0; overlayrect.x = (w/2); overlayrect.y = (h/2);
+		local overlayGroup = display.newGroup();
 		
 		--Buttons
 		local pauseText = display.newText("PAUSE",(w/2)-60,(h/2)-(r_h/2),"Arial Black",30);
@@ -405,7 +406,7 @@ function scene:enterScene( event )
 		local loadCBtn = display.newImage("../images/btn_loadconfirm.png");
 		loadCBtn.x = (w/2)+75+20; loadCBtn.y = (h/2)-(r_h/2)+(6*40)-5;
 		local menuText = display.newText("Stuff",0,0,native.systemFont,12);
-		menuText.x = (w/2)+75; menuText.y = (h/2)-50;
+		menuText.x = (w/2)+75; menuText.y = (h/2)-80;
 		
 		backBtn.alpha = 0;
 		pauseText.alpha = 0;
@@ -542,6 +543,13 @@ function scene:enterScene( event )
 							slots[k].alpha = 0;
 						end
 						overlay_section = "Main"
+						
+						--Destroy All Object in Overlay Group
+						local num = overlayGroup.numChildren;
+						while num >= 1 do
+							overlayGroup:remove(num)
+							num = num - 1
+						end
 					end
 				end
 			end
@@ -635,6 +643,11 @@ function scene:enterScene( event )
 			if event.phase == "began" and (event.target).alpha > 0 and overlay_section ~= "Main" then
 				showInfo = true;
 				slot = (event.target).slot;
+				local num = overlayGroup.numChildren;
+				while num >= 1 do
+					overlayGroup:remove(num)
+					num = num - 1
+				end
 				--Get Text
 				local str = "Slot "..slot.."\n";
 				local f = io.open("slot"..slot..".lua","r")
@@ -643,8 +656,45 @@ function scene:enterScene( event )
 				else
 					local Play	 = require( "slot"..slot )
 					local player = Play.structure;
-					str = str.."\nCost: "..player.totalCost.."\n";
-					str = str.."\nNum of Objects: "..player.numObjects.."\n";
+					str = str.."Cost: "..player.totalCost.."\n";
+					str = str.."Num of Objects: "..player.numObjects.."\n";
+					
+					--Show An Image of the Structure
+					local max_w = 182+40; --How Much Space do We Have to Show This Image in Width
+					local max_h = 0; --And Height
+					local baseX = (w/2)-75+50+48+40;
+					local baseY = (h/2)+128;
+					--Get the Largest X and Smallest Y Offset Value
+					local off_xlarge = player.x_vals[1];
+					local off_ylarge = -1*player.y_vals[1];
+					for i = 2,player.numObjects do
+						if player.x_vals[i] > off_xlarge then
+							off_xlarge = player.x_vals[i];
+						end
+						if (-1*player.y_vals[i]) > off_ylarge then
+							off_ylarge = -1*player.y_vals[i];
+						end
+					end
+					--Now Get the Scales
+					local x_sc = 0.5; local y_sc = 0.5;
+					if off_xlarge > (max_w*2) then x_sc = (max_w/off_xlarge); end
+					if off_ylarge > (max_h*2) then y_sc = (max_h/off_ylarge); end
+					--Now Draw the Objects
+					for i = 1,player.numObjects do
+						local obj = {};
+						obj.type = player.types[i];
+						obj = Materials.clone(obj)
+						obj = display.newImage(obj.img)
+						obj = Materials.clone(obj)
+						obj:scale(obj.scaleX,obj.scaleY)
+						obj:scale(x_sc,y_sc)
+						obj.x = (player.x_vals[i]*x_sc)+baseX;
+						obj.y = (player.y_vals[i]*y_sc)+baseY;
+						obj.rotation = player.rotations[i];
+						obj:toFront();
+						overlayGroup:insert(obj);
+						print(obj.y)
+					end
 				end
 				menuText.text = str;
 				menuText.alpha = 1;
@@ -677,7 +727,7 @@ function scene:enterScene( event )
 						overlayrect:scale(r_scale,r_scale);
 						nr_scale = (1-r_scale)/anim_time;
 						nr_scale = (nr_scale+r_scale)/r_scale;
-						
+						physics.pause() --Pause the Physics
 						--Close SlideView
 						if scrollView.isOpen == true then
 							scrollView.isOpen = false
@@ -761,6 +811,7 @@ function scene:enterScene( event )
 						overlayrect.alpha = 0;
 						once = false;
 						overlayrect:scale((1/r_scale),(1/r_scale));
+						physics.start() --Restart the Physics
 					end	
 				end
 			else

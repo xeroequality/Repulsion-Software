@@ -833,8 +833,8 @@ function scene:enterScene( event )
 					
 					--Show An Image of the Structure
 					local max_w = 182-80; --How Much Space do We Have to Show This Image in Width
-					local max_h = 70; --And Height
-					local baseX = (w/2)-75+50+48+30;
+					local max_h = 100; --And Height
+					local baseX = (w/2)-75+50+48+20;
 					local baseY = (h/2)+68;
 					--Get the Largest X and Smallest Y Offset Value
 					local off_xlarge = player.x_vals[1];
@@ -867,9 +867,9 @@ function scene:enterScene( event )
 							r = r - 360;
 						end
 						r = r * (math.pi/360); --Get Radians
-						local xs = math.abs(math.cos(r)); local ys = 0;
-						xs = (x_sc*(xs))+(y_sc*(1-xs));
-						ys = (x_sc*(1-xs))+(y_sc*(xs))
+						local s = math.abs(math.cos(r));
+						local xs = (x_sc*(s))+(y_sc*(1-s));
+						local ys = (x_sc*(1-s))+(y_sc*(s))
 						obj:scale(xs,ys)
 						
 						obj.x = (player.x_vals[i]*xs)+baseX;

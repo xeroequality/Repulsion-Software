@@ -167,7 +167,7 @@ function scene:enterScene( event )
 		physics.addBody(floor, "static", {friction=0.9, bounce=0.05} )
 		group:insert(floor)
 		
-		local wallet = 1000;
+		local wallet = 10000;
 		
 		--------------------------------------------
 		--              Overlays                  --
@@ -306,6 +306,132 @@ function scene:enterScene( event )
 		slideBtn.x = scroll_bkg.width-45
 		
 		--------------------------------------------
+		--               ITEM DRAG                --
+		--------------------------------------------
+		-- Event for dragging an item
+		local function dragItem (event)
+			local phase = event.phase
+			local target = event.target
+			if scrollView.isOpen and overlay == false and overlay_activity == false then						-- need an and if touch.y is less than 150 so that it doesnt work when the scrollview is above the static button area
+			if phase == "began" then
+				display.getCurrentStage():setFocus(target)
+				target.isFocus = true
+				target.x0 = event.x - target.x
+				target.y0 = event.y - target.y
+				-- If physics is already applied to target, make it kinematic
+				if target.bodyType then
+					target.bodyType = "kinematic"
+					target:setLinearVelocity(0,0)
+					target.angularVelocity = 0
+				end
+				focus = event.target;
+			elseif target.isFocus then
+				if phase == "moved" then
+					target.x = event.x - target.x0
+					target.y = event.y - target.y0
+					--Player can only place item in their area
+					if target.x > badoverlay.x - badoverlay.width/2 then
+						wallet = wallet + target.cost
+						target:removeSelf()
+						return true
+					end
+					-- Player can remove object and add money back by dropping below floor
+					--[[ GLITCHES WITH PARALLAX...
+					if target.y > H then
+						wallet = wallet + target.cost
+						target:removeSelf()
+						return true
+					end
+					]]
+				elseif phase == "ended" or phase == "cancelled" then
+					-- If it doesn't already have a bodyType, then add it to physics
+					-- If it does, set it's body type to dynamic
+					if not target.bodyType then
+						physics.addBody(target, "dynamic", {friction=target.friction, shape=target.shape })
+					else
+						target.bodyType = "dynamic"
+					end
+					display.getCurrentStage():setFocus(nil)
+					target.isFocus = false
+					--target:removeEventListener(dragItem)
+				end
+			end
+			end
+			focus = target
+			return true
+		end
+		
+		local focus = 0;
+		--------------------------------------------
+		--              ITEM SELECT               --
+		--------------------------------------------
+		-- Event for selecting an item from scrollView
+		local function pickItem (event)
+			local phase = event.phase
+			local target = event.target
+			if phase == "began" then
+				if wallet >= cost[target.id] then
+					if target.id == 1 then
+						newObj = display.newImage("../images/wood_plank.png")
+						newObj.type = "wood_plank"
+					elseif target.id == 2 then
+						newObj = display.newImage("../images/wood_box.png")
+						newObj.type = "wood_box"
+					else
+						print("null target")
+						return true
+					end
+					newObj = Materials.clone(newObj)
+					wallet = wallet - newObj.cost
+					newObj:scale(newObj.scaleX,newObj.scaleY)
+					newObj.child = "Child";
+					newObj.x = event.x
+					newObj.y = event.y
+					newObj:addEventListener("touch",dragItem)
+					display.getCurrentStage():setFocus(newObj)
+				
+					--Drag This Object
+					display.getCurrentStage():setFocus(newObj)
+					newObj.isFocus = true
+					newObj.x0 = event.x - newObj.x
+					newObj.y0 = event.y - newObj.y
+					-- If physics is already applied to target, make it kinematic
+					if newObj.bodyType then
+						newObj.bodyType = "kinematic"
+						newObj:setLinearVelocity(0,0)
+						newObj.angularVelocity = 0
+					end
+					focus = newObj;
+					group:insert(newObj)
+					assertDepth();
+				else
+					print("not enough money!")
+					return true
+				end
+			end
+			if newObj.isFocus then
+				if phase == "moved" then
+					newObj.x = event.x - newObj.x0
+					newObj.y = event.y - newObj.y0
+				elseif phase == "ended" or phase == "cancelled" then
+					-- If it doesn't already have a bodyType, then add it to physics
+					-- If it does, set it's body type to dynamic
+					if not newObj.bodyType then
+						physics.addBody(newObj, "dynamic", {friction=newObj.friction, shape=newObj.shape })
+					else
+						newObj.bodyType = "dynamic"
+					end
+					display.getCurrentStage():setFocus(nil)
+					newObj.isFocus = false
+				end
+			end
+			return true
+		end
+		
+		item1:addEventListener("touch",pickItem)
+		item2:addEventListener("touch",pickItem)
+		
+		--------------------------------------------
 		--             STATIC MENUS               --
 		--------------------------------------------
 		static_menu = display.newGroup()
@@ -407,6 +533,9 @@ function scene:enterScene( event )
 		loadCBtn.x = (w/2)+75+20; loadCBtn.y = (h/2)-(r_h/2)+(6*40)-5;
 		local menuText = display.newText("Stuff",0,0,native.systemFont,12);
 		menuText.x = (w/2)+75; menuText.y = (h/2)-80;
+		local successText = display.newText("",50,10,native.systemFont,20);
+		local successTime = 0; --Time for the Text to Stay Up
+		local maxSuccessTime = 60; --How Long Does It Stay Up?
 		
 		backBtn.alpha = 0;
 		pauseText.alpha = 0;
@@ -417,10 +546,11 @@ function scene:enterScene( event )
 		overwriteBtn.alpha = 0;
 		loadCBtn.alpha = 0;
 		menuText.alpha = 0;
+		successText.alpha = 0;
 		
 		overlayshade.movy = "Yes"; overlayrect.movy = "Yes"; saveBtn.movy = "Yes"; loadBtn.movy = "Yes"; backMainBtn.movy = "Yes";
 		pauseText.movy = "Yes"; backBtn.movy = "Yes"; restartBtn.movy = "Yes"; exitBtn.movy = "Yes"; overwriteBtn.movy = "Yes"
-		loadCBtn.movy = "Yes"; menuText.movy = "Yes";
+		loadCBtn.movy = "Yes"; menuText.movy = "Yes"; successText.movy = "Yes";
 		
 		local function assertDepth()
 			group:insert(overlayshade)
@@ -435,6 +565,7 @@ function scene:enterScene( event )
 			group:insert(overwriteBtn);
 			group:insert(loadCBtn);
 			group:insert(menuText);
+			group:insert(successText);
 			for k = 1, 20 do
 				group:insert(slots[k]);
 			end
@@ -636,7 +767,48 @@ function scene:enterScene( event )
 					file = nil
 					slots[slot].alpha = 1;
 					slots[slot+10].alpha = 0;
+					successText.text = "Save Successful!";
+					successTime = maxSuccessTime;
+					successText:setTextColor(0,255,0);
 				end
+			end
+		end
+		local function load(event)
+			if event.phase == "ended" then
+				local Play	 = require( "slot"..slot )
+				local player = Play.structure;
+				if player.totalCost <= wallet then
+					wallet = wallet - player.totalCost;
+					for i=1,player.numObjects do
+						local obj = {}
+						local baseX = player.baseX;
+						local baseY = player.baseY;
+						obj.type = player.types[i]
+						-- first clone: so obj.img refers to proper image
+						-- second clone: to pass data to object
+						obj = Materials.clone(obj)
+						obj = display.newImage(obj.img)
+						obj.type = player.types[i]
+						obj = Materials.clone(obj)
+						obj.type = player.types[i]
+						obj:scale(obj.scaleX,obj.scaleY)
+						obj.x = player.x_vals[i]+baseX;
+						obj.y = player.y_vals[i]+baseY;
+						obj.rotation = player.rotations[i]
+						obj.child = "Child";
+						physics.addBody(obj, {density=obj.density,friction=obj.friction,bounce=obj.bounce,shape=obj.shape} )
+						obj:addEventListener("touch",dragItem)
+						group:insert(obj)
+					end
+					successText.text = "Load Successful!";
+					successTime = maxSuccessTime;
+					successText:setTextColor(0,255,0);
+				else
+					successText.text = "Not Enough Money!";
+					successTime = maxSuccessTime;
+					successText:setText(255,0,0);
+				end
+				assertDepth();
 			end
 		end
 		local function confirm(event)
@@ -660,10 +832,10 @@ function scene:enterScene( event )
 					str = str.."Num of Objects: "..player.numObjects.."\n";
 					
 					--Show An Image of the Structure
-					local max_w = 182+40; --How Much Space do We Have to Show This Image in Width
-					local max_h = 0; --And Height
-					local baseX = (w/2)-75+50+48+40;
-					local baseY = (h/2)+128;
+					local max_w = 182-80; --How Much Space do We Have to Show This Image in Width
+					local max_h = 70; --And Height
+					local baseX = (w/2)-75+50+48+30;
+					local baseY = (h/2)+68;
 					--Get the Largest X and Smallest Y Offset Value
 					local off_xlarge = player.x_vals[1];
 					local off_ylarge = -1*player.y_vals[1];
@@ -685,19 +857,39 @@ function scene:enterScene( event )
 						obj.type = player.types[i];
 						obj = Materials.clone(obj)
 						obj = display.newImage(obj.img)
+						obj.type = player.types[i];
 						obj = Materials.clone(obj)
 						obj:scale(obj.scaleX,obj.scaleY)
-						obj:scale(x_sc,y_sc)
-						obj.x = (player.x_vals[i]*x_sc)+baseX;
-						obj.y = (player.y_vals[i]*y_sc)+baseY;
 						obj.rotation = player.rotations[i];
-						obj:toFront();
+						--Figure Out the Scale Based on Its Rotation
+						local r = obj.rotation
+						while r > 360 do
+							r = r - 360;
+						end
+						r = r * (math.pi/360); --Get Radians
+						local xs = math.abs(math.cos(r)); local ys = 0;
+						xs = (x_sc*(xs))+(y_sc*(1-xs));
+						ys = (x_sc*(1-xs))+(y_sc*(xs))
+						obj:scale(xs,ys)
+						
+						obj.x = (player.x_vals[i]*xs)+baseX;
+						obj.y = (player.y_vals[i]*ys)+baseY;
+						
 						overlayGroup:insert(obj);
-						print(obj.y)
+						obj:toFront()
 					end
 				end
 				menuText.text = str;
 				menuText.alpha = 1;
+			end
+		end
+		local function success(event)
+			if successTime > 0 then
+				successTime = successTime - 1;
+				successText.alpha = 1;
+				if successTime <= 0 then
+					successText.alpha = 0;
+				end
 			end
 		end
 						
@@ -712,6 +904,7 @@ function scene:enterScene( event )
 			slots[k]:addEventListener("touch",confirm);
 		end
 		overwriteBtn:addEventListener("touch",save);
+		loadCBtn:addEventListener("touch",load);
 		
 		local function overlay_animation(event)
 			--Check to See If We Need to Animate
@@ -809,6 +1002,7 @@ function scene:enterScene( event )
 						overlay_activity = false;
 						overlayshade.alpha = 0;
 						overlayrect.alpha = 0;
+						successTime = 0;
 						once = false;
 						overlayrect:scale((1/r_scale),(1/r_scale));
 						physics.start() --Restart the Physics
@@ -819,133 +1013,6 @@ function scene:enterScene( event )
 			end
 		end
 		--Runtime Listener at Bottom of enterScene
-		
-		
-		--------------------------------------------
-		--               ITEM DRAG                --
-		--------------------------------------------
-		-- Event for dragging an item
-		local function dragItem (event)
-			local phase = event.phase
-			local target = event.target
-			if scrollView.isOpen and overlay == false and overlay_activity == false then						-- need an and if touch.y is less than 150 so that it doesnt work when the scrollview is above the static button area
-			if phase == "began" then
-				display.getCurrentStage():setFocus(target)
-				target.isFocus = true
-				target.x0 = event.x - target.x
-				target.y0 = event.y - target.y
-				-- If physics is already applied to target, make it kinematic
-				if target.bodyType then
-					target.bodyType = "kinematic"
-					target:setLinearVelocity(0,0)
-					target.angularVelocity = 0
-				end
-				focus = event.target;
-			elseif target.isFocus then
-				if phase == "moved" then
-					target.x = event.x - target.x0
-					target.y = event.y - target.y0
-					--Player can only place item in their area
-					if target.x > badoverlay.x - badoverlay.width/2 then
-						wallet = wallet + target.cost
-						target:removeSelf()
-						return true
-					end
-					-- Player can remove object and add money back by dropping below floor
-					--[[ GLITCHES WITH PARALLAX...
-					if target.y > H then
-						wallet = wallet + target.cost
-						target:removeSelf()
-						return true
-					end
-					]]
-				elseif phase == "ended" or phase == "cancelled" then
-					-- If it doesn't already have a bodyType, then add it to physics
-					-- If it does, set it's body type to dynamic
-					if not target.bodyType then
-						physics.addBody(target, "dynamic", {friction=target.friction, shape=target.shape })
-					else
-						target.bodyType = "dynamic"
-					end
-					display.getCurrentStage():setFocus(nil)
-					target.isFocus = false
-					--target:removeEventListener(dragItem)
-				end
-			end
-			end
-			focus = target
-			return true
-		end
-		
-		local focus = 0;
-		--------------------------------------------
-		--              ITEM SELECT               --
-		--------------------------------------------
-		-- Event for selecting an item from scrollView
-		local function pickItem (event)
-			local phase = event.phase
-			local target = event.target
-			if phase == "began" then
-				if wallet >= cost[target.id] then
-					if target.id == 1 then
-						newObj = display.newImage("../images/wood_plank.png")
-						newObj.type = "wood_plank"
-					elseif target.id == 2 then
-						newObj = display.newImage("../images/wood_box.png")
-						newObj.type = "wood_box"
-					else
-						print("null target")
-						return true
-					end
-					newObj = Materials.clone(newObj)
-					wallet = wallet - newObj.cost
-					newObj:scale(newObj.scaleX,newObj.scaleY)
-					newObj.child = "Child";
-					newObj.x = event.x
-					newObj.y = event.y
-					newObj:addEventListener("touch",dragItem)
-					display.getCurrentStage():setFocus(newObj)
-				
-					--Drag This Object
-					display.getCurrentStage():setFocus(newObj)
-					newObj.isFocus = true
-					newObj.x0 = event.x - newObj.x
-					newObj.y0 = event.y - newObj.y
-					-- If physics is already applied to target, make it kinematic
-					if newObj.bodyType then
-						newObj.bodyType = "kinematic"
-						newObj:setLinearVelocity(0,0)
-						newObj.angularVelocity = 0
-					end
-					focus = newObj;
-					group:insert(newObj)
-					assertDepth();
-				else
-					print("not enough money!")
-					return true
-				end
-			end
-			if newObj.isFocus then
-				if phase == "moved" then
-					newObj.x = event.x - newObj.x0
-					newObj.y = event.y - newObj.y0
-				elseif phase == "ended" or phase == "cancelled" then
-					-- If it doesn't already have a bodyType, then add it to physics
-					-- If it does, set it's body type to dynamic
-					if not newObj.bodyType then
-						physics.addBody(newObj, "dynamic", {friction=newObj.friction, shape=newObj.shape })
-					else
-						newObj.bodyType = "dynamic"
-					end
-					display.getCurrentStage():setFocus(nil)
-					newObj.isFocus = false
-				end
-			end
-			return true
-		end
-		
-		item1:addEventListener("touch",pickItem)
-		item2:addEventListener("touch",pickItem)
 		
 		--Focus HP
 		local HPText = display.newText("",0,0,native.systemFont,32);
@@ -1018,11 +1085,13 @@ function scene:enterScene( event )
 		group:insert(overwriteBtn);
 		group:insert(loadCBtn);
 		group:insert(menuText);
+		group:insert(successText);
 		for k = 1, 20 do
 			group:insert(slots[k]);
 		end
 		
 		Runtime:addEventListener("enterFrame",overlay_animation)
+		Runtime:addEventListener("enterFrame",success)
 
 end
 
@@ -1066,7 +1135,7 @@ end
 		function createCrosshair(event) -- creates crosshair when a touch event begins
 			-- creates the crosshair
 			local phase = event.phase
-			if (phase == 'began' and overlay == false) then
+			if (phase == 'began' and overlay == false and overlay_activity == false) then
 				if not (cballExists) then
 					if not (showCrosshair) then										-- helps ensure that only one crosshair appears
 						crosshair = display.newImage( "../images/crosshair.png" )				-- prints crosshair	
@@ -1175,6 +1244,7 @@ function scene:exitScene( event )
 		scrollGroup:removeEventListener(scroll)
 		
 		Runtime:removeEventListener("enterFrame",overlay_animation)
+		Runtime:removeEventListener("enterFrame",success)
         
 		local num = group.numChildren;
 		while num >= 1 do

@@ -167,7 +167,8 @@ function scene:enterScene( event )
 		physics.addBody(floor, "static", {friction=0.9, bounce=0.05} )
 		group:insert(floor)
 		
-		local wallet = 10000;
+		local levelWallet = 10000; --The Amount of Money for This Level
+		local wallet = levelWallet; --The Current Amount of Money
 		
 		--------------------------------------------
 		--              Overlays                  --
@@ -777,8 +778,18 @@ function scene:enterScene( event )
 			if event.phase == "ended" then
 				local Play	 = require( "slot"..slot )
 				local player = Play.structure;
-				if player.totalCost <= wallet then
-					wallet = wallet - player.totalCost;
+				if player.totalCost <= levelWallet then
+					wallet = levelWallet - player.totalCost;
+					--Destroy All Children Objects Before Loading
+					local num = group.numChildren;
+					while num >= 1 do
+						local c = group[num];
+						if c.child ~= nil then
+							group:remove(num)
+							--c:removeSelf();
+						end
+						num = num - 1;
+					end
 					for i=1,player.numObjects do
 						local obj = {}
 						local baseX = player.baseX;
@@ -806,7 +817,7 @@ function scene:enterScene( event )
 				else
 					successText.text = "Not Enough Money!";
 					successTime = maxSuccessTime;
-					successText:setText(255,0,0);
+					successText:setTextColor(255,0,0);
 				end
 				assertDepth();
 			end
@@ -1002,7 +1013,7 @@ function scene:enterScene( event )
 						overlay_activity = false;
 						overlayshade.alpha = 0;
 						overlayrect.alpha = 0;
-						successTime = 0;
+						successTime = 1;
 						once = false;
 						overlayrect:scale((1/r_scale),(1/r_scale));
 						physics.start() --Restart the Physics

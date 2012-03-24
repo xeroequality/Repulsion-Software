@@ -89,7 +89,7 @@ local function levelScene( params )
 					-- Move all children by incX
 						for i=2,params.Group.numChildren do
 							local child = params.Group[i];
-							child.x = child.x + (event.x-incX);
+							if child.movy == nil then child.x = child.x + (event.x-incX); end
 						end
 
 						-- Move Paralax

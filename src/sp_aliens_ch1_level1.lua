@@ -565,7 +565,7 @@ function scene:enterScene( event )
 		pauseText.movy = "Yes"; backBtn.movy = "Yes"; restartBtn.movy = "Yes"; exitBtn.movy = "Yes"; overwriteBtn.movy = "Yes"
 		loadCBtn.movy = "Yes"; menuText.movy = "Yes"; successText.movy = "Yes";
 		
-		local function assertDepth()
+		function assertDepth()
 			group:insert(overlayshade)
 			group:insert(overlayrect)
 			group:insert(backBtn)

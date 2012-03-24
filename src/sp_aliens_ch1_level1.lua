@@ -151,7 +151,7 @@ function scene:enterScene( event )
 		local prev_music = audio.loadStream("../sound/O fortuna.mp3")
         local music_bg = audio.loadStream("../sound/Bounty 30.ogg")
         audio.fadeOut(prev_music, { time=5000 })
-        o_play = audio.play(music_bg, {channel=3,fadein=5000 } )
+        --o_play = audio.play(music_bg, {channel=3,fadein=5000 } )
 		physics.start()
 		local slideBtn
 		--------------------
@@ -1064,6 +1064,20 @@ function scene:enterScene( event )
 		--           GENERATE ENEMY BASE            --
 		----------------------------------------------
 		
+		--Collision
+		local threshold = 1;
+		function hit(event)
+			if (event.other).weapon ~= nil then
+				if event.force >= threshold then
+					(event.target).currentHP = (event.target).currentHP - (event.force*(event.other).weapon);
+					print((event.target).currentHP)
+					if (event.target).currentHP <= 0 then
+						(event.target):removeSelf()
+					end
+				end
+			end
+		end
+		
 		-- In future levels, the ONLY thing that needs to change is the first line:
 		local enemy = Enemy.level1
 		objGroup = display.newGroup()
@@ -1083,6 +1097,7 @@ function scene:enterScene( event )
 			obj.rotation = enemy.rotations[i]
 			physics.addBody(obj, {density=obj.density,friction=obj.friction,bounce=obj.bounce,shape=obj.shape} )
 			objGroup:insert(obj)
+			obj:addEventListener("postCollision",hit);
 		end
 		
 		--objGroup:addEventListener('collision', removeball)
@@ -1091,11 +1106,11 @@ function scene:enterScene( event )
 		--group:insert(scrollView)
 		-- group:insert(static_menu)
 		-- group:insert(slideBtn.view)
+		group:insert(cannonballGroup)
+		group:insert(cannonGroup)
 		group:insert(MONEY)
 		group:insert(HPText)
 		group:insert(objGroup)
-		group:insert(cannonballGroup)
-		group:insert(cannonGroup)
 		group:insert(overlayshade)
 		group:insert(overlayrect)
 		group:insert(backBtn)
@@ -1153,6 +1168,7 @@ end
 			--display.getCurrentStage():insert(cannonGroup)
 			showCrosshair = false 										-- helps ensure that only one crosshair appears
 			cannonGroup:addEventListener('touch',createCrosshair)
+			
 		end
 
 		function createCrosshair(event) -- creates crosshair when a touch event begins
@@ -1220,6 +1236,7 @@ end
 				-- move the image
 				cannonball.x = 300
 				cannonball.y = 240
+				cannonball.weapon = 200;
 				cannonballGroup:insert(cannonball)
 
 				-- apply physics to the cannonball
@@ -1308,6 +1325,10 @@ function scene:destroyScene( event )
 		if slideBtn then
 			slideBtn:removeSelf()
 			slideBtn = nil
+		end
+		if scrollView then
+			scrollView:removeSelf();
+			scrollView = nil
 		end
         
 end

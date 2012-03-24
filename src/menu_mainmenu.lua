@@ -586,9 +586,6 @@ function scene:enterScene( event )
 			end		
 		end
 		
-		--Make the Repulsion Software Logo
-		local RepLogo = display.newImage("../images/logo_RepulsionSoftware.png");
-		RepLogo.x = cW+220; RepLogo.y = cH-85; RepLogo:scale(0.4,0.4); RepLogo.alpha = 0.75;
 		
 		--Add the Runtime Listeners
 		Runtime:addEventListener("enterFrame",bouncyLogo)
@@ -614,7 +611,7 @@ function scene:enterScene( event )
 		group:insert(settings_Sign)
 		group:insert(help_Sign)
 		group:insert(helpText)
-		group:insert(RepLogo)
+		--group:insert(RepLogo)
 		group:insert(earth)
 		group:insert(left_arrow)
 		group:insert(right_arrow)

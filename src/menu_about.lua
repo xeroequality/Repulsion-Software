@@ -35,6 +35,10 @@ end
 function scene:enterScene( event )
         local group = self.view
         
+        
+        --Make the Repulsion Software Logo
+		local RepLogo = display.newImage("../images/logo_RepulsionSoftware.png");
+		RepLogo.x = display.contentWidth*0.60; RepLogo.y = display.contentHeight -200; RepLogo:scale(0.4,0.4); RepLogo.alpha = 0.75;
         -----------------------------------------------------------------------------
         --      INSERT code here (e.g. start timers, load audio, start listeners, etc.)
 		-----------------------------------------------------------------------------
@@ -47,8 +51,8 @@ function scene:enterScene( event )
 			onRelease = onBackBtnRelease
 		}
     backBtn.view:setReferencePoint( display.CenterReferencePoint )
-		backBtn.view.x = display.contentWidth*0.75
-		backBtn.view.y = display.contentHeight -250
+		backBtn.view.x = display.contentWidth*0.90
+		backBtn.view.y = display.contentHeight -290
 		
 		group:insert(backBtn.view)
                 

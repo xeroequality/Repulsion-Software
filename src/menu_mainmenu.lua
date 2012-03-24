@@ -18,10 +18,10 @@ local function onBtnRelease(event)
 	local t = event.target
 	local label = t.id
 	print("released button " .. label)
-	storyboard.gotoScene( label, "fade", 200)
+	storyboard.gotoScene( label, "zoomInOutFade", 250)
 	return true
 end
-
+--fade and 200 before 
 ---------------------------------------------------------------------------------
 -- BEGINNING OF YOUR IMPLEMENTATION
 ---------------------------------------------------------------------------------
@@ -237,8 +237,8 @@ function scene:enterScene( event )
 		help_Sign.y = cH; help_Sign.x = pW-150; help_Sign:rotate(270)
 		earth.x = pW; earth.y = cH;
 		
-		right_arrow.x = pW+(cW/2); right_arrow.y = (cH-115)+15; right_arrow:scale(0.25,0.25); right_arrow:rotate(30); right_arrow.alpha = 1;
-		left_arrow.x = pW-(cW/2); left_arrow.y = (cH-115)+15; left_arrow:scale(0.25,0.25); left_arrow:rotate(-30); left_arrow.alpha = 1;
+		right_arrow.x = pW+(cW/2); right_arrow.y = (cH-115)+5; right_arrow:scale(0.25,0.25); right_arrow:rotate(45); right_arrow.alpha = 1;
+		left_arrow.x = pW-(cW/2); left_arrow.y = (cH-115)+5; left_arrow:scale(0.25,0.25); left_arrow:rotate(-45); left_arrow.alpha = 1;
 		
 		--Sign Angles; 270 Degrees Means It's On Top
 		local SPangle = 0+270;
@@ -384,7 +384,7 @@ function scene:enterScene( event )
 		
 		--UFO and It's Help Menu
 		local UFO = display.newImage("../images/background_UFO.png")
-		UFO.x = cW-110; UFO.y = (display.contentHeight/2)+((cH-145)*0); UFO:scale(0.75,0.75); --Position and Scale the UFO
+		UFO.x = cW-180; UFO.y = (display.contentHeight/2)+((cH-145)*0); UFO:scale(0.75,0.75); --Position and Scale the UFO
 		local UFO_bottom = ((96*0.75)/2)+UFO.y-20; --The Position Where the Lasers Will Come Out of
 		
 		--UFO Wobbly Variables
@@ -413,7 +413,7 @@ function scene:enterScene( event )
 		local width = 100; local height = 60; --Height and Width of Rectangle
 		local yStart1 = cH-100; local yStart2 = yStart1+height; --Top and Bottom Positions
 		local xStart1 = -30; local xStart2 = xStart1+width; --Left and Right Positions
-		local move_speed = 10; --Speed of the Lasers
+		local move_speed = 3; --Speed of the Lasers
 		local sx1 = xStart1; local ex1 = xStart1+(height); --Start and End Xs for First Line
 		local sx2 = xStart2; local ex2 = xStart2-(height); --Start and End Xs for Second Line
 		local sy1 = yStart1; local ey1 = yStart1; --Start and End Ys for First Line
@@ -439,8 +439,9 @@ function scene:enterScene( event )
 		aline2:setColor(0,255,0); aline2.width = 3; aline2.alpha = 0;
 		
 		--Make the Help Text
-		local helpText = display.newText("Protect or Conquer the World in the Single Player Campaign!",xStart1+2,yStart1+2,width-2,height-2,native.systemFont,12);
+		local helpText = display.newText("Protect or Conquer the World in the Single Player Campaign!",xStart1+2,yStart1+2,(2*(width-2)),(2*(height-2)),native.systemFont,24);
 		helpText.alpha = 1; helpText.x = xStart1+(width/2)+2; helpText.y = yStart1+(height/2)+2;
+            helpText:scale(.5,.5)
 		
 		-- Show the Help and Move Them Lasers
 		function help(event)

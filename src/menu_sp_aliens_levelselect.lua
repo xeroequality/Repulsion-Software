@@ -199,8 +199,8 @@ function scene:enterScene( event )
 					overlay = true;
 					overlay_activity = true;
 					overlay_level = button;
-				else
-				--If Not...				
+				end
+				--[[If Not...				
 					--Check to See If The Button Pressed is the Same One
 					if overlay_level ~= button then
 						--If Not, Switch Overlay Image to New Level
@@ -210,7 +210,7 @@ function scene:enterScene( event )
 						overlay = false;
 						overlay_activity = true;
 					end				
-				end			
+				end--]]		
 			end		
 		end
 		--Add the Listeners to All the Level Select Buttons

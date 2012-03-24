@@ -168,7 +168,8 @@ function scene:enterScene( event )
 		physics.addBody(floor, "static", {friction=0.9, bounce=0.05} )
 		group:insert(floor)
 		
-		local wallet = 1000;
+		local levelWallet = 10000; --The Amount of Money for This Level
+		local wallet = levelWallet; --The Current Amount of Money
 		
 		--------------------------------------------
 		--              Overlays                  --
@@ -307,471 +308,6 @@ function scene:enterScene( event )
 		slideBtn.x = scroll_bkg.width-45
 		
 		--------------------------------------------
-		--             STATIC MENUS               --
-		--------------------------------------------
-		static_menu = display.newGroup()
-		
-		-- local static_buttons_bkg = display.newImage("../images/ui_bkg_static_buttons.png")
-		-- static_buttons_bkg.x = -2				-- -2 to eliminate gap by the edge of the screen
-		-- static_buttons_bkg.y = 75
-		-- static_menu:insert(static_buttons_bkg)
-		
-		local function playUI (event)
-			print('clicked play')
-		end
-		
-		local function menuUI (event)
-				-- Need to create a overlay and shade effect and pause the game when the menu button is pressed
-			if event.phase == "began" then
-				if overlay == false and overlay_activity == false then --Put Up the Overlay
-					print('clicked menu')
-					overlay_activity = true;
-					overlay = true;
-				end
-			end
-		end
-		
-		play_button:addEventListener("tap",playUI);
-		menu_button:addEventListener("touch",menuUI);
-		
-		--Set Up the Width and Height Variables
-		local w = display.contentWidth; local h = display.contentHeight;
-		--Overlay Animation Variables
-		local anim_time = 15; --How Much Time Spent for Overlay Animation (Both Ways)
-		local now_time = 0; --The Current Time for the Current Animation
-		local b = 25; local iw = 96*(2/3);
-		local r_alpha = 0; --Overlay's Starting Alpha Value
-		local s_alpha = 0.7; --Shade Final Alpha Value
-		local r_scale = 0.75; --Overlay's Starting Scale
-		local nr_scale = r_scale; --Overlay's Current Scale
-		local once = false; --Preliminary Things Before Animating
-		local r_w = (5*iw)+(2*b); --Length of the Overlay Rectangle
-		local r_h = 256; --Height of the Overlay Rectangle
-		local overlay_section = "Main"; --Which Section of the Overlay are We In?
-		local showInfo = false; --Showing Some Text?
-		local slot = 0;
-		
-		--Make the Overlay Rectangle
-		local overlayshade = display.newRect(-w,0,w*3,h); --The Shady Part of the Screen
-		overlayshade:setFillColor(0,0,0); overlayshade.alpha = 0;
-		local overlayrect = display.newImageRect("../images/overlay_grey.png",r_w,r_h);
-		overlayrect.alpha = 0; overlayrect.x = (w/2); overlayrect.y = (h/2);
-		
-		--Buttons
-		local pauseText = display.newText("PAUSE",(w/2)-60,(h/2)-(r_h/2),"Arial Black",30);
-		local backBtn= display.newImage("../images/btn_back.png");
-		backBtn.x = (w/2); backBtn.y = (h/2)+(r_h/2)-30;
-		local restartBtn = display.newImage("../images/btn_restart_level.png");
-		restartBtn.x = (w/2); restartBtn.y = (h/2)+(r_h/2)-110;
-		local exitBtn = display.newImage("../images/btn_exit_level.png");
-		exitBtn.x = (w/2); exitBtn.y = (h/2)+(r_h/2)-70;
-		local loadBtn = display.newImage("../images/btn_load.png");
-		loadBtn.x = (w/2); loadBtn.y = (h/2)+(r_h/2)-150; loadBtn.section = "Load";
-		local saveBtn = display.newImage("../images/btn_save.png");
-		saveBtn.x = (w/2); saveBtn.y = (h/2)+(r_h/2)-190; saveBtn.section = "Save";
-		
-		--Slots
-		local slots = {};
-		for k = 1, 20 do
-			if k <= 10 then
-				slots[k] = display.newImage("../images/btn_slot"..k..".png");
-				if k <= 5 then
-					slots[k].x = (w/2)-75-50;
-					slots[k].y = (h/2)-(r_h/2)+(k*40);
-				else
-					slots[k].x = (w/2)-75+50;
-					slots[k].y = (h/2)-(r_h/2)+((k-5)*40);
-				end
-				slots[k].alpha = 0;
-				slots[k].movy = "Yes";
-				slots[k].slot = k;
-			else
-				slots[k] = display.newImage("../images/btn_nosave.png");
-				if k <= 15 then
-					slots[k].x = (w/2)-75-50;
-					slots[k].y = (h/2)-(r_h/2)+((k-10)*40);
-				else
-					slots[k].x = (w/2)-75+50;
-					slots[k].y = (h/2)-(r_h/2)+((k-15)*40);
-				end
-				slots[k].alpha = 0;
-				slots[k].movy = "Yes";
-				slots[k].slot = (k-10);
-			end
-		end
-		local backMainBtn = display.newImage("../images/btn_back.png");
-		backMainBtn.x = (w/2)-75; backMainBtn.y = (h/2)-(r_h/2)+(6*40)-5; backMainBtn.alpha = 0; backMainBtn.section = "Main";
-		local overwriteBtn = display.newImage("../images/btn_overwrite.png");
-		overwriteBtn.x = (w/2)+75+20; overwriteBtn.y = (h/2)-(r_h/2)+(6*40)-5;
-		local loadCBtn = display.newImage("../images/btn_loadconfirm.png");
-		loadCBtn.x = (w/2)+75+20; loadCBtn.y = (h/2)-(r_h/2)+(6*40)-5;
-		local menuText = display.newText("Stuff",0,0,native.systemFont,12);
-		menuText.x = (w/2)+75; menuText.y = (h/2)-50;
-		
-		backBtn.alpha = 0;
-		pauseText.alpha = 0;
-		restartBtn.alpha = 0;
-		exitBtn.alpha = 0;
-		loadBtn.alpha = 0;
-		saveBtn.alpha = 0;
-		overwriteBtn.alpha = 0;
-		loadCBtn.alpha = 0;
-		menuText.alpha = 0;
-		
-		overlayshade.movy = "Yes"; overlayrect.movy = "Yes"; saveBtn.movy = "Yes"; loadBtn.movy = "Yes"; backMainBtn.movy = "Yes";
-		pauseText.movy = "Yes"; backBtn.movy = "Yes"; restartBtn.movy = "Yes"; exitBtn.movy = "Yes"; overwriteBtn.movy = "Yes"
-		loadCBtn.movy = "Yes"; menuText.movy = "Yes";
-		
-		local function assertDepth()
-			group:insert(overlayshade)
-			group:insert(overlayrect)
-			group:insert(backBtn)
-			group:insert(pauseText);
-			group:insert(restartBtn);
-			group:insert(exitBtn);
-			group:insert(loadBtn);
-			group:insert(saveBtn);
-			group:insert(backMainBtn);
-			group:insert(overwriteBtn);
-			group:insert(loadCBtn);
-			group:insert(menuText);
-			for k = 1, 20 do
-				group:insert(slots[k]);
-			end
-		end
-		
-		local function back_to_main(event)
-			if event.phase == "began" and backBtn.alpha > 0 then
-				scrollView.isOpen = true
-				transition.to(static_menu, {time=300, y=0} )
-				transition.to(scrollView, {time=300, x=0} )
-				transition.to(play_button, {time=300, y=35} )
-				transition.to(menu_button, {time=300, y=35} )
-				if slideBtn then
-					slideBtn:removeSelf()
-					slideBtn = widget.newButton{
-						default="../images/ui_btn_buildmenu_left.png",
-						over="../images/ui_btn_buildmenu_left_pressed.png",
-						width=35, height=35,
-						onRelease=slideUI
-					}
-					slideBtn.y = H/2
-					slideBtn.x = -35
-					transition.to(slideBtn, {time=300, x=scroll_bkg.width-45} )
-					transition.to( goodoverlay, { alpha=.25, xScale=1.0, yScale=1.0, time=0} )
-					transition.to( badoverlay, { alpha=.25, xScale=1.0, yScale=1.0, time=0} )
-				end
-				--Close Overlay if Up
-				if overlay == true and overlay_activity == false then
-					overlay = false;
-					overlay_activity = true;
-					print("Here")
-				end
-			end
-		end
-		local function restart_level(event)
-			if event.phase == "ended" and restartBtn.alpha > 0 then
-				restart()
-			end
-		end
-		local function exit_level(event)
-			if event.phase == "ended" and exitBtn.alpha > 0 then
-				exitNOW()
-			end
-		end
-		local function switchTo(event)
-			if event.phase == "ended" and overlay == true then
-				local target = event.target;
-				if target.alpha > 0 then
-					if target.section == "Load" then
-						--Switch to Loading Screen
-						backBtn.alpha = 0;
-						pauseText.alpha = 0;
-						restartBtn.alpha = 0;
-						exitBtn.alpha = 0;
-						loadBtn.alpha = 0;
-						saveBtn.alpha = 0;
-						backMainBtn.alpha = 1;
-						loadCBtn.alpha = 1;
-						menuText.alpha = 0;
-						for k = 1, 10 do
-							local f = io.open("slot"..k..".lua","r")
-							if f ~= nil then
-								slots[k].alpha = 1;
-							else
-								slots[k+10].alpha = 1;
-							end
-						end
-						overlay_section = "Load";
-						showInfo = false;
-					end
-					if target.section == "Save" then
-						--Switch to Saving Screen
-						backBtn.alpha = 0;
-						pauseText.alpha = 0;
-						restartBtn.alpha = 0;
-						exitBtn.alpha = 0;
-						loadBtn.alpha = 0;
-						saveBtn.alpha = 0;
-						backMainBtn.alpha = 1;
-						overwriteBtn.alpha = 1;
-						menuText.alpha = 0;
-						for k = 1, 10 do
-							local f = io.open("slot"..k..".lua","r")
-							if f ~= nil then
-								slots[k].alpha = 1;
-							else
-								slots[k+10].alpha = 1;
-							end
-						end
-						overlay_section = "Save";
-						showInfo = false;
-					end
-					if target.section == "Main" then
-						--Switch to Loading Screen
-						backBtn.alpha = 1;
-						pauseText.alpha = 1;
-						restartBtn.alpha = 1;
-						exitBtn.alpha = 1;
-						loadBtn.alpha = 1;
-						saveBtn.alpha = 1;
-						backMainBtn.alpha = 0;
-						overwriteBtn.alpha = 0;
-						loadCBtn.alpha = 0;
-						menuText.alpha = 0;
-						for k = 1, 20 do
-							slots[k].alpha = 0;
-						end
-						overlay_section = "Main"
-					end
-				end
-			end
-		end
-		local function save(event)
-			if event.phase == "ended" then
-				local target = event.target;
-				if target.alpha > 0 and overlay_section == "Save" then
-					index = 1;
-					local xvals = {}; local yvals = {}; local num = 0; local rotation = {}; local types = {};
-					--Get Total Cost
-					local total = 0;
-					for i = 2, group.numChildren do
-						local child = group[i];
-						if child.child ~= nil then
-							--Save the Structure
-							num = num + 1;
-							xvals[index] = child.x+group[1].x;
-							yvals[index] = child.y;
-							rotation[index] = child.rotation;
-							types[index] = child.type;
-							index = index + 1;
-							total = total + child.cost;
-						end
-					end
-					--Save the Structure
-					--Get the BaseX
-					local basX = 0;
-					local mini = xvals[1];
-					for i = 2, #xvals do
-						if xvals[i] < mini then mini = xvals[i] end
-					end
-					basX = mini;
-					for i = 1, #xvals do
-						xvals[i] = xvals[i] - mini;
-					end
-					--Get the BaseY
-					local basY = 0;
-					local large =  yvals[1];
-					for i = 2, #yvals do
-						if yvals[i] > large then large = yvals[i] end
-					end
-					basY = large;
-					for i = 1, #yvals do
-						yvals[i] = yvals[i]-large;
-					end
-					--Make the Array
-					local supers = "";
-					supers = 'local Material = require("materials")\n\n'
-					supers = supers.."PlayerBase = {}\n\n";
-					supers = supers.."PlayerBase.structure = {\n";
-					supers = supers.."numObjects="..num..",\n";
-					supers = supers.."baseX="..basX..",\n";
-					supers = supers.."baseY="..basY..",\n";
-					supers = supers.."totalCost="..total..",\n";
-					supers = supers.."types={\n";
-					for i = 1, #types do
-						supers = supers..'"'..types[i]..'"'
-						if i ~= #types then supers = supers..","; end
-					end
-					supers = supers.."\n},\n";
-					supers = supers.."x_vals={\n";
-					for i = 1, #xvals do
-						supers = supers..xvals[i]
-						if i ~= #xvals then supers = supers..","; end
-					end
-					supers = supers.."\n},\n";
-					supers = supers.."y_vals={\n";
-					for i = 1, #yvals do
-						supers = supers..yvals[i]
-						if i ~= #yvals then supers = supers..","; end
-					end
-					supers = supers.."\n},\n";
-					supers = supers.."rotations={\n";
-					for i = 1, #rotation do
-						supers = supers..rotation[i]
-						if i ~= #rotation then supers = supers..","; end
-					end
-					supers = supers.."\n}\n}\n\nreturn PlayerBase";
-					--local path = system.pathForFile( "playerbase.lua", system.ResourceDirectory )
-					local file = io.open( "slot"..slot..".lua", "w" )
-					file:write( supers )
-					io.close( file )
-					file = nil
-					slots[slot].alpha = 1;
-					slots[slot+10].alpha = 0;
-				end
-			end
-		end
-		local function confirm(event)
-			if event.phase == "began" and (event.target).alpha > 0 and overlay_section ~= "Main" then
-				showInfo = true;
-				slot = (event.target).slot;
-				--Get Text
-				local str = "Slot "..slot.."\n";
-				local f = io.open("slot"..slot..".lua","r")
-				if f == nil then
-					str = str.."\nNo File";
-				else
-					local Play	 = require( "slot"..slot )
-					local player = Play.structure;
-					str = str.."\nCost: "..player.totalCost.."\n";
-					str = str.."\nNum of Objects: "..player.numObjects.."\n";
-				end
-				menuText.text = str;
-				menuText.alpha = 1;
-			end
-		end
-						
-		
-		restartBtn:addEventListener("touch",restart_level);
-		exitBtn:addEventListener("touch",exit_level);
-		backBtn:addEventListener("touch",back_to_main);
-		backMainBtn:addEventListener("touch",switchTo);
-		loadBtn:addEventListener("touch",switchTo);
-		saveBtn:addEventListener("touch",switchTo);
-		for k = 1, 20 do
-			slots[k]:addEventListener("touch",confirm);
-		end
-		overwriteBtn:addEventListener("touch",save);
-		
-		local function overlay_animation(event)
-			--Check to See If We Need to Animate
-			if overlay_activity == true then			
-				--Are We Going Into the Overlay?
-				if overlay == true then
-					--First Time Things
-					if once == false then
-						once = true;
-						overlayshade.alpha = 0;
-						overlayrect.alpha = r_alpha;
-						now_time = anim_time;
-						overlayrect:scale(r_scale,r_scale);
-						nr_scale = (1-r_scale)/anim_time;
-						nr_scale = (nr_scale+r_scale)/r_scale;
-						
-						--Close SlideView
-						if scrollView.isOpen == true then
-							scrollView.isOpen = false
-							transition.to(static_menu, {time=300, y=-85} )
-							transition.to(scrollView, {time=300, x=-85} )
-							transition.to(play_button, {time=300, y=-35} )
-							transition.to(menu_button, {time=300, y=-35} )
-
-							if slideBtn then
-								slideBtn:removeSelf()
-								slideBtn = widget.newButton{
-									default="../images/ui_btn_buildmenu_right.png",
-									over="../images/ui_btn_buildmenu_right_pressed.png",
-									width=35, height=35,
-									onRelease=slideUI
-								}
-								slideBtn.y = H/2
-								slideBtn.x = scroll_bkg.width-45
-								transition.to(slideBtn, {time=300, x=-35} )
-								transition.to( goodoverlay, { alpha=0, xScale=1.0, yScale=1.0, time=300} )
-								transition.to( badoverlay, { alpha=0, xScale=1.0, yScale=1.0, time=300} )
-
-							end
-						end
-					end
-					--Control Visibility of the Overlay Shade
-					overlayshade.alpha = overlayshade.alpha + (s_alpha/anim_time)
-					--Control Visibility of the Overlay Rectangle
-					overlayrect.alpha = overlayrect.alpha + ((1-r_alpha)/anim_time)
-					--Control Scaling of the Overlay Rectangle
-					overlayrect:scale(nr_scale,nr_scale);
-					--Countdown the Timer
-					now_time = now_time - 1;
-					--Is Time Up?
-					if now_time <= 0 then
-						overlay_activity = false;
-						once = false;
-						overlayshade.alpha = s_alpha;
-						overlayrect.alpha = 1;
-						
-						--Display Buttons
-						backBtn.alpha = 1;
-						pauseText.alpha = 1;
-						restartBtn.alpha = 1;
-						exitBtn.alpha = 1;
-						loadBtn.alpha = 1;
-						saveBtn.alpha = 1;
-						
-					end				
-				else
-				--If We Are Leaving
-					--First Time Things
-					if once == false then
-						once = true;
-						overlayshade.alpha = s_alpha;
-						overlayrect.alpha = 1;
-						now_time = anim_time;
-						nr_scale = (1-r_scale)/anim_time;
-						nr_scale = (nr_scale-r_scale)/r_scale;
-						
-						--Remove Buttons
-						backBtn.alpha = 0;
-						pauseText.alpha = 0;
-						restartBtn.alpha = 0;
-						exitBtn.alpha = 0;
-						loadBtn.alpha = 0;
-						saveBtn.alpha = 0;
-					end
-					--Control Visibility of the Overlay Shade
-					overlayshade.alpha = overlayshade.alpha - (s_alpha/(anim_time+5))
-					--Control Visibility of the Overlay Rectangle
-					overlayrect.alpha = overlayrect.alpha - ((1-r_alpha)/(anim_time+5))
-					--Control Scaling of the Overlay Rectangle
-					overlayrect:scale(nr_scale,nr_scale);
-					--Countdown the Timer
-					now_time = now_time - 1;
-					--Is Time Up?
-					if now_time <= 0 then
-						overlay_activity = false;
-						overlayshade.alpha = 0;
-						overlayrect.alpha = 0;
-						once = false;
-						overlayrect:scale((1/r_scale),(1/r_scale));
-					end	
-				end
-			else
-				once = false;
-			end
-		end
-		--Runtime Listener at Bottom of enterScene
-		
-		
-		--------------------------------------------
 		--               ITEM DRAG                --
 		--------------------------------------------
 		-- Event for dragging an item
@@ -897,6 +433,599 @@ function scene:enterScene( event )
 		item1:addEventListener("touch",pickItem)
 		item2:addEventListener("touch",pickItem)
 		
+		--------------------------------------------
+		--             STATIC MENUS               --
+		--------------------------------------------
+		static_menu = display.newGroup()
+		
+		-- local static_buttons_bkg = display.newImage("../images/ui_bkg_static_buttons.png")
+		-- static_buttons_bkg.x = -2				-- -2 to eliminate gap by the edge of the screen
+		-- static_buttons_bkg.y = 75
+		-- static_menu:insert(static_buttons_bkg)
+		
+		local function playUI (event)
+			print('clicked play')
+		end
+		
+		local function menuUI (event)
+				-- Need to create a overlay and shade effect and pause the game when the menu button is pressed
+			if event.phase == "began" then
+				if overlay == false and overlay_activity == false then --Put Up the Overlay
+					print('clicked menu')
+					overlay_activity = true;
+					overlay = true;
+				end
+			end
+		end
+		
+		play_button:addEventListener("tap",playUI);
+		menu_button:addEventListener("touch",menuUI);
+		
+		--Set Up the Width and Height Variables
+		local w = display.contentWidth; local h = display.contentHeight;
+		--Overlay Animation Variables
+		local anim_time = 15; --How Much Time Spent for Overlay Animation (Both Ways)
+		local now_time = 0; --The Current Time for the Current Animation
+		local b = 25; local iw = 96*(2/3);
+		local r_alpha = 0; --Overlay's Starting Alpha Value
+		local s_alpha = 0.7; --Shade Final Alpha Value
+		local r_scale = 0.75; --Overlay's Starting Scale
+		local nr_scale = r_scale; --Overlay's Current Scale
+		local once = false; --Preliminary Things Before Animating
+		local r_w = (5*iw)+(2*b); --Length of the Overlay Rectangle
+		local r_h = 256; --Height of the Overlay Rectangle
+		local overlay_section = "Main"; --Which Section of the Overlay are We In?
+		local showInfo = false; --Showing Some Text?
+		local slot = 0;
+		
+		--Make the Overlay Rectangle
+		local overlayshade = display.newRect(-w,0,w*3,h); --The Shady Part of the Screen
+		overlayshade:setFillColor(0,0,0); overlayshade.alpha = 0;
+		local overlayrect = display.newImageRect("../images/overlay_grey.png",r_w,r_h);
+		overlayrect.alpha = 0; overlayrect.x = (w/2); overlayrect.y = (h/2);
+		local overlayGroup = display.newGroup();
+		
+		--Buttons
+		local pauseText = display.newText("PAUSE",(w/2)-60,(h/2)-(r_h/2),"Arial Black",30);
+		local backBtn= display.newImage("../images/btn_back.png");
+		backBtn.x = (w/2); backBtn.y = (h/2)+(r_h/2)-30;
+		local restartBtn = display.newImage("../images/btn_restart_level.png");
+		restartBtn.x = (w/2); restartBtn.y = (h/2)+(r_h/2)-110;
+		local exitBtn = display.newImage("../images/btn_exit_level.png");
+		exitBtn.x = (w/2); exitBtn.y = (h/2)+(r_h/2)-70;
+		local loadBtn = display.newImage("../images/btn_load.png");
+		loadBtn.x = (w/2); loadBtn.y = (h/2)+(r_h/2)-150; loadBtn.section = "Load";
+		local saveBtn = display.newImage("../images/btn_save.png");
+		saveBtn.x = (w/2); saveBtn.y = (h/2)+(r_h/2)-190; saveBtn.section = "Save";
+		
+		--Slots
+		local slots = {};
+		for k = 1, 20 do
+			if k <= 10 then
+				slots[k] = display.newImage("../images/btn_slot"..k..".png");
+				if k <= 5 then
+					slots[k].x = (w/2)-75-50;
+					slots[k].y = (h/2)-(r_h/2)+(k*40);
+				else
+					slots[k].x = (w/2)-75+50;
+					slots[k].y = (h/2)-(r_h/2)+((k-5)*40);
+				end
+				slots[k].alpha = 0;
+				slots[k].movy = "Yes";
+				slots[k].slot = k;
+			else
+				slots[k] = display.newImage("../images/btn_nosave.png");
+				if k <= 15 then
+					slots[k].x = (w/2)-75-50;
+					slots[k].y = (h/2)-(r_h/2)+((k-10)*40);
+				else
+					slots[k].x = (w/2)-75+50;
+					slots[k].y = (h/2)-(r_h/2)+((k-15)*40);
+				end
+				slots[k].alpha = 0;
+				slots[k].movy = "Yes";
+				slots[k].slot = (k-10);
+			end
+		end
+		local backMainBtn = display.newImage("../images/btn_back.png");
+		backMainBtn.x = (w/2)-75; backMainBtn.y = (h/2)-(r_h/2)+(6*40)-5; backMainBtn.alpha = 0; backMainBtn.section = "Main";
+		local overwriteBtn = display.newImage("../images/btn_overwrite.png");
+		overwriteBtn.x = (w/2)+75+20; overwriteBtn.y = (h/2)-(r_h/2)+(6*40)-5;
+		local loadCBtn = display.newImage("../images/btn_loadconfirm.png");
+		loadCBtn.x = (w/2)+75+20; loadCBtn.y = (h/2)-(r_h/2)+(6*40)-5;
+		local menuText = display.newText("Stuff",0,0,native.systemFont,12);
+		menuText.x = (w/2)+75; menuText.y = (h/2)-80;
+		local successText = display.newText("",50,10,native.systemFont,20);
+		local successTime = 0; --Time for the Text to Stay Up
+		local maxSuccessTime = 60; --How Long Does It Stay Up?
+		
+		backBtn.alpha = 0;
+		pauseText.alpha = 0;
+		restartBtn.alpha = 0;
+		exitBtn.alpha = 0;
+		loadBtn.alpha = 0;
+		saveBtn.alpha = 0;
+		overwriteBtn.alpha = 0;
+		loadCBtn.alpha = 0;
+		menuText.alpha = 0;
+		successText.alpha = 0;
+		
+		overlayshade.movy = "Yes"; overlayrect.movy = "Yes"; saveBtn.movy = "Yes"; loadBtn.movy = "Yes"; backMainBtn.movy = "Yes";
+		pauseText.movy = "Yes"; backBtn.movy = "Yes"; restartBtn.movy = "Yes"; exitBtn.movy = "Yes"; overwriteBtn.movy = "Yes"
+		loadCBtn.movy = "Yes"; menuText.movy = "Yes"; successText.movy = "Yes";
+		
+		local function assertDepth()
+			group:insert(overlayshade)
+			group:insert(overlayrect)
+			group:insert(backBtn)
+			group:insert(pauseText);
+			group:insert(restartBtn);
+			group:insert(exitBtn);
+			group:insert(loadBtn);
+			group:insert(saveBtn);
+			group:insert(backMainBtn);
+			group:insert(overwriteBtn);
+			group:insert(loadCBtn);
+			group:insert(menuText);
+			group:insert(successText);
+			for k = 1, 20 do
+				group:insert(slots[k]);
+			end
+		end
+		
+		local function back_to_main(event)
+			if event.phase == "began" and backBtn.alpha > 0 then
+				scrollView.isOpen = true
+				transition.to(static_menu, {time=300, y=0} )
+				transition.to(scrollView, {time=300, x=0} )
+				transition.to(play_button, {time=300, y=35} )
+				transition.to(menu_button, {time=300, y=35} )
+				if slideBtn then
+					slideBtn:removeSelf()
+					slideBtn = widget.newButton{
+						default="../images/ui_btn_buildmenu_left.png",
+						over="../images/ui_btn_buildmenu_left_pressed.png",
+						width=35, height=35,
+						onRelease=slideUI
+					}
+					slideBtn.y = H/2
+					slideBtn.x = -35
+					transition.to(slideBtn, {time=300, x=scroll_bkg.width-45} )
+					transition.to( goodoverlay, { alpha=.25, xScale=1.0, yScale=1.0, time=0} )
+					transition.to( badoverlay, { alpha=.25, xScale=1.0, yScale=1.0, time=0} )
+				end
+				--Close Overlay if Up
+				if overlay == true and overlay_activity == false then
+					overlay = false;
+					overlay_activity = true;
+					print("Here")
+				end
+			end
+		end
+		local function restart_level(event)
+			if event.phase == "ended" and restartBtn.alpha > 0 then
+				restart()
+			end
+		end
+		local function exit_level(event)
+			if event.phase == "ended" and exitBtn.alpha > 0 then
+				exitNOW()
+			end
+		end
+		local function switchTo(event)
+			if event.phase == "ended" and overlay == true then
+				local target = event.target;
+				if target.alpha > 0 then
+					if target.section == "Load" then
+						--Switch to Loading Screen
+						backBtn.alpha = 0;
+						pauseText.alpha = 0;
+						restartBtn.alpha = 0;
+						exitBtn.alpha = 0;
+						loadBtn.alpha = 0;
+						saveBtn.alpha = 0;
+						backMainBtn.alpha = 1;
+						loadCBtn.alpha = 1;
+						menuText.alpha = 0;
+						for k = 1, 10 do
+							local f = io.open("slot"..k..".lua","r")
+							if f ~= nil then
+								slots[k].alpha = 1;
+							else
+								slots[k+10].alpha = 1;
+							end
+						end
+						overlay_section = "Load";
+						showInfo = false;
+					end
+					if target.section == "Save" then
+						--Switch to Saving Screen
+						backBtn.alpha = 0;
+						pauseText.alpha = 0;
+						restartBtn.alpha = 0;
+						exitBtn.alpha = 0;
+						loadBtn.alpha = 0;
+						saveBtn.alpha = 0;
+						backMainBtn.alpha = 1;
+						overwriteBtn.alpha = 1;
+						menuText.alpha = 0;
+						for k = 1, 10 do
+							local f = io.open("slot"..k..".lua","r")
+							if f ~= nil then
+								slots[k].alpha = 1;
+							else
+								slots[k+10].alpha = 1;
+							end
+						end
+						overlay_section = "Save";
+						showInfo = false;
+					end
+					if target.section == "Main" then
+						--Switch to Loading Screen
+						backBtn.alpha = 1;
+						pauseText.alpha = 1;
+						restartBtn.alpha = 1;
+						exitBtn.alpha = 1;
+						loadBtn.alpha = 1;
+						saveBtn.alpha = 1;
+						backMainBtn.alpha = 0;
+						overwriteBtn.alpha = 0;
+						loadCBtn.alpha = 0;
+						menuText.alpha = 0;
+						for k = 1, 20 do
+							slots[k].alpha = 0;
+						end
+						overlay_section = "Main"
+						
+						--Destroy All Object in Overlay Group
+						local num = overlayGroup.numChildren;
+						while num >= 1 do
+							overlayGroup:remove(num)
+							num = num - 1
+						end
+					end
+				end
+			end
+		end
+		local function save(event)
+			if event.phase == "ended" then
+				local target = event.target;
+				if target.alpha > 0 and overlay_section == "Save" then
+					index = 1;
+					local xvals = {}; local yvals = {}; local num = 0; local rotation = {}; local types = {};
+					--Get Total Cost
+					local total = 0;
+					for i = 2, group.numChildren do
+						local child = group[i];
+						if child.child ~= nil then
+							--Save the Structure
+							num = num + 1;
+							xvals[index] = child.x+group[1].x;
+							yvals[index] = child.y;
+							rotation[index] = child.rotation;
+							types[index] = child.type;
+							index = index + 1;
+							total = total + child.cost;
+						end
+					end
+					--Save the Structure
+					--Get the BaseX
+					local basX = 0;
+					local mini = xvals[1];
+					for i = 2, #xvals do
+						if xvals[i] < mini then mini = xvals[i] end
+					end
+					basX = mini;
+					for i = 1, #xvals do
+						xvals[i] = xvals[i] - mini;
+					end
+					--Get the BaseY
+					local basY = 0;
+					local large =  yvals[1];
+					for i = 2, #yvals do
+						if yvals[i] > large then large = yvals[i] end
+					end
+					basY = large;
+					for i = 1, #yvals do
+						yvals[i] = yvals[i]-large;
+					end
+					--Make the Array
+					local supers = "";
+					supers = 'local Material = require("materials")\n\n'
+					supers = supers.."PlayerBase = {}\n\n";
+					supers = supers.."PlayerBase.structure = {\n";
+					supers = supers.."numObjects="..num..",\n";
+					supers = supers.."baseX="..basX..",\n";
+					supers = supers.."baseY="..basY..",\n";
+					supers = supers.."totalCost="..total..",\n";
+					supers = supers.."types={\n";
+					for i = 1, #types do
+						supers = supers..'"'..types[i]..'"'
+						if i ~= #types then supers = supers..","; end
+					end
+					supers = supers.."\n},\n";
+					supers = supers.."x_vals={\n";
+					for i = 1, #xvals do
+						supers = supers..xvals[i]
+						if i ~= #xvals then supers = supers..","; end
+					end
+					supers = supers.."\n},\n";
+					supers = supers.."y_vals={\n";
+					for i = 1, #yvals do
+						supers = supers..yvals[i]
+						if i ~= #yvals then supers = supers..","; end
+					end
+					supers = supers.."\n},\n";
+					supers = supers.."rotations={\n";
+					for i = 1, #rotation do
+						supers = supers..rotation[i]
+						if i ~= #rotation then supers = supers..","; end
+					end
+					supers = supers.."\n}\n}\n\nreturn PlayerBase";
+					--local path = system.pathForFile( "playerbase.lua", system.ResourceDirectory )
+					local file = io.open( "slot"..slot..".lua", "w" )
+					file:write( supers )
+					io.close( file )
+					file = nil
+					slots[slot].alpha = 1;
+					slots[slot+10].alpha = 0;
+					successText.text = "Save Successful!";
+					successTime = maxSuccessTime;
+					successText:setTextColor(0,255,0);
+				end
+			end
+		end
+		local function load(event)
+			if event.phase == "ended" then
+				local Play	 = require( "slot"..slot )
+				local player = Play.structure;
+				if player.totalCost <= levelWallet then
+					wallet = levelWallet - player.totalCost;
+					--Destroy All Children Objects Before Loading
+					local num = group.numChildren;
+					while num >= 1 do
+						local c = group[num];
+						if c.child ~= nil then
+							group:remove(num)
+							--c:removeSelf();
+						end
+						num = num - 1;
+					end
+					for i=1,player.numObjects do
+						local obj = {}
+						local baseX = player.baseX;
+						local baseY = player.baseY;
+						obj.type = player.types[i]
+						-- first clone: so obj.img refers to proper image
+						-- second clone: to pass data to object
+						obj = Materials.clone(obj)
+						obj = display.newImage(obj.img)
+						obj.type = player.types[i]
+						obj = Materials.clone(obj)
+						obj.type = player.types[i]
+						obj:scale(obj.scaleX,obj.scaleY)
+						obj.x = player.x_vals[i]+baseX;
+						obj.y = player.y_vals[i]+baseY;
+						obj.rotation = player.rotations[i]
+						obj.child = "Child";
+						physics.addBody(obj, {density=obj.density,friction=obj.friction,bounce=obj.bounce,shape=obj.shape} )
+						obj:addEventListener("touch",dragItem)
+						group:insert(obj)
+					end
+					successText.text = "Load Successful!";
+					successTime = maxSuccessTime;
+					successText:setTextColor(0,255,0);
+				else
+					successText.text = "Not Enough Money!";
+					successTime = maxSuccessTime;
+					successText:setTextColor(255,0,0);
+				end
+				assertDepth();
+			end
+		end
+		local function confirm(event)
+			if event.phase == "began" and (event.target).alpha > 0 and overlay_section ~= "Main" then
+				showInfo = true;
+				slot = (event.target).slot;
+				local num = overlayGroup.numChildren;
+				while num >= 1 do
+					overlayGroup:remove(num)
+					num = num - 1
+				end
+				--Get Text
+				local str = "Slot "..slot.."\n";
+				local f = io.open("slot"..slot..".lua","r")
+				if f == nil then
+					str = str.."\nNo File";
+				else
+					local Play	 = require( "slot"..slot )
+					local player = Play.structure;
+					str = str.."Cost: "..player.totalCost.."\n";
+					str = str.."Num of Objects: "..player.numObjects.."\n";
+					
+					--Show An Image of the Structure
+					local max_w = 182-80; --How Much Space do We Have to Show This Image in Width
+					local max_h = 100; --And Height
+					local baseX = (w/2)-75+50+48+20;
+					local baseY = (h/2)+68;
+					--Get the Largest X and Smallest Y Offset Value
+					local off_xlarge = player.x_vals[1];
+					local off_ylarge = -1*player.y_vals[1];
+					for i = 2,player.numObjects do
+						if player.x_vals[i] > off_xlarge then
+							off_xlarge = player.x_vals[i];
+						end
+						if (-1*player.y_vals[i]) > off_ylarge then
+							off_ylarge = -1*player.y_vals[i];
+						end
+					end
+					--Now Get the Scales
+					local x_sc = 0.5; local y_sc = 0.5;
+					if off_xlarge > (max_w*2) then x_sc = (max_w/off_xlarge); end
+					if off_ylarge > (max_h*2) then y_sc = (max_h/off_ylarge); end
+					--Now Draw the Objects
+					for i = 1,player.numObjects do
+						local obj = {};
+						obj.type = player.types[i];
+						obj = Materials.clone(obj)
+						obj = display.newImage(obj.img)
+						obj.type = player.types[i];
+						obj = Materials.clone(obj)
+						obj:scale(obj.scaleX,obj.scaleY)
+						obj.rotation = player.rotations[i];
+						--Figure Out the Scale Based on Its Rotation
+						local r = obj.rotation
+						while r > 360 do
+							r = r - 360;
+						end
+						r = r * (math.pi/360); --Get Radians
+						local s = math.abs(math.cos(r));
+						local xs = (x_sc*(s))+(y_sc*(1-s));
+						local ys = (x_sc*(1-s))+(y_sc*(s))
+						obj:scale(xs,ys)
+						
+						obj.x = (player.x_vals[i]*xs)+baseX;
+						obj.y = (player.y_vals[i]*ys)+baseY;
+						
+						overlayGroup:insert(obj);
+						obj:toFront()
+					end
+				end
+				menuText.text = str;
+				menuText.alpha = 1;
+			end
+		end
+		local function success(event)
+			if successTime > 0 then
+				successTime = successTime - 1;
+				successText.alpha = 1;
+				if successTime <= 0 then
+					successText.alpha = 0;
+				end
+			end
+		end
+						
+		
+		restartBtn:addEventListener("touch",restart_level);
+		exitBtn:addEventListener("touch",exit_level);
+		backBtn:addEventListener("touch",back_to_main);
+		backMainBtn:addEventListener("touch",switchTo);
+		loadBtn:addEventListener("touch",switchTo);
+		saveBtn:addEventListener("touch",switchTo);
+		for k = 1, 20 do
+			slots[k]:addEventListener("touch",confirm);
+		end
+		overwriteBtn:addEventListener("touch",save);
+		loadCBtn:addEventListener("touch",load);
+		
+		local function overlay_animation(event)
+			--Check to See If We Need to Animate
+			if overlay_activity == true then			
+				--Are We Going Into the Overlay?
+				if overlay == true then
+					--First Time Things
+					if once == false then
+						once = true;
+						overlayshade.alpha = 0;
+						overlayrect.alpha = r_alpha;
+						now_time = anim_time;
+						overlayrect:scale(r_scale,r_scale);
+						nr_scale = (1-r_scale)/anim_time;
+						nr_scale = (nr_scale+r_scale)/r_scale;
+						physics.pause() --Pause the Physics
+						--Close SlideView
+						if scrollView.isOpen == true then
+							scrollView.isOpen = false
+							transition.to(static_menu, {time=300, y=-85} )
+							transition.to(scrollView, {time=300, x=-85} )
+							transition.to(play_button, {time=300, y=-35} )
+							transition.to(menu_button, {time=300, y=-35} )
+
+							if slideBtn then
+								slideBtn:removeSelf()
+								slideBtn = widget.newButton{
+									default="../images/ui_btn_buildmenu_right.png",
+									over="../images/ui_btn_buildmenu_right_pressed.png",
+									width=35, height=35,
+									onRelease=slideUI
+								}
+								slideBtn.y = H/2
+								slideBtn.x = scroll_bkg.width-45
+								transition.to(slideBtn, {time=300, x=-35} )
+								transition.to( goodoverlay, { alpha=0, xScale=1.0, yScale=1.0, time=300} )
+								transition.to( badoverlay, { alpha=0, xScale=1.0, yScale=1.0, time=300} )
+
+							end
+						end
+					end
+					--Control Visibility of the Overlay Shade
+					overlayshade.alpha = overlayshade.alpha + (s_alpha/anim_time)
+					--Control Visibility of the Overlay Rectangle
+					overlayrect.alpha = overlayrect.alpha + ((1-r_alpha)/anim_time)
+					--Control Scaling of the Overlay Rectangle
+					overlayrect:scale(nr_scale,nr_scale);
+					--Countdown the Timer
+					now_time = now_time - 1;
+					--Is Time Up?
+					if now_time <= 0 then
+						overlay_activity = false;
+						once = false;
+						overlayshade.alpha = s_alpha;
+						overlayrect.alpha = 1;
+						
+						--Display Buttons
+						backBtn.alpha = 1;
+						pauseText.alpha = 1;
+						restartBtn.alpha = 1;
+						exitBtn.alpha = 1;
+						loadBtn.alpha = 1;
+						saveBtn.alpha = 1;
+						
+					end				
+				else
+				--If We Are Leaving
+					--First Time Things
+					if once == false then
+						once = true;
+						overlayshade.alpha = s_alpha;
+						overlayrect.alpha = 1;
+						now_time = anim_time;
+						nr_scale = (1-r_scale)/anim_time;
+						nr_scale = (nr_scale-r_scale)/r_scale;
+						
+						--Remove Buttons
+						backBtn.alpha = 0;
+						pauseText.alpha = 0;
+						restartBtn.alpha = 0;
+						exitBtn.alpha = 0;
+						loadBtn.alpha = 0;
+						saveBtn.alpha = 0;
+					end
+					--Control Visibility of the Overlay Shade
+					overlayshade.alpha = overlayshade.alpha - (s_alpha/(anim_time+5))
+					--Control Visibility of the Overlay Rectangle
+					overlayrect.alpha = overlayrect.alpha - ((1-r_alpha)/(anim_time+5))
+					--Control Scaling of the Overlay Rectangle
+					overlayrect:scale(nr_scale,nr_scale);
+					--Countdown the Timer
+					now_time = now_time - 1;
+					--Is Time Up?
+					if now_time <= 0 then
+						overlay_activity = false;
+						overlayshade.alpha = 0;
+						overlayrect.alpha = 0;
+						successTime = 1;
+						once = false;
+						overlayrect:scale((1/r_scale),(1/r_scale));
+						physics.start() --Restart the Physics
+					end	
+				end
+			else
+				once = false;
+			end
+		end
+		--Runtime Listener at Bottom of enterScene
+		
 		--Focus HP
 		local HPText = display.newText("",0,0,native.systemFont,32);
 		HPText:scale(0.5,0.5)
@@ -968,11 +1097,13 @@ function scene:enterScene( event )
 		group:insert(overwriteBtn);
 		group:insert(loadCBtn);
 		group:insert(menuText);
+		group:insert(successText);
 		for k = 1, 20 do
 			group:insert(slots[k]);
 		end
 		
 		Runtime:addEventListener("enterFrame",overlay_animation)
+		Runtime:addEventListener("enterFrame",success)
 
 end
 
@@ -1016,7 +1147,7 @@ end
 		function createCrosshair(event) -- creates crosshair when a touch event begins
 			-- creates the crosshair
 			local phase = event.phase
-			if (phase == 'began' and overlay == false) then
+			if (phase == 'began' and overlay == false and overlay_activity == false) then
 				if not (cballExists) then
 					if not (showCrosshair) then										-- helps ensure that only one crosshair appears
 						crosshair = display.newImage( "../images/crosshair.png" )				-- prints crosshair	
@@ -1122,9 +1253,10 @@ function scene:exitScene( event )
         --      INSERT code here (e.g. stop timers, remove listeners, unload sounds, etc.)
         -----------------------------------------------------------------------------
 		--Remove the Runtime Listeners
-		scrollGroup:removeEventListener(scroll)
+		--scrollGroup:removeEventListener(scroll)
 		
 		Runtime:removeEventListener("enterFrame",overlay_animation)
+		Runtime:removeEventListener("enterFrame",success)
         
 		local num = group.numChildren;
 		while num >= 1 do
@@ -1136,16 +1268,21 @@ function scene:exitScene( event )
 			interface:remove(num)
 			num = num - 1
 		end
+		--[[
 		local num = cannonGroup.numChildren;
 		while num >= 1 do
-			cannonGroup:remove(num)
-			num = num - 1
+			if cannonGroup[num] ~= nil then
+				cannonGroup:remove(num)
+				num = num - 1
+			end
 		end
 		local num = cannonballGroup.numChildren;
 		while num >= 1 do
-			cannonballGroup:remove(num)
-			num = num - 1
-		end
+			if cannonballGroup[num] ~= nil then
+				cannonballGroup:remove(num)
+				num = num - 1
+			end
+		end--]]
 		
 end
  

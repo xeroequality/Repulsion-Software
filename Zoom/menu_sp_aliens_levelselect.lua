@@ -1,5 +1,4 @@
 local storyboard = require( "storyboard" )
-local levels = require( "levelinfo" )
 local widget = require( "widget" )
 local scene = storyboard.newScene()
  
@@ -199,8 +198,8 @@ function scene:enterScene( event )
 					overlay = true;
 					overlay_activity = true;
 					overlay_level = button;
-				end
-				--[[If Not...				
+				else
+				--If Not...				
 					--Check to See If The Button Pressed is the Same One
 					if overlay_level ~= button then
 						--If Not, Switch Overlay Image to New Level
@@ -210,7 +209,7 @@ function scene:enterScene( event )
 						overlay = false;
 						overlay_activity = true;
 					end				
-				end--]]		
+				end			
 			end		
 		end
 		--Add the Listeners to All the Level Select Buttons
@@ -236,18 +235,20 @@ function scene:enterScene( event )
 		overlayrect.alpha = 0; overlayrect.x = (w/2); overlayrect.y = (h/2);
 		
 		--Level Information
-		local parScore = display.newText("",0,0,native.SystemFont,40);
-		parScore.x = (w/2)-100; parScore.y = (h/2)-100;
-		parScore:scale(0.5,0.5)
-		parScore.alpha = 0
-		local wallet = display.newText("",0,0,native.SystemFont,40);
-		wallet.x = (w/2)-100; wallet.y = (h/2)-50;
-		wallet:scale(0.5,0.5)
-		wallet.alpha = 0
-		local description = display.newText("",0,0,native.SystemFont,40);
-		description.x = (w/2)-50; description.y = (h/2);
-		description:scale(0.5,0.5)
-		description.alpha = 0
+		local parScore = 0; local wallet = 0;
+		local newMaterials = {}; local prohibitedMaterials = {};
+		local newWeapons = {}; local prohibitedWeapons = {};
+		
+		--Text of the Overlay
+		local oText = {};
+		local oTextL = 2; --Length of Array
+		oText[1] = display.newText("Par Score: ",0,0,"Comic Sans MS",20);
+		oText[2] = display.newText("Wallet: ",0,0,"Comic Sans MS",20);
+		oText[1].x = (w/2)-100; oText[1].y = (h/2)-100;
+		oText[2].x = (w/2)-100; oText[2].y = (h/2)-50;
+		for i = 1,oTextL do
+			oText[i].alpha = 0;
+		end
 		
 		--Overlay Animation (Which Switching In and Out of the Overlay
 		function overlay_animation(event)		
@@ -285,20 +286,38 @@ function scene:enterScene( event )
 						levelBtn[button].view.alpha = 0.01;
 						
 						--Get Some Info
-						local level
-						if button == 1 then level = levels.level1 end
-						if button == 2 then level = levels.level2 end
-						if button == 3 then level = levels.level3 end
-						if button == 4 then level = levels.level4 end
-						if button == 5 then level = levels.level5 end
+						local path = system.pathForFile( "aliens_levelInfo.txt", system.ResourceDirectory )
+						local file = io.open( path, "r" )
+						local saveData;
+						local str = "";
+						local commencement = false; --Start Getting Some Data
+						local linenum = 0;
+						if button == 1 then str = "Level 1" end
+						if button == 2 then str = "Level 2" end
+						if button == 3 then str = "Level 3" end
+						if button == 4 then str = "Level 4" end
+						if button == 5 then str = "Level 5" end
+						for line in file:lines() do
+							saveData = line;
+							
+							--Find the Level Info
+							if commencement == false then
+								if saveData == str then commencement = true end --If This is it, then Continue
+							else
+								linenum = linenum + 1;
+								--Read Par Score
+								if linenum == 1 then parScore = saveData end
+								if linenum == 2 then wallet = saveData end
+								
+								if savaData == "End" then commencement = false end;
+							end
+							
+						end
+						io.close( file )
 						
 						--Update the Text Stuff
-						parScore.text = "Par Score: " .. level.parScore
-						parScore.alpha = 1
-						wallet.text = "Wallet: " .. level.wallet
-						wallet.alpha = 1
-						description.text = "Desc: " .. level.desc
-						description.alpha = 1
+						oText[1].text = "Par Score: "..parScore; oText[1].alpha = 1;
+						oText[2].text = "Wallet: "..wallet; oText[2].alpha = 1;
 					end				
 				else
 				--If We Are Leaving
@@ -312,9 +331,9 @@ function scene:enterScene( event )
 						nr_scale = (1-r_scale)/anim_time;
 						nr_scale = (nr_scale-r_scale)/r_scale;
 						overlayBack.alpha = 0;
-						parScore.alpha = 0
-						wallet.alpha = 0
-						description.alpha = 0
+						for i = 1,oTextL do
+							oText[i].alpha = 0;
+						end
 					end
 					--Control Visibility of the Overlay Shade
 					overlayshade.alpha = overlayshade.alpha - (s_alpha/(anim_time+5))
@@ -376,9 +395,9 @@ function scene:enterScene( event )
 		group:insert(overlayshade);
 		group:insert(overlayrect);
 		group:insert(GO)
-		group:insert(parScore);
-		group:insert(wallet);
-		group:insert(description);
+		for i = 1, oTextL do
+			group:insert(oText[i]);
+		end
 		group:insert(backBtn.view)
 		group:insert(overlayBack)
 		

@@ -3,11 +3,12 @@ local widget 	 = require( "widget" )
 --local levelUI 	 = require( "levelUI")
 local scrollview = require( "scrollview" )
 local physics 	 = require( "physics" )
-local parallax 	 = require( "parallax" )
+local Parallax 	 = require( "module_parallax" )
 local Materials  = require( "materials" )
 local Enemy 	 = require( "enemybase" )
 local scene 	 = storyboard.newScene()
- 
+local cannonfired
+local cannonfire
 ----------------------------------------------------------------------------------
 --      NOTE:
 --      Code outside of listener functions (below) will only be executed once,
@@ -36,102 +37,24 @@ end
 -- Called when the scene's view does not exist:
 function scene:createScene( event )
         local group = self.view
-		
 		physics.start()
- 
-        -----------------------------------------------------------------------------
-        --      CREATE display objects and add them to 'group' here.
-        --      Example use-case: Restore 'group' from previously saved state.        
-        -----------------------------------------------------------------------------
-		W = display.contentWidth
-		H = display.contentHeight
 		
-		--Overlay Variables
-		overlay = false; --Is the Overlay Up?
-		overlay_activity = false; --Is There Overlay Animation Going On?
-				
-		------------------------------------------------
-		--                  PARRALAX                  --
-		------------------------------------------------
-		-- Create new parallax scene
-		local myScene = parallax.newScene(
+ 		-- Instantiate Parallax Background
+		background = Parallax.levelScene(
 		{
-			width = 1500,
-			height = H,
-			bottom = H,
-			left = 0,
-			repeated = false,
-			group = group
-		} )
-		-- Midground Front (City Scape)
-		myScene:newLayer(
-		{
-			image = "../images/background_chapter1_level1_foreground.png",
-			width = 320, height = 106,
-			top = 234, bottom = H,
-			left = 0,
-			speed = 0.7,
-			repeated = "horizontal"
-		} )
-		-- Midground Back (City Scape)
-		myScene:newLayer(
-		{
-			image = "../images/background_chapter1_level1_foreground.png",
-			width = 320, height = 106,
-			top = 214, bottom = H,
-			left = -106,
-			speed = 0.6,
-			repeated = "horizontal"
-		} )
-		-- Background (Sky)
-		myScene:newLayer(
-		{
-			image = "../images/background_chapter1_level1_background.png",
-			width = 1500, height = H,
-			top = 0,
-			left = 0,
-			speed = 0.5,
-			repeated = "horizontal"
-		} )
-
-		------------------------------------------------
-		-- Functions
-		-----------------------------------------------
-
-		--Shift the Scene
-		local newx = 0;
-		function shiftScene(event)
-			if overlay == false then
-				if event.phase == "began" then
-					newx = event.x
-					myScene.xPrev = event.x
-				end
-				for i=2,group.numChildren do
-					local child = group[i]
-					
-					-- Move within Screen Limits
-					if (group[1].x + (event.x-newx)) > 0 then
-						-- child.x = 0
-					elseif (group[1].x + (event.x-newx)) < - (display.contentWidth + 7.75) then
-						-- child.x = W*3
-					else if child.movy == nil then
-							child.x = child.x + (event.x-newx)
-						end
-					end
-					
-					myScene:move( event.x - myScene.xPrev, 0 )
-					-- store location as previous
-					myScene.xPrev = event.x
-				end
-				newx = event.x
-			end
+			Width = display.contentWidth * 3,
+			Height = display.contentHeight,
+			Group = group,
 			
-		end
-
-		--------------------------------------------
-		-- Events
-		--------------------------------------------
-		myScene:addEventListener("touch", shiftScene)
+			Background = "../images/background_chapter1_level1_background.png",
+			BGW = 1500, BGH = 320,
+			
+			Foreground_Far = "../images/background_chapter1_level1_foreground_F.png",
+			FGF_W =750, FGF_H = 450,
+			
+			Foreground_Near = "../images/background_chapter1_level1_foreground_N.png",
+			FGN_W = 960, FGN_H = 332,
+		} )
 
 end
  
@@ -150,7 +73,7 @@ function scene:enterScene( event )
 		local prev_music = audio.loadStream("../sound/O fortuna.mp3")
         local music_bg = audio.loadStream("../sound/Bounty 30.ogg")
         audio.fadeOut(prev_music, { time=5000 })
-        --local o_play = audio.play(music_bg, {fadein=5000 } )
+        --o_play = audio.play(music_bg, {channel=3,fadein=5000 } )
 		physics.start()
 		local slideBtn
 		--------------------
@@ -443,7 +366,18 @@ function scene:enterScene( event )
 		-- static_menu:insert(static_buttons_bkg)
 		
 		local function playUI (event)
+            transition.to(scrollView, {time=300, x=-85} )
+            slideBtn:removeSelf()
+            transition.to(play_button, {time=300, y=-35} )
+            --make it so that we cannot access it again?
+            --delete it!
 			print('clicked play')
+            if event.phase== "ended" then
+                scrollView:removeSelf()
+                play_button:removeSelf()
+                print(scrollView)
+                print(play_button)
+            end
 		end
 		
 		local function menuUI (event)
@@ -1052,6 +986,20 @@ function scene:enterScene( event )
 		--           GENERATE ENEMY BASE            --
 		----------------------------------------------
 		
+		--Collision
+		local threshold = 1;
+		function hit(event)
+			if (event.other).weapon ~= nil then
+				if event.force >= threshold then
+					(event.target).currentHP = (event.target).currentHP - (event.force*(event.other).weapon);
+					print((event.target).currentHP)
+					if (event.target).currentHP <= 0 then
+						(event.target):removeSelf()
+					end
+				end
+			end
+		end
+		
 		-- In future levels, the ONLY thing that needs to change is the first line:
 		local enemy = Enemy.level1
 		objGroup = display.newGroup()
@@ -1071,19 +1019,20 @@ function scene:enterScene( event )
 			obj.rotation = enemy.rotations[i]
 			physics.addBody(obj, {density=obj.density,friction=obj.friction,bounce=obj.bounce,shape=obj.shape} )
 			objGroup:insert(obj)
+			obj:addEventListener("postCollision",hit);
 		end
 		
 		--objGroup:addEventListener('collision', removeball)
 		group:insert(goodoverlay)
 		group:insert(badoverlay)
-		-- group:insert(scrollView)
+		--group:insert(scrollView)
 		-- group:insert(static_menu)
 		-- group:insert(slideBtn.view)
+		group:insert(cannonballGroup)
+		group:insert(cannonGroup)
 		group:insert(MONEY)
 		group:insert(HPText)
 		group:insert(objGroup)
-		group:insert(cannonballGroup)
-		group:insert(cannonGroup)
 		group:insert(overlayshade)
 		group:insert(overlayrect)
 		group:insert(backBtn)
@@ -1141,6 +1090,7 @@ end
 			--display.getCurrentStage():insert(cannonGroup)
 			showCrosshair = false 										-- helps ensure that only one crosshair appears
 			cannonGroup:addEventListener('touch',createCrosshair)
+			
 		end
 
 		function createCrosshair(event) -- creates crosshair when a touch event begins
@@ -1208,6 +1158,7 @@ end
 				-- move the image
 				cannonball.x = 300
 				cannonball.y = 240
+				cannonball.weapon = 200;
 				cannonballGroup:insert(cannonball)
 
 				-- apply physics to the cannonball
@@ -1216,8 +1167,8 @@ end
 
 				-- fire the cannonball            
 				cannonball:applyForce( (event.x - crosshair.x)*forceMultiplier, (event.y - (crosshair.y))*forceMultiplier, cannonball.x, cannonball.y )
-				local cannonfire = audio.loadSound("../sound/Single_cannon_shot.wav")
-				local cannonfire = audio.play(cannonfire )
+				cannonfire = audio.loadSound("../sound/Single_cannon_shot.wav")
+				cannonfired = audio.play(cannonfire,{channel=2} )
 				-- make sure that the cannon is on top of the 
 				local hideCrosshair = transition.to( crosshair, { alpha=0, xScale=1.0, yScale=1.0, time=0, onComplete=stopRotation} )
 				showCrosshair = false									-- helps ensure that only one crosshair appears
@@ -1296,6 +1247,10 @@ function scene:destroyScene( event )
 		if slideBtn then
 			slideBtn:removeSelf()
 			slideBtn = nil
+		end
+		if scrollView then
+			scrollView:removeSelf();
+			scrollView = nil
 		end
         
 end

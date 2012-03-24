@@ -3,7 +3,7 @@ local widget 	 = require( "widget" )
 --local levelUI 	 = require( "levelUI")
 local scrollview = require( "scrollview" )
 local physics 	 = require( "physics" )
-local parallax 	 = require( "parallax" )
+local Parallax 	 = require( "module_parallax" )
 local Materials  = require( "materials" )
 local Enemy 	 = require( "enemybase" )
 local scene 	 = storyboard.newScene()
@@ -37,102 +37,24 @@ end
 -- Called when the scene's view does not exist:
 function scene:createScene( event )
         local group = self.view
-		
 		physics.start()
- 
-        -----------------------------------------------------------------------------
-        --      CREATE display objects and add them to 'group' here.
-        --      Example use-case: Restore 'group' from previously saved state.        
-        -----------------------------------------------------------------------------
-		W = display.contentWidth
-		H = display.contentHeight
 		
-		--Overlay Variables
-		overlay = false; --Is the Overlay Up?
-		overlay_activity = false; --Is There Overlay Animation Going On?
-				
-		------------------------------------------------
-		--                  PARRALAX                  --
-		------------------------------------------------
-		-- Create new parallax scene
-		local myScene = parallax.newScene(
+ 		-- Instantiate Parallax Background
+		background = Parallax.levelScene(
 		{
-			width = 1500,
-			height = H,
-			bottom = H,
-			left = 0,
-			repeated = false,
-			group = group
-		} )
-		-- Midground Front (City Scape)
-		myScene:newLayer(
-		{
-			image = "../images/background_chapter1_level1_foreground.png",
-			width = 320, height = 106,
-			top = 234, bottom = H,
-			left = 0,
-			speed = 0.7,
-			repeated = "horizontal"
-		} )
-		-- Midground Back (City Scape)
-		myScene:newLayer(
-		{
-			image = "../images/background_chapter1_level1_foreground.png",
-			width = 320, height = 106,
-			top = 214, bottom = H,
-			left = -106,
-			speed = 0.6,
-			repeated = "horizontal"
-		} )
-		-- Background (Sky)
-		myScene:newLayer(
-		{
-			image = "../images/background_chapter1_level1_background.png",
-			width = 1500, height = H,
-			top = 0,
-			left = 0,
-			speed = 0.5,
-			repeated = "horizontal"
-		} )
-
-		------------------------------------------------
-		-- Functions
-		-----------------------------------------------
-
-		--Shift the Scene
-		local newx = 0;
-		function shiftScene(event)
-			if overlay == false then
-				if event.phase == "began" then
-					newx = event.x
-					myScene.xPrev = event.x
-				end
-				for i=2,group.numChildren do
-					local child = group[i]
-					
-					-- Move within Screen Limits
-					if (group[1].x + (event.x-newx)) > 0 then
-						-- child.x = 0
-					elseif (group[1].x + (event.x-newx)) < - (display.contentWidth + 7.75) then
-						-- child.x = W*3
-					else if child.movy == nil then
-							child.x = child.x + (event.x-newx)
-						end
-					end
-					
-					myScene:move( event.x - myScene.xPrev, 0 )
-					-- store location as previous
-					myScene.xPrev = event.x
-				end
-				newx = event.x
-			end
+			Width = display.contentWidth * 3,
+			Height = display.contentHeight,
+			Group = group,
 			
-		end
-
-		--------------------------------------------
-		-- Events
-		--------------------------------------------
-		myScene:addEventListener("touch", shiftScene)
+			Background = "../images/background_chapter1_level1_background.png",
+			BGW = 1500, BGH = 320,
+			
+			Foreground_Far = "../images/background_chapter1_level1_foreground_F.png",
+			FGF_W =750, FGF_H = 450,
+			
+			Foreground_Near = "../images/background_chapter1_level1_foreground_N.png",
+			FGN_W = 960, FGN_H = 332,
+		} )
 
 end
  

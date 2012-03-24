@@ -444,7 +444,18 @@ function scene:enterScene( event )
 		-- static_menu:insert(static_buttons_bkg)
 		
 		local function playUI (event)
+            transition.to(scrollView, {time=300, x=-85} )
+            slideBtn:removeSelf()
+            transition.to(play_button, {time=300, y=-35} )
+            --make it so that we cannot access it again?
+            --delete it!
 			print('clicked play')
+            if event.phase== "ended" then
+                scrollView:removeSelf()
+                play_button:removeSelf()
+                print(scrollView)
+                print(play_button)
+            end
 		end
 		
 		local function menuUI (event)
@@ -1077,7 +1088,7 @@ function scene:enterScene( event )
 		--objGroup:addEventListener('collision', removeball)
 		group:insert(goodoverlay)
 		group:insert(badoverlay)
-		-- group:insert(scrollView)
+		group:insert(scrollView)
 		-- group:insert(static_menu)
 		-- group:insert(slideBtn.view)
 		group:insert(MONEY)

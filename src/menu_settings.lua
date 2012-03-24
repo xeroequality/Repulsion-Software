@@ -15,12 +15,15 @@ local function onBackBtnRelease()
 	storyboard.gotoScene( "menu_mainmenu", "fade", 200)
 	return true	-- indicates successful touch
 end
-function onTestBtnRelease()
-    cannonfire = audio.loadSound("../sound/Single_cannon_shot.wav")
-    --cannonfired = audio.play(cannonfire,{channel=2} )
-    print(cannonfire)
-	cannonfired = audio.play(cannonfire,{channel=2})
-    print( "hello")
+function onTestBtnRelease(event)
+    if (event.phase == 'moved') then
+        print(event.phase)
+        cannonfire = audio.loadSound("../sound/Single_cannon_shot.wav")
+        --cannonfired = audio.play(cannonfire,{channel=2} )
+        print(cannonfire)
+        cannonfired = audio.play(cannonfire,{channel=2})
+        print( "hello")
+    end
 	return true	-- indicates successful touch
 end
 
@@ -91,7 +94,10 @@ function scene:enterScene( event )
             valueSFX.text=event.target.value;
             print( "New value is: " .. event.target.value )
             audio.setVolume((event.target.value/100),{channel=2})
+            onTestBtnRelease(event)
         end
+        
+        
         -- Create the slider widget
         mySlider2 = widget.newSlider{
             callback=sliderListener2

@@ -65,6 +65,7 @@ function scene:enterScene( event )
         textObj.text="About Us \n \n Team Members: \n Neeti Pathak \n Phillip Lee Fatt \n Jason Simmons \n David Greene \n Travis Smith \n Nickolas Wilson \n Matt Martin \n Christopher Collazo \n Scott Davis \n \n Questions/Suggestions? Email us at RepulsionSoftware@gmail.com \n \n We are a group a students from the Univerity of Florida enrolled in the Introduction to Software Engineering class, where our main objective is to learn the process of developing software from the ground up. We hope you enjoy playing our game and welcome your feedback!"
         
         group:insert(textObj)
+		group:insert(RepLogo)
 end
  
  

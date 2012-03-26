@@ -85,7 +85,7 @@ function scene:enterScene( event )
 					overlayVars.playBtn = widget.newButton{
 						id="sp_aliens_ch1_level"..buttonPressed,
 						default="../images/background_GO.png",
-						over="../images/background_GOWHITE.png",
+						over="../images/background_GOWhite.png",
 						width=140,
 						height=87,
 						onRelease=onBtnRelease

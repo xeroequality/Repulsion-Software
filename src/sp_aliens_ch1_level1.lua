@@ -6,9 +6,12 @@ local physics 	 = require( "physics" )
 local Parallax 	 = require( "module_parallax" )
 local Materials  = require( "materials" )
 local Enemy 	 = require( "enemybase" )
+local MenuSettings = require( "settings")
 local scene 	 = storyboard.newScene()
 local cannonfired
 local cannonfire
+widget.setTheme("theme_ios")
+
 ----------------------------------------------------------------------------------
 --      NOTE:
 --      Code outside of listener functions (below) will only be executed once,
@@ -435,7 +438,7 @@ function scene:enterScene( event )
 		local saveBtn = display.newImage("../images/btn_save.png");
 		saveBtn.x = (w/2); saveBtn.y = (h/2)+(r_h/2)-190; saveBtn.section = "Save";
 		local settingsBtn = display.newImage("../images/btn_gear.png");
-		settingsBtn.x = (w/2)+150; settingsBtn.y = (h/2)+(r_h/2)-35;
+		settingsBtn.x = (w/2)+150; settingsBtn.y = (h/2)+(r_h/2)-35; settingsBtn.section = "Settings";
 		
 		--Slots
 		local slots = {};
@@ -603,6 +606,44 @@ function scene:enterScene( event )
 						overlay_section = "Save";
 						showInfo = false;
 					end
+				if target.section == "Settings" then
+						backBtn.alpha = 0;
+						pauseText.alpha = 0;
+						restartBtn.alpha = 0;
+						exitBtn.alpha = 0;
+						loadBtn.alpha = 0;
+						saveBtn.alpha = 0;
+						settingsBtn.alpha = 1;
+						backMainBtn.alpha = 1;
+						overwriteBtn.alpha = 0;
+						menuText.alpha = 0;
+						
+						overlay_section = "Settings";
+                        
+						showInfo = false;
+                        
+                        valueSFX = display.newText("Your Sound Effects",display.contentWidth *.50,display.contentHeight * 0.75,"Helvetica",16)  
+                       local sliderListener2 = function( event )
+                            id = "Sound Effects";
+                            local sliderObj2 = event.target;
+                            valueSFX.text=event.target.value;
+                            print( "New value is: " .. event.target.value )
+                            audio.setVolume((event.target.value/100),{channel=2})
+                            MenuSettings.onTestBtnRelease(event)
+                        end
+        
+        
+                        -- Create the slider widget
+                        mySlider2 = widget.newSlider{
+                            callback=sliderListener2
+                        }
+                        -- Center the slider widget on the screen:
+                        mySlider2.x = display.contentWidth * 0.5
+                        mySlider2.y = display.contentHeight * 0.7
+                        -- insert the slider widget into a group:
+                        group:insert(valueSFX)
+                        group:insert( mySlider2.view)
+                    end
 					if target.section == "Main" then
 						--Switch to Loading Screen
 						backBtn.alpha = 1;
@@ -619,6 +660,15 @@ function scene:enterScene( event )
 						for k = 1, 20 do
 							slots[k].alpha = 0;
 						end
+                        
+                        if overlay_section == "Settings" then
+                            mySlider2:removeSelf()
+                            mySlider2 = nil
+                            
+                            valueSFX:removeSelf()
+                            valueSFX=nil
+                        end
+                        
 						overlay_section = "Main"
 						
 						--Destroy All Object in Overlay Group
@@ -631,6 +681,7 @@ function scene:enterScene( event )
 				end
 			end
 		end
+
 		local function save(event)
 			if event.phase == "ended" then
 				local target = event.target;
@@ -927,6 +978,7 @@ function scene:enterScene( event )
 		backMainBtn:addEventListener("touch",switchTo);
 		loadBtn:addEventListener("touch",switchTo);
 		saveBtn:addEventListener("touch",switchTo);
+        settingsBtn:addEventListener("touch", switchTo);
 		for k = 1, 20 do
 			slots[k]:addEventListener("touch",confirm);
 		end

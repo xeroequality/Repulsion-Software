@@ -430,6 +430,8 @@ function scene:enterScene( event )
 		loadBtn.x = (w/2); loadBtn.y = (h/2)+(r_h/2)-150; loadBtn.section = "Load";
 		local saveBtn = display.newImage("../images/btn_save.png");
 		saveBtn.x = (w/2); saveBtn.y = (h/2)+(r_h/2)-190; saveBtn.section = "Save";
+		local settingsBtn = display.newImage("../images/btn_gear.png");
+		settingsBtn.x = (w/2)+150; settingsBtn.y = (h/2)+(r_h/2)-35;
 		
 		--Slots
 		local slots = {};
@@ -481,11 +483,12 @@ function scene:enterScene( event )
 		overwriteBtn.alpha = 0;
 		loadCBtn.alpha = 0;
 		menuText.alpha = 0;
+		settingsBtn.alpha = 0;
 		successText.alpha = 0;
 		
 		overlayshade.movy = "Yes"; overlayrect.movy = "Yes"; saveBtn.movy = "Yes"; loadBtn.movy = "Yes"; backMainBtn.movy = "Yes";
 		pauseText.movy = "Yes"; backBtn.movy = "Yes"; restartBtn.movy = "Yes"; exitBtn.movy = "Yes"; overwriteBtn.movy = "Yes"
-		loadCBtn.movy = "Yes"; menuText.movy = "Yes"; successText.movy = "Yes";
+		loadCBtn.movy = "Yes"; menuText.movy = "Yes"; successText.movy = "Yes"; settingsBtn.movy = "Yes";
 		
 		function assertDepth()
 			group:insert(overlayshade)
@@ -498,6 +501,7 @@ function scene:enterScene( event )
 			group:insert(saveBtn);
 			group:insert(backMainBtn);
 			group:insert(overwriteBtn);
+			group:insert(settingsBtn);
 			group:insert(loadCBtn);
 			group:insert(menuText);
 			group:insert(successText);
@@ -557,6 +561,7 @@ function scene:enterScene( event )
 						exitBtn.alpha = 0;
 						loadBtn.alpha = 0;
 						saveBtn.alpha = 0;
+						settingsBtn.alpha = 0;
 						backMainBtn.alpha = 1;
 						loadCBtn.alpha = 1;
 						menuText.alpha = 0;
@@ -579,6 +584,7 @@ function scene:enterScene( event )
 						exitBtn.alpha = 0;
 						loadBtn.alpha = 0;
 						saveBtn.alpha = 0;
+						settingsBtn.alpha = 0;
 						backMainBtn.alpha = 1;
 						overwriteBtn.alpha = 1;
 						menuText.alpha = 0;
@@ -601,6 +607,7 @@ function scene:enterScene( event )
 						exitBtn.alpha = 1;
 						loadBtn.alpha = 1;
 						saveBtn.alpha = 1;
+						settingsBtn.alpha = 1;
 						backMainBtn.alpha = 0;
 						overwriteBtn.alpha = 0;
 						loadCBtn.alpha = 0;
@@ -913,6 +920,7 @@ function scene:enterScene( event )
 						exitBtn.alpha = 1;
 						loadBtn.alpha = 1;
 						saveBtn.alpha = 1;
+						settingsBtn.alpha = 1;
 						
 					end				
 				else
@@ -933,6 +941,7 @@ function scene:enterScene( event )
 						exitBtn.alpha = 0;
 						loadBtn.alpha = 0;
 						saveBtn.alpha = 0;
+						settingsBtn.alpha = 0;
 					end
 					--Control Visibility of the Overlay Shade
 					overlayshade.alpha = overlayshade.alpha - (s_alpha/(anim_time+5))
@@ -1043,6 +1052,7 @@ function scene:enterScene( event )
 		group:insert(saveBtn);
 		group:insert(backMainBtn);
 		group:insert(overwriteBtn);
+		group:insert(settingsBtn);
 		group:insert(loadCBtn);
 		group:insert(menuText);
 		group:insert(successText);

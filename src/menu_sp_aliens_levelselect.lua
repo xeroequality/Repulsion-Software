@@ -2,17 +2,12 @@ local storyboard = require( "storyboard" )
 local levels = require( "levelinfo" )
 local widget = require( "widget" )
 local scene = storyboard.newScene()
- 
-----------------------------------------------------------------------------------
--- 
---      NOTE:
---      
---      Code outside of listener functions (below) will only be executed once,
---      unless storyboard.removeScene() is called.
--- 
+
+---------------------------------------------------------------------------------
+-- BEGINNING OF YOUR IMPLEMENTATION
 ---------------------------------------------------------------------------------
 local backBtn
-local levelBtn = {};
+local levelBtn = {}
 
 -- 'onRelease' event listener for playBtn
 local function onBtnRelease(event)
@@ -20,35 +15,161 @@ local function onBtnRelease(event)
 	local label = t.id
 	print("released button " .. label)
 	storyboard.gotoScene( label, "fade", 200)
-	return true	-- indicates successful touch
-
+	return true
 end
 
----------------------------------------------------------------------------------
--- BEGINNING OF YOUR IMPLEMENTATION
----------------------------------------------------------------------------------
- 
--- Called when the scene's view does not exist:
 function scene:createScene( event )
         local group = self.view
- 
-        -----------------------------------------------------------------------------
-        --      CREATE display objects and add them to 'group' here.
-        --      Example use-case: Restore 'group' from previously saved state.        
-        -----------------------------------------------------------------------------
-        
 end
- 
- 
--- Called immediately after scene has moved onscreen:
+
 function scene:enterScene( event )
         local group = self.view
-        local k;
-		--Set Up the Width and Height Variables
-		local w = display.contentWidth; local h = display.contentHeight;
-        -----------------------------------------------------------------------------
-                
-        -- INSERT code here (e.g. start timers, load audio, start listeners, etc.)
+		
+		local W = display.contentWidth
+		local H = display.contentHeight
+		local offset = (W-320)/6		-- Positions objects, scaled properly
+		local space1, space2, earth		-- Background images
+		local bounceDown, bounceUp		-- Bouncing button functions
+		local openOverlay, closeOverlay -- Overlay open/close functions
+		local overlayVars = {
+			img = "../images/overlay_grey.png",	-- Overlay image location
+			overlay = nil,						-- Overlay display object
+			isOpen = false,						-- Boolean for whether overlay is open/closed
+			chapter = 1,						-- Current chapter (FOR LATER USE)
+			closeBtn = nil,						-- Button to close overlay
+			playBtn = nil,						-- Button to select level
+			title = nil,						-- Level Info: Title
+			desc = nil,							-- Level Info: Description
+			parScore = nil,						-- Level Info: Par Score
+			wallet = nil						-- Level Info: Wallet
+		}
+		
+		openOverlay = function(event)
+			if not overlayVars.isOpen then
+				print("opening overlay")
+				overlayVars.isOpen = true
+				-- Create overlay image
+				overlayVars.overlay = display.newImage(overlayVars.img)
+				overlayVars.overlay.x = W/2
+				overlayVars.overlay.y = H/2
+				overlayVars.overlay:scale(0,0)
+				group:insert(overlayVars.overlay)
+				-- Determine which information to show based on button pressed
+				local buttonPressed = event.target.level
+				local levelInfo
+				if buttonPressed == 1 then
+					levelInfo = levels.level1
+				elseif buttonPressed == 2 then
+					levelInfo = levels.level2
+				elseif buttonPressed == 3 then
+					levelInfo = levels.level3
+				elseif buttonPressed == 4 then
+					levelInfo = levels.level4
+				elseif buttonPressed == 5 then
+					levelInfo = levels.level5
+				end
+				-- Function to add objects to overlay
+				local function buildOverlay(event)
+					print("overlay opened")
+					-- Close Overlay Button
+					overlayVars.closeBtn = widget.newButton{
+						default="../images/background_redX.png",
+						over="../images/background_redX.png",
+						width=30,
+						height=30,
+						onRelease=closeOverlay
+					}
+					overlayVars.closeBtn.view.x=overlayVars.overlay.x+overlayVars.overlay.width/2-25
+					overlayVars.closeBtn.view.y=overlayVars.overlay.y-overlayVars.overlay.height/2+25
+					-- Play Level Button
+					overlayVars.playBtn = widget.newButton{
+						id="sp_aliens_ch1_level"..buttonPressed,
+						default="../images/background_GO.png",
+						over="../images/background_GOWHITE.png",
+						width=140,
+						height=87,
+						onRelease=onBtnRelease
+					}
+					overlayVars.playBtn.view.x=overlayVars.overlay.x+overlayVars.overlay.width/4+offset
+					overlayVars.playBtn.view.y=overlayVars.overlay.y+overlayVars.overlay.height/4+offset
+					-- Title
+					overlayVars.title = display.newText(levelInfo.title,0,0,native.systemFont,40)
+					overlayVars.title:setReferencePoint(display.CenterLeftReferencePoint)
+					overlayVars.title:scale(0.5,0.5)
+					overlayVars.title.x = overlayVars.overlay.x-overlayVars.overlay.width/2+offset
+					overlayVars.title.y = overlayVars.overlay.y-overlayVars.overlay.height/2+10+offset
+					-- Description
+					overlayVars.desc = display.newText("Info: "..levelInfo.desc,0,0,native.systemFont,40)
+					overlayVars.desc:setReferencePoint(display.CenterLeftReferencePoint)
+					overlayVars.desc:scale(0.5,0.5)
+					overlayVars.desc.x = overlayVars.overlay.x-overlayVars.overlay.width/2+offset
+					overlayVars.desc.y = overlayVars.overlay.y-overlayVars.overlay.height/2+10+2*offset
+					-- Par Score
+					overlayVars.parScore = display.newText("Par Score: "..levelInfo.parScore,0,0,native.systemFont,40)
+					overlayVars.parScore:setReferencePoint(display.CenterLeftReferencePoint)
+					overlayVars.parScore:scale(0.5,0.5)
+					overlayVars.parScore.x = overlayVars.overlay.x-overlayVars.overlay.width/2+offset
+					overlayVars.parScore.y = overlayVars.overlay.y-overlayVars.overlay.height/2+10+3*offset
+					-- Wallet
+					overlayVars.wallet = display.newText("Bank: $"..levelInfo.wallet,0,0,native.systemFont,40)
+					overlayVars.wallet:setReferencePoint(display.CenterLeftReferencePoint)
+					overlayVars.wallet:scale(0.5,0.5)
+					overlayVars.wallet.x = overlayVars.overlay.x-overlayVars.overlay.width/2+offset
+					overlayVars.wallet.y = overlayVars.overlay.y-overlayVars.overlay.height/2+10+4*offset
+					
+					group:insert(overlayVars.closeBtn.view)
+					group:insert(overlayVars.playBtn.view)
+					group:insert(overlayVars.title)
+					group:insert(overlayVars.desc)
+					group:insert(overlayVars.parScore)
+					group:insert(overlayVars.wallet)
+				end
+				-- Scale up overlay display object
+				transition.to(overlayVars.overlay, {time=500, xScale=1, yScale=1, onComplete=buildOverlay})
+			end
+		end
+		
+		closeOverlay = function(event)
+			if overlayVars.isOpen then
+				print("closing overlay")
+				overlayVars.isOpen = false
+				if overlayVars.closeBtn and overlayVars.closeBtn.view then
+					overlayVars.closeBtn.view:removeSelf()
+					overlayVars.closeBtn.view = nil
+					overlayVars.closeBtn = nil
+				end
+				if overlayVars.playBtn and overlayVars.playBtn.view then
+					overlayVars.playBtn.view:removeSelf()
+					overlayVars.playBtn.view = nil
+					overlayVars.playBtn = nil
+				end
+				if overlayVars.title then
+					overlayVars.title:removeSelf()
+					overlayVars.title = nil
+				end
+				if overlayVars.desc then
+					overlayVars.desc:removeSelf()
+					overlayVars.desc = nil
+				end
+				if overlayVars.parScore then
+					overlayVars.parScore:removeSelf()
+					overlayVars.parScore = nil
+				end
+				if overlayVars.wallet then
+					overlayVars.wallet:removeSelf()
+					overlayVars.wallet = nil
+				end
+				local function removeOverlay(event)
+					print("overlay closed")
+					if overlayVars.overlay then
+						overlayVars.overlay:removeSelf()
+						overlayVars.overlay = nil
+					end
+				end
+				transition.to(overlayVars.overlay, {time=500, xScale=0.05, yScale=0.05, onComplete=removeOverlay})
+			end
+		end
+		
 		backBtn = widget.newButton{
 			id="menu_sp_main",
 			labelColor = { default={255}, over={128} },
@@ -58,394 +179,110 @@ function scene:enterScene( event )
 			onRelease = onBtnRelease
 		}
 		backBtn.view:setReferencePoint( display.CenterReferencePoint )
-		for k = 1, 5 do
-			levelBtn[k] = widget.newButton{
-				id="sp_aliens_ch1_level"..k,
+		backBtn.view.x = 30
+		backBtn.view.y = H-30
+		
+		for i= 1,5 do
+			levelBtn[i] = widget.newButton{
+				id="level"..i,
 				labelColor = { default={255}, over={128} },
-				default="../images/btn_back.png",
-				over="../images/btn_back_pressed.png",
-				width=(140*0.8), height=(87*0.8),
-				onRelease = onBtnRelease
+				default="../images/btn_level"..i..".png",
+				over="../images/btn_level"..i..".png",
+				width=64, height=64,
+				onRelease = openOverlay
 			}
-			levelBtn[k].view:setReferencePoint( display.CenterReferencePoint )
-			levelBtn[k].view.alpha = 0;
-			levelBtn[k].view.x = w-30; levelBtn[k].view.y = h-50;
+			levelBtn[i].view:setReferencePoint( display.CenterReferencePoint )
+			levelBtn[i].view.x = 2*offset+(64+offset)*(i-1); levelBtn[i].view.y = 50
+			levelBtn[i].level = i
 		end
 
-		-- Make the Space Backgrounds
-		local space1 = display.newImage( "../images/space.png" )
+		--Make the Space Backgrounds
+		space1 = display.newImage( "../images/space.png" )
 		space1:setReferencePoint ( display.CenterReferencePoint )
-		space1.x = 50; space1.y = h/2
-		local space2 = display.newImage("../images/space.png" )
+		space1.x = 50; space1.y = H/2
+		space2 = display.newImage("../images/space.png" )
 		space2:setReferencePoint ( display.CenterReferencePoint )
-		space2.x = -w*2+50; space2.y = h/2
+		space2.x = -W*2+50; space2.y = H/2
+		--Make the Earth
+		earth = display.newImageRect("../images/earth_slice.png",600,185)
+		earth:setReferencePoint ( display.CenterReferencePoint )
+		earth.x = W/2-10; earth.y = H-80;
 		
 		--Move the Space Backgrounds
 		function moveSpace (event)
-			if space1.x >= 2*w then
-				space1.x = -2*w
+			if space1.x >= 2*W then
+				space1.x = -2*W
 			end
-			if space2.x >= 2*w then
-				space2.x = -2*w
+			if space2.x >= 2*W then
+				space2.x = -2*W
 			end
-			--print("space1: " .. space1.x)
-			--print("space2: " .. space2.x)
 			space1.x = space1.x + 1
 			space2.x = space2.x + 1
 		end
 		
-		local chapter = 1; --Which Chapter Are We On?
-		
-		--Create Earth
-		local earth = display.newImageRect("../images/earth_slice.png",600,185)
-		earth:setReferencePoint ( display.CenterReferencePoint )
-		earth.x = w/2-10; earth.y = h-80;
-		
-		--Create the Level Select Buttons
-		local lvl = {};
-		lvl[1] = display.newImage("../images/btn_level1.png");
-		lvl[2] = display.newImage("../images/btn_level2.png");
-		lvl[3] = display.newImage("../images/btn_level3.png");
-		lvl[4] = display.newImage("../images/btn_level4.png");
-		lvl[5] = display.newImage("../images/btn_level5.png");
-		
-		--GO Button
-		local GO = display.newImage("../images/background_GOWhite.png");
-		local overlayBack = display.newImage("../images/background_redX.png");
-		GO.x = w-30; GO.y = h-50; GO.alpha = 0.5; GO:scale(0.8,0.8);
-		backBtn.view.x = 30; backBtn.view.y = h-50;
-		overlayBack.x = w-80; overlayBack.y = 60; overlayBack.alpha = 0; overlayBack:scale(0.8,0.8);
-		
-		--Scale it So Each Image is 64x64
-		lvl[1]:scale((2/3),(2/3)); lvl[2]:scale((2/3),(2/3)); lvl[3]:scale((2/3),(2/3)); lvl[4]:scale((2/3),(2/3)); lvl[5]:scale((2/3),(2/3));
-		
-		--s denotes how much space is between the border of the phone and the first button (also the border and the last button
-		--b denotes how much space is between each button
-		--iw denotes how long in width is each image
-		--yy denotes the y position of all the Level Select Buttons
-		--lvlpos is going to array telling us where the x locations of every button is
-		-- (5 * iw) + (2 * s) + (4 * b) = (display.contentWidth)
-		local s = 30; local b = 25; local iw = 96*(2/3);
-		local xx = 0; local yy = 75;
-		local lvlpos = {};
-		
-		lvl[1].y = yy; lvl[2].y = yy; lvl[3].y = yy; lvl[4].y = yy; lvl[5].y = yy;
-		
-		--Place the Level Select Buttons Based on the Numbers Declared Above
-		xx = xx + s + (iw/2); --First, Position of lvl1 Button
-		lvl[1].x = xx; lvlpos[1] = xx;
-		xx = xx + (iw/2) + b + (iw/2); --Add the Break Length and the Length of a Button
-		lvl[2].x = xx; lvlpos[2] = xx;
-		xx = xx + (iw/2) + b + (iw/2); --Do This Until All the Buttons are Placed
-		lvl[3].x = xx; lvlpos[3] = xx;
-		xx = xx + (iw/2) + b + (iw/2);
-		lvl[4].x = xx; lvlpos[4] = xx;
-		xx = xx + (iw/2) + b + (iw/2);
-		lvl[5].x = xx; lvlpos[5] = xx;
-		
-		--bouncefactor denotes how far up/down them buttons bounce
-		--bouncedir tells which direction the buttons are bouncing
-		--bouncespeed denotes how far they bounce every frame
-		local i = 0; local bouncefactor = 5; local bouncespeed = 0.5;
-		local bouncedir = {"up","up","up","up","up"}
-		
-		--Adjust Them Buttons
-		local loc = bouncefactor;
-		for i = 1, 5 do
-			lvl[i].y = (yy-loc);
-			loc = loc - ((2*bouncefactor)/5);		
-		end
-		
-		--Overlay Variables
-		local overlay = false; --Is the Overlay Up?
-		local overlay_activity = false; --Is There Overlay Animation Going On?
-		local overlay_level = 1; --Which Level Did The Player Choose?
-		local button = 0; --A Flag Variable
-		
-		--Bounce Them Buttons
-		function bouncingButtons(event)	
-			if overlay == false or overlay == true then			
-				for i = 1, 5 do				
-					if bouncedir[i] == "up" then					
-						lvl[i].y = lvl[i].y - bouncespeed;
-						if lvl[i].y <= (yy-bouncefactor) then
-							lvl[i].y = (yy-bouncefactor);
-							bouncedir[i] = "down";
-						end						
-					else					
-						lvl[i].y = lvl[i].y + bouncespeed;
-						if lvl[i].y >= (yy+bouncefactor) then
-							lvl[i].y = (yy+bouncefactor);
-							bouncedir[i] = "up";
-						end						
-					end					
-				end				
-			end		
-		end
-		
-		--Clicking On Them Level Select Buttons
-		function levelSelectButton(event)		
-			--Do The Function When the Player Let's Go of Their Pressure
-			if event.phase == "ended" then			
-				--Find Out Which Button Has Been Pressed
-				for i = 1, 5 do				
-					if event.x >= (lvlpos[i]-(iw/2)) and event.x <= (lvlpos[i]+(iw/2)) then
-						button = i; --Set Button To That Level
-					end				
-				end			
-				--If the Overlay Isn't Up Yet
-				if overlay == false and overlay_activity == false then
-					--Set Up the Overlay and Make it Show The Chosen Level
-					overlay = true;
-					overlay_activity = true;
-					overlay_level = button;
-				end
-				--[[If Not...				
-					--Check to See If The Button Pressed is the Same One
-					if overlay_level ~= button then
-						--If Not, Switch Overlay Image to New Level
-						overlay_level = button
-					else
-						--If It Is, then Get Off of the Overlay
-						overlay = false;
-						overlay_activity = true;
-					end				
-				end--]]		
-			end		
-		end
-		--Add the Listeners to All the Level Select Buttons
-		for i = 1, 5 do
-			lvl[i]:addEventListener("touch",levelSelectButton);
-		end
-		
-		--Overlay Animation Variables
-		local anim_time = 15; --How Much Time Spent for Overlay Animation (Both Ways)
-		local now_time = 0; --The Current Time for the Current Animation
-		local r_alpha = 0; --Overlay's Starting Alpha Value
-		local s_alpha = 0.7; --Shade Final Alpha Value
-		local r_scale = 0.75; --Overlay's Starting Scale
-		local nr_scale = r_scale; --Overlay's Current Scale
-		local once = false; --Preliminary Things Before Animating
-		local r_w = (5*iw)+(2*b); --Length of the Overlay Rectangle
-		local r_h = 256; --Height of the Overlay Rectangle
-		
-		--Make the Overlay Rectangle
-		local overlayshade = display.newRect(-w,0,w*3,h); --The Shady Part of the Screen
-		overlayshade:setFillColor(0,0,0); overlayshade.alpha = 0;
-		local overlayrect = display.newImageRect("../images/overlay_grey.png",r_w,r_h);
-		overlayrect.alpha = 0; overlayrect.x = (w/2); overlayrect.y = (h/2);
-		
-		--Level Information
-		local parScore = display.newText("",0,0,native.SystemFont,40);
-		parScore.x = (w/2)-100; parScore.y = (h/2)-100;
-		parScore:scale(0.5,0.5)
-		parScore.alpha = 0
-		local wallet = display.newText("",0,0,native.SystemFont,40);
-		wallet.x = (w/2)-100; wallet.y = (h/2)-50;
-		wallet:scale(0.5,0.5)
-		wallet.alpha = 0
-		local description = display.newText("",0,0,native.SystemFont,40);
-		description.x = (w/2)-50; description.y = (h/2);
-		description:scale(0.5,0.5)
-		description.alpha = 0
-		
-		--Overlay Animation (Which Switching In and Out of the Overlay
-		function overlay_animation(event)		
-			--Check to See If We Need to Animate
-			if overlay_activity == true then			
-				--Are We Going Into the Overlay?
-				if overlay == true then
-					--First Time Things
-					if once == false then
-						once = true;
-						overlayshade.alpha = 0;
-						overlayrect.alpha = r_alpha;
-						now_time = anim_time;
-						overlayrect:scale(r_scale,r_scale);
-						nr_scale = (1-r_scale)/anim_time;
-						nr_scale = (nr_scale+r_scale)/r_scale;
-					end
-					--Control Visibility of the Overlay Shade
-					overlayshade.alpha = overlayshade.alpha + (s_alpha/anim_time)
-					--Control Visibility of the Overlay Rectangle
-					overlayrect.alpha = overlayrect.alpha + ((1-r_alpha)/anim_time)
-					--Control Scaling of the Overlay Rectangle
-					overlayrect:scale(nr_scale,nr_scale);
-					--Countdown the Timer
-					now_time = now_time - 1;
-					--Is Time Up?
-					if now_time <= 0 then
-						overlay_activity = false;
-						once = false;
-						overlayshade.alpha = s_alpha;
-						overlayrect.alpha = 1;
-						local GO = display.newImage(group,"../images/background_GO.png");
-						GO.x = w-30; GO.y = h-50; GO.alpha = 1; GO:scale(0.8,0.8);
-						backBtn.view.alpha = 0; overlayBack.alpha = 1;
-						levelBtn[button].view.alpha = 0.01;
-						
-						--Get Some Info
-						local level
-						if button == 1 then level = levels.level1 end
-						if button == 2 then level = levels.level2 end
-						if button == 3 then level = levels.level3 end
-						if button == 4 then level = levels.level4 end
-						if button == 5 then level = levels.level5 end
-						
-						--Update the Text Stuff
-						parScore.text = "Par Score: " .. level.parScore
-						parScore.alpha = 1
-						wallet.text = "Wallet: " .. level.wallet
-						wallet.alpha = 1
-						description.text = "Desc: " .. level.desc
-						description.alpha = 1
-					end				
-				else
-				--If We Are Leaving
-					--First Time Things
-					if once == false then
-						levelBtn[button].view.alpha = 0;
-						once = true;
-						overlayshade.alpha = s_alpha;
-						overlayrect.alpha = 1;
-						now_time = anim_time;
-						nr_scale = (1-r_scale)/anim_time;
-						nr_scale = (nr_scale-r_scale)/r_scale;
-						overlayBack.alpha = 0;
-						parScore.alpha = 0
-						wallet.alpha = 0
-						description.alpha = 0
-					end
-					--Control Visibility of the Overlay Shade
-					overlayshade.alpha = overlayshade.alpha - (s_alpha/(anim_time+5))
-					--Control Visibility of the Overlay Rectangle
-					overlayrect.alpha = overlayrect.alpha - ((1-r_alpha)/(anim_time+5))
-					--Control Scaling of the Overlay Rectangle
-					overlayrect:scale(nr_scale,nr_scale);
-					--Countdown the Timer
-					now_time = now_time - 1;
-					--Is Time Up?
-					if now_time <= 0 then
-						overlay_activity = false;
-						overlayshade.alpha = 0;
-						overlayrect.alpha = 0;
-						once = false;
-						local GO = display.newImage(group,"../images/background_GOWhite.png");
-						GO.x = w-30; GO.y = h-50; GO.alpha = 0.5; GO:scale(0.8,0.8);
-						backBtn.view.alpha = 1; overlayBack.alpha = 0;
-						overlayrect:scale((1/r_scale),(1/r_scale));
-					end	
-				end
-			else
-				once = false;
-			end			
-		end
-		
-		--The Button Used to Get Out of the Overlay
-		function overlayBackButton(event)
-			if event.phase == "ended" and overlayBack.alpha == 1 and overlay == true then
-				overlay = false;
-				overlay_activity = true;
+		--Bouncing buttons
+		bounceDown = function(event)
+			for i=1,5 do
+				transition.to(levelBtn[i].view, {time=1000, y=levelBtn[i].view.y+10})
+			end
+			if bounceUp then
+				timer.performWithDelay(1000,bounceUp,1)
 			end
 		end
-		
-		--Display the Information onto the Overlay
-		function overlayDisplay(event)
-			--Is the Overlay Up and Is It Done Animating?
-			if overlay == true and overlay_activity == false then
+		bounceUp = function(event)
+			for i=1,5 do
+				transition.to(levelBtn[i].view, {time=1000, y=levelBtn[i].view.y-10})
+			end
+			if bounceDown then
+				timer.performWithDelay(1000,bounceDown,1)
 			end
 		end
+		-- Start button bouncing:
+		bounceDown()
 		
 		--Add the Runtime Listeners
 		Runtime:addEventListener("enterFrame",moveSpace)
-		Runtime:addEventListener("enterFrame",bouncingButtons)
-		Runtime:addEventListener("enterFrame",overlay_animation)
-		Runtime:addEventListener("enterFrame",overlayDisplay)
-		
-		--Add Object Listeners
-		overlayBack:addEventListener("touch",overlayBackButton)
 		
 		group:insert(space1)
 		group:insert(space2)
 		group:insert(earth)
-		--Insert All the Texts and Images
-		for i = 1,5 do
-			group:insert(lvl[i]);
-			group:insert(levelBtn[i].view);
-		end
-		group:insert(overlayshade);
-		group:insert(overlayrect);
-		group:insert(GO)
-		group:insert(parScore);
-		group:insert(wallet);
-		group:insert(description);
 		group:insert(backBtn.view)
-		group:insert(overlayBack)
-		
+		for i = 1,5 do
+			group:insert(levelBtn[i].view)
+		end
 end
- 
- 
--- Called when scene is about to move offscreen:
+
 function scene:exitScene( event )
         local group = self.view
-        
-        -----------------------------------------------------------------------------
-        --      INSERT code here (e.g. stop timers, remove listeners, unload sounds, etc.)
-        -----------------------------------------------------------------------------
 		
 		--Remove the Runtime Listeners
 		Runtime:removeEventListener("enterFrame",moveSpace)
-		Runtime:removeEventListener("enterFrame",bouncingButtons)
-		Runtime:removeEventListener("enterFrame",overlay_animation)
-		Runtime:removeEventListener("enterFrame",overlayDisplay)
-        
-		local num = group.numChildren;
-		while num >= 1 do
-			group:remove(num)
-			num = num - 1
-		end
 		
 end
- 
- 
--- Called prior to the removal of scene's "view" (display group)
+
 function scene:destroyScene( event )
         local group = self.view
-        
-        -----------------------------------------------------------------------------
-        --      INSERT code here (e.g. remove listeners, widgets, save state, etc.)
-        -----------------------------------------------------------------------------
+
 		if backBtn then
 			backBtn:removeSelf()
 			backBtn=nil
 		end
-		for k = 1, 5 do
-			if levelBtn[k] then
-				levelBtn[k]:removeSelf()
-				levelBtn[k]=nil
+		for i = 1,5 do
+			if levelBtn[i] then
+				levelBtn[i]:removeSelf()
+				levelBtn[i]=nil
 			end
 		end
         
 end
- 
+
 ---------------------------------------------------------------------------------
 -- END OF YOUR IMPLEMENTATION
 ---------------------------------------------------------------------------------
- 
--- "createScene" event is dispatched if scene's view does not exist
 scene:addEventListener( "createScene", scene )
- 
--- "enterScene" event is dispatched whenever scene transition has finished
 scene:addEventListener( "enterScene", scene )
- 
--- "exitScene" event is dispatched before next scene's transition begins
 scene:addEventListener( "exitScene", scene )
- 
--- "destroyScene" event is dispatched before view is unloaded, which can be
--- automatically unloaded in low memory situations, or explicitly via a call to
--- storyboard.purgeScene() or storyboard.removeScene().
 scene:addEventListener( "destroyScene", scene )
- 
 ---------------------------------------------------------------------------------
  
 return scene

@@ -712,11 +712,78 @@ function scene:enterScene( event )
 					successText.text = "Save Successful!";
 					successTime = maxSuccessTime;
 					successText:setTextColor(0,255,0);
+					
+					local num = overlayGroup.numChildren;
+					while num >= 1 do
+						overlayGroup:remove(num)
+						num = num - 1
+					end
+					local str = "Slot "..slot.."\n";
+					package.loaded["slot"..slot] = nil
+					_G["slot"..slot] = nil
+					local Play	 = require( "slot"..slot )
+					local player = Play.structure;
+					str = str.."Cost: "..player.totalCost.."\n";
+					str = str.."Num of Objects: "..player.numObjects.."\n";
+					
+					--Show An Image of the Structure
+					local max_w = 182-80; --How Much Space do We Have to Show This Image in Width
+					local max_h = 100; --And Height
+					local baseX = (w/2)-75+50+48+20;
+					local baseY = (h/2)+68;
+					--Get the Largest X and Smallest Y Offset Value
+					local off_xlarge = player.x_vals[1];
+					local off_ylarge = -1*player.y_vals[1];
+					for i = 2,player.numObjects do
+						if player.x_vals[i] > off_xlarge then
+							off_xlarge = player.x_vals[i];
+						end
+						if (-1*player.y_vals[i]) > off_ylarge then
+							off_ylarge = -1*player.y_vals[i];
+						end
+					end
+					--Now Get the Scales
+					local x_sc = 0.5; local y_sc = 0.5;
+					if off_xlarge > (max_w*2) then x_sc = (max_w/off_xlarge); end
+					if off_ylarge > (max_h*2) then y_sc = (max_h/off_ylarge); end
+					--Now Draw the Objects
+					for i = 1,player.numObjects do
+						local obj = {};
+						obj.type = player.types[i];
+						obj = Materials.clone(obj)
+						obj = display.newImage(obj.img)
+						obj.type = player.types[i];
+						obj = Materials.clone(obj)
+						obj:scale(obj.scaleX,obj.scaleY)
+						obj.rotation = player.rotations[i];
+						--Figure Out the Scale Based on Its Rotation
+						local r = obj.rotation
+						while r > 360 do
+							r = r - 360;
+						end
+						r = r * (math.pi/360); --Get Radians
+						local s = math.abs(math.cos(r));
+						local xs = (x_sc*(s))+(y_sc*(1-s));
+						local ys = (x_sc*(1-s))+(y_sc*(s))
+						obj:scale(xs,ys)
+						
+						obj.x = (player.x_vals[i]*xs)+baseX;
+						obj.y = (player.y_vals[i]*ys)+baseY;
+						
+						overlayGroup:insert(obj);
+						obj:toFront()
+					end
+					player = nil;
+					Play = nil;
+					menuText.text = str;
+					menuText.alpha = 1;
 				end
 			end
 		end
 		local function load(event)
 			if event.phase == "ended" then
+				package.loaded["slot"..slot] = nil
+				_G["slot"..slot] = nil
 				local Play	 = require( "slot"..slot )
 				local player = Play.structure;
 				if player.totalCost <= levelWallet then
@@ -760,6 +827,8 @@ function scene:enterScene( event )
 					successTime = maxSuccessTime;
 					successText:setTextColor(255,0,0);
 				end
+				player = nil;
+				Play = nil;
 				assertDepth();
 			end
 		end
@@ -778,6 +847,8 @@ function scene:enterScene( event )
 				if f == nil then
 					str = str.."\nNo File";
 				else
+					package.loaded["slot"..slot] = nil
+					_G["slot"..slot] = nil
 					local Play	 = require( "slot"..slot )
 					local player = Play.structure;
 					str = str.."Cost: "..player.totalCost.."\n";

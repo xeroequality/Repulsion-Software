@@ -38,6 +38,8 @@ end
 function scene:createScene( event )
         local group = self.view
 		physics.start()
+		W = display.contentWidth
+		H = display.contentHeight
 		
  		-- Instantiate Parallax Background
 		background = Parallax.levelScene(
@@ -85,7 +87,9 @@ function scene:enterScene( event )
 		---------
 		-- Floor
 		---------
-		local floor = display.newRect(-5*W,H-10,W*11,100)
+		floorleft = -5*W
+		floorwidth = 11*W
+		local floor = display.newRect(floorleft,H-10,floorwidth,100)
 		floor:setFillColor(0)
 		physics.addBody(floor, "static", {friction=0.9, bounce=0.05} )
 		group:insert(floor)
@@ -1189,16 +1193,27 @@ end
 				end
 				--interface:insert(cannonballGroup)
 				
-				cannonball:addEventListener('collision', removeball)
+				Runtime:addEventListener('enterFrame', removeballbeyondfloor)
+				cannonball:addEventListener('collision', removeballcollision)
 				
 			end
 
 			end
 		end
 		
-		local deleteBall = function() cannonball:removeSelf() cballExists = false end
-		function removeball()
-			cannonball:removeEventListener('collision', removeball)  -- makes it so it only activates on the first collision
+		local deleteBall = function() if (cballExists) then cannonball:removeSelf() cballExists = false end end
+		function removeballbeyondfloor()
+			if( cannonball) then
+				if( cannonball.x < floorleft or cannonball.x > floorleft + floorwidth) then
+					Runtime:removeEventListener('enterFrame', removeballbeyondfloor)
+					print('deleting the ball...2')
+					deleteBall()
+				end			
+			end
+		end
+		function removeballcollision()
+			cannonball:removeEventListener('collision', removeballcollision)  -- makes it so it only activates on the first collision
+			Runtime:removeEventListener('enterFrame', removeballbeyondfloor)
 			print('deleting the ball...')
 			timer.performWithDelay(5000, deleteBall, 1)	
 		end

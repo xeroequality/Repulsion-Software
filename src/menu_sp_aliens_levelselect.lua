@@ -79,8 +79,8 @@ function scene:enterScene( event )
 						height=30,
 						onRelease=closeOverlay
 					}
-					overlayVars.closeBtn.view.x=overlayVars.overlay.x+overlayVars.overlay.width/2-5
-					overlayVars.closeBtn.view.y=overlayVars.overlay.y-overlayVars.overlay.height/2+5
+					overlayVars.closeBtn.view.x=overlayVars.overlay.x+overlayVars.overlay.width/2-25
+					overlayVars.closeBtn.view.y=overlayVars.overlay.y-overlayVars.overlay.height/2+25
 					-- Play Level Button
 					overlayVars.playBtn = widget.newButton{
 						id="sp_aliens_ch1_level"..buttonPressed,

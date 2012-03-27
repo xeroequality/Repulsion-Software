@@ -1260,8 +1260,8 @@ end
 						crosshair = display.newImage( "../images/crosshair.png" )				-- prints crosshair	
 						crosshair.x = display.contentWidth - 300
 						crosshair.y = display.contentHeight - 200
-						transitionStash.newTransition = transition.to( crosshair, { alpha=1, xScale=0.5, yScale=0.5, time=200 } )
-						--showCrosshair = transitionStash.newTransition;
+						showCrosshair = transition.to( crosshair, { alpha=1, xScale=0.5, yScale=0.5, time=200 } )
+						transitionStash.newTransition = showCrosshair;
 						startRotation = function()
 							crosshair.rotation = crosshair.rotation + 4
 						end

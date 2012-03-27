@@ -54,9 +54,9 @@ Material.wood_box = {
 --   that object will have all properties of that material.
 Material.clone = function(obj)
 	if obj then
-		if obj.type == "wood_plank" then
+		if obj.id == 1 then
 			cloner = Material.wood_plank
-		elseif obj.type == "wood_box" then
+		elseif obj.id == 2 then
 			cloner = Material.wood_box
 		end
 			obj.id=cloner.id

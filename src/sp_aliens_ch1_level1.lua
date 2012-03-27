@@ -318,10 +318,8 @@ function scene:enterScene( event )
 				if wallet >= cost[target.id] then
 					if target.id == 1 then
 						newObj = display.newImage("../images/wood_plank.png")
-						newObj.type = "wood_plank"
 					elseif target.id == 2 then
 						newObj = display.newImage("../images/wood_box.png")
-						newObj.type = "wood_box"
 					else
 						print("null target")
 						return true
@@ -714,7 +712,6 @@ function scene:enterScene( event )
 							xvals[index] = child.x+group[1].x;
 							yvals[index] = child.y;
 							rotation[index] = child.rotation;
-							types[index] = child.type;
 							index = index + 1;
 							total = total + child.cost;
 						end
@@ -820,10 +817,8 @@ function scene:enterScene( event )
 					--Now Draw the Objects
 					for i = 1,player.numObjects do
 						local obj = {};
-						obj.type = player.types[i];
 						obj = Materials.clone(obj)
 						obj = display.newImage(obj.img)
-						obj.type = player.types[i];
 						obj = Materials.clone(obj)
 						obj:scale(obj.scaleX,obj.scaleY)
 						obj.rotation = player.rotations[i];
@@ -873,14 +868,11 @@ function scene:enterScene( event )
 						local obj = {}
 						local baseX = player.baseX;
 						local baseY = player.baseY;
-						obj.type = player.types[i]
 						-- first clone: so obj.img refers to proper image
 						-- second clone: to pass data to object
 						obj = Materials.clone(obj)
 						obj = display.newImage(obj.img)
-						obj.type = player.types[i]
 						obj = Materials.clone(obj)
-						obj.type = player.types[i]
 						obj:scale(obj.scaleX,obj.scaleY)
 						obj.x = player.x_vals[i]+baseX;
 						obj.y = player.y_vals[i]+baseY;
@@ -949,10 +941,8 @@ function scene:enterScene( event )
 					--Now Draw the Objects
 					for i = 1,player.numObjects do
 						local obj = {};
-						obj.type = player.types[i];
 						obj = Materials.clone(obj)
 						obj = display.newImage(obj.img)
-						obj.type = player.types[i];
 						obj = Materials.clone(obj)
 						obj:scale(obj.scaleX,obj.scaleY)
 						obj.rotation = player.rotations[i];
@@ -1165,7 +1155,6 @@ function scene:enterScene( event )
 			local obj = {}
 			local baseX = enemy.baseX;
 			local baseY = enemy.baseY;
-			obj.type = enemy.types[i]
 			-- first clone: so obj.img refers to proper image
 			-- second clone: to pass data to object
 			obj = Materials.clone(obj)

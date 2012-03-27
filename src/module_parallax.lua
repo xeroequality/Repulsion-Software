@@ -68,7 +68,7 @@ local function levelScene( params )
 		local incX = 0;					-- Amount X is incrimented
 		local currentX, currentY = 0; 	-- Bottom Right = (0,0)
 		
-		function shiftScene(event)
+		shiftScene = function(event)
 			if overlay == false then		
 				-- Record movement of Screen by user
 				if event.phase == "began" then
@@ -84,7 +84,7 @@ local function levelScene( params )
 
 					-- Set the new currentX
 					currentX = newX;
-					print ("Screen Moved: oldX = " .. " newX = " .. currentX);
+					--print ("Screen Moved: oldX = " .. " newX = " .. currentX);
 					
 					-- Move all children by incX
 						for i=2,params.Group.numChildren do

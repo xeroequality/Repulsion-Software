@@ -1411,6 +1411,7 @@ function scene:exitScene( event )
 		floorwidth = nil;
 		removeballbeyondfloor = nil;
 		removeballcollision = nil;
+		shiftScene = nil;
 		--[[
 		local num = cannonGroup.numChildren;
 		while num >= 1 do
@@ -1426,6 +1427,9 @@ function scene:exitScene( event )
 				num = num - 1
 			end
 		end--]]
+		
+		cannonGroup = nil;
+		cannonballGroup = nil;
 		
 		--Cancel All Timers
 		local k, v

@@ -426,7 +426,7 @@ function scene:enterScene( event )
 		local overlayGroup = display.newGroup();
 		
 		--Buttons
-		local pauseText = display.newText("PAUSE",(w/2)-60,(h/2)-(r_h/2),"Arial Black",30);
+		local pauseText = display.newText("PAUSE",(w/2)-55,(h/2)-(r_h/2),"Arial Black",30);
 		local backBtn= display.newImage("../images/btn_back.png");
 		backBtn.x = (w/2); backBtn.y = (h/2)+(r_h/2)-30;
 		local restartBtn = display.newImage("../images/btn_restart_level.png");
@@ -1361,6 +1361,8 @@ function scene:exitScene( event )
 		--scrollGroup:removeEventListener(scroll)
 		
 		Runtime:removeEventListener("enterFrame",overlay_animation)
+		Runtime:removeEventListener('enterFrame', removeballbeyondfloor)
+		Runtime:removeEventListener('enterFrame', startRotation)
 		Runtime:removeEventListener("enterFrame",success)
         
 		local num = group.numChildren;

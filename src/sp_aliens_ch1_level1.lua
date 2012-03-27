@@ -573,7 +573,8 @@ function scene:enterScene( event )
 						loadCBtn.alpha = 1;
 						menuText.alpha = 0;
 						for k = 1, 10 do
-							local f = io.open("slot"..k..".lua","r")
+							local path = system.pathForFile( "", system.ResourceDirectory )
+							local f = io.open( path.."slot"..k..".lua", "r" )
 							if f ~= nil then
 								slots[k].alpha = 1;
 							else
@@ -596,7 +597,8 @@ function scene:enterScene( event )
 						overwriteBtn.alpha = 1;
 						menuText.alpha = 0;
 						for k = 1, 10 do
-							local f = io.open("slot"..k..".lua","r")
+							local path = system.pathForFile( "", system.ResourceDirectory )
+							local f = io.open( path.."slot"..k..".lua", "r" )
 							if f ~= nil then
 								slots[k].alpha = 1;
 							else
@@ -757,8 +759,8 @@ function scene:enterScene( event )
 						if i ~= #rotation then supers = supers..","; end
 					end
 					supers = supers.."\n}\n}\n\nreturn PlayerBase";
-					--local path = system.pathForFile( "playerbase.lua", system.ResourceDirectory )
-					local file = io.open( "slot"..slot..".lua", "w" )
+					local path = system.pathForFile( "", system.ResourceDirectory )
+					local file = io.open( path.."slot"..slot..".lua", "w" )
 					file:write( supers )
 					io.close( file )
 					file = nil
@@ -898,7 +900,8 @@ function scene:enterScene( event )
 				end
 				--Get Text
 				local str = "Slot "..slot.."\n";
-				local f = io.open("slot"..slot..".lua","r")
+				local path = system.pathForFile( "", system.ResourceDirectory )
+				local f = io.open( path.."slot"..slot..".lua", "r" )
 				if f == nil then
 					str = str.."\nNo File";
 				else
@@ -1127,8 +1130,12 @@ function scene:enterScene( event )
 		function hit(event)
 			if (event.other).weapon ~= nil then
 				if event.force >= threshold then
-					(event.target).currentHP = (event.target).currentHP - (event.force*(event.other).weapon);
+					local d = math.ceil((event.force*(event.other).weapon));
+					(event.target).currentHP = (event.target).currentHP - d;
 					print((event.target).currentHP)
+					local h = (event.target).currentHP; local m = (event.target).maxHP;
+					if h < 0 then h = 0; end
+					(event.target).alpha = h/m;
 					if (event.target).currentHP <= 0 then
 						(event.target):removeSelf()
 					end
@@ -1295,7 +1302,7 @@ end
 				-- move the image
 				cannonball.x = 300
 				cannonball.y = 240
-				cannonball.weapon = 200;
+				cannonball.weapon = 2;
 				cannonballGroup:insert(cannonball)
 
 				-- apply physics to the cannonball

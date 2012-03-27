@@ -68,7 +68,7 @@ function scene:enterScene( event )
 		space2.x = -w*2; space2.y = h/2
 		
 		--Move the Space Background
-		function moveSpace(event)
+		moveSpace = function(event)
 			--Check to See if Any of the Backgrounds Have Moved Past a Certain Point
 			if space1.x >= 2*w then
 				space1.x = -2*w
@@ -95,7 +95,7 @@ function scene:enterScene( event )
 		e_light2.x = -w*2; e_light2.y = h/2;
 		
 		--Move the Lights
-		function moveLight (event)
+		moveLight = function(event)
 			if active == true then
 				if e_light1.x <= -2*w then
 					e_light1.x = 2*w
@@ -133,6 +133,8 @@ function scene:exitScene( event )
 		--Remove the Runtime Listeners
 		Runtime:removeEventListener("enterFrame",moveSpace)
 		Runtime:removeEventListener("enterFrame",moveLight)
+		moveSpace = nil;
+		moveLight = nil;
 		
         local num = group.numChildren;
 		while num >= 1 do

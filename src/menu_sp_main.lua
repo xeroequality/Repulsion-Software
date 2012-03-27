@@ -54,7 +54,7 @@ function scene:enterScene( event )
 		space2.x = -w*2; space2.y = h/2
 		
 		--Move the Space Background
-		function moveSpace(event)
+		moveSpace = function(event)
 			--Check to See if Any of the Backgrounds Have Moved Past a Certain Point
 			if space1.x >= 2*w then
 				space1.x = -2*w
@@ -146,6 +146,8 @@ function scene:exitScene( event )
 			group:remove(num)
 			num = num - 1
 		end
+		
+		moveSpace = nil;
 end
  
  

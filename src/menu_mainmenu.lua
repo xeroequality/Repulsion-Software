@@ -137,7 +137,7 @@ function scene:enterScene( event )
 		
 		--Here Are the Runtime Functions for the Main Menu
 		-- Push the Logo Up and Down
-		function bouncyLogo(event)		
+		bouncyLogo = function(event)		
 			--If the Scene is Ready...
 			if active == true then
 				--Is the Logo Moving Up or Down?
@@ -162,7 +162,7 @@ function scene:enterScene( event )
 			end		
 		end
 		--Move the Space Background
-		function moveSpace(event)
+		moveSpace = function(event)
 			--Check to See if Any of the Backgrounds Have Moved Past a Certain Point
 			if space1.x >= 2*w then
 				space1.x = -2*w
@@ -188,7 +188,7 @@ function scene:enterScene( event )
 		local nyan = display.newImage(group,"../images/background_nyancat1.png"); --Load the Image Itself
 		local nx = -70; --Nyan Cat's X Coordinate
 		nyan.x = nx; nyan.y = 50; nyan:scale(0.1,0.1); --Placing and Scaling Nyan Cat
-		function nyancat(event)
+		nyancat = function(event)
 		
 			--Countdown
 			timer = timer - 1;
@@ -258,7 +258,7 @@ function scene:enterScene( event )
 		
 		--Rotation of the Earth
 		--Is it Rotating by Moving your Finger?
-		function rotateStuff(event)
+		rotateStuff = function(event)
 			--Once the Event Has Ended, the World Isn't Already Turning, and the Scene is Ready
 			if event.phase == "ended" and turning == false and active == true then
 				--Find Out How Far the Finger Swipe Was
@@ -286,7 +286,7 @@ function scene:enterScene( event )
 			end		
 		end
 		--Is it Rotating by Tapping the Arrows?
-		function rotateTap(event)
+		rotateTap = function(event)
 			--When the Event Starts, the World Isn't Already Turning, and the Scene is Ready
 			if event.phase == "began" and turning == false and active == true then
 					--Figure Out Which Arrow Was Tapped
@@ -309,7 +309,7 @@ function scene:enterScene( event )
 			end			
 		end
 		--Do the Animation for Rotating!
-		function rotateAnimation(event)
+		rotateAnimation = function(event)
 			--Are We Rotating?
 			if turning == true then
 				--Control the Visibility of the Arrows
@@ -392,7 +392,7 @@ function scene:enterScene( event )
 		local wobble_way = true;
 		
 		-- Wobble the UFO
-		function wobble(event)
+		wobble = function(event)
 			--Which Direction Is It Turning
 			if wobble_way == true then
 				--Rotate Clockwise
@@ -444,14 +444,18 @@ function scene:enterScene( event )
             helpText:scale(.5,.5)
 		
 		-- Show the Help and Move Them Lasers
-		function help(event)
+		help = function(event)
 			--Is the Scene Ready?
 			if active == true then		
 				-- Draw Them Lines				
 				-- Remove All Lines Right Now
+				--[[
 				line1:removeSelf(); line2:removeSelf();
 				line3:removeSelf(); line4:removeSelf();
-				aline1:removeSelf(); aline2:removeSelf();				
+				aline1:removeSelf(); aline2:removeSelf();--]]
+			    display.remove(line1); display.remove(line2);
+				display.remove(line3); display.remove(line4);
+				display.remove(aline1); display.remove(aline2);
 				-- Follow the First Two Points (Start of First Line)
 				--Figure Out Which Direction it's Going, and Adjust It
 				if S1 == "left" then
@@ -650,6 +654,20 @@ function scene:exitScene( event )
 			group:remove(num)
 			num = num - 1
 		end
+		
+		pW = nil;
+		--Remove Functions
+		bouncyLogo = nil;
+		moveSpace = nil;
+		nyancat = nil;
+		rotateStuff = nil;
+		rotateTap = nil;
+		rotateAnimation = nil;
+		wobble = nil;
+		help = nil;
+		
+		line1 = nil; line2 = nil; line3 = nil; line4 = nil;
+		aline1 = nil; aline2 = nil;
         
 end
  

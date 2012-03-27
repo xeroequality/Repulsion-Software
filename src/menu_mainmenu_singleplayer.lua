@@ -12,15 +12,15 @@ local widget = require( "widget" )
 local scene = storyboard.newScene()
 
 local buttonLabel
-function buttonyButtons()
+buttonyButtons = function()
 	buttonLabel="prev"
 	return true
 end
-function cattyButton()
+cattyButton = function()
 	buttonLabel="cat"
 	return true
 end
-function weirdoButton()
+weirdoButton = function()
 	buttonLabel="alien"
 	return true
 end

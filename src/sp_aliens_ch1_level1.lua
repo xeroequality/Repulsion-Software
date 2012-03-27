@@ -12,6 +12,20 @@ local cannonfired
 local cannonfire
 widget.setTheme("theme_ios")
 
+local monitorMem = function()
+
+    collectgarbage()
+    print( "MemUsage: " .. collectgarbage("count") )
+
+    local textMem = system.getInfo( "textureMemoryUsed" ) / 1000000
+    print( "TexMem:   " .. textMem )
+end
+
+--Runtime:addEventListener( "enterFrame", monitorMem )
+
+transitionStash = {}
+timerStash = {};
+
 ----------------------------------------------------------------------------------
 --      NOTE:
 --      Code outside of listener functions (below) will only be executed once,
@@ -41,8 +55,6 @@ end
 function scene:createScene( event )
         local group = self.view
 		physics.start()
-		W = display.contentWidth
-		H = display.contentHeight
 		
  		-- Instantiate Parallax Background
 		background = Parallax.levelScene(
@@ -86,12 +98,14 @@ function scene:enterScene( event )
 		--------------------
 		local wood_plank = Materials.wood_plank
 		local wood_box = Materials.wood_box
+		local W = display.contentWidth;
+		local H = display.contentHeight;
 		
 		---------
 		-- Floor
 		---------
-		floorleft = -5*W
-		floorwidth = 11*W
+		local floorleft = -5*W
+		local floorwidth = 11*W
 		local floor = display.newRect(floorleft,H-10,floorwidth,100)
 		floor:setFillColor(0)
 		physics.addBody(floor, "static", {friction=0.9, bounce=0.05} )
@@ -176,10 +190,10 @@ function scene:enterScene( event )
 			if scrollView.isOpen then
 				print("closing scrollView")
 				scrollView.isOpen = false
-				transition.to(static_menu, {time=300, y=-85} )
-				transition.to(scrollView, {time=300, x=-85} )
-				transition.to(play_button, {time=300, y=-35} )
-				transition.to(menu_button, {time=300, y=-35} )
+				transitionStash.newTransition = transition.to(static_menu, {time=300, y=-85} )
+				transitionStash.newTransition = transition.to(scrollView, {time=300, x=-85} )
+				transitionStash.newTransition = transition.to(play_button, {time=300, y=-35} )
+				transitionStash.newTransition = transition.to(menu_button, {time=300, y=-35} )
 
 				if slideBtn then
 					slideBtn:removeSelf()
@@ -191,18 +205,18 @@ function scene:enterScene( event )
 					}
 					slideBtn.y = H/2
 					slideBtn.x = scroll_bkg.width-45
-					transition.to(slideBtn, {time=300, x=-35} )
-					transition.to( goodoverlay, { alpha=0, xScale=1.0, yScale=1.0, time=0} )
-					transition.to( badoverlay, { alpha=0, xScale=1.0, yScale=1.0, time=0} )
+					transitionStash.newTransition = transition.to(slideBtn, {time=300, x=-35} )
+					transitionStash.newTransition = transition.to( goodoverlay, { alpha=0, xScale=1.0, yScale=1.0, time=0} )
+					transitionStash.newTransition = transition.to( badoverlay, { alpha=0, xScale=1.0, yScale=1.0, time=0} )
 
 				end
 			elseif not scrollView.isOpen then
 				print("opening scrollView")
 				scrollView.isOpen = true
-				transition.to(static_menu, {time=300, y=0} )
-				transition.to(scrollView, {time=300, x=0} )
-				transition.to(play_button, {time=300, y=35} )
-				transition.to(menu_button, {time=300, y=35} )
+				transitionStash.newTransition = transition.to(static_menu, {time=300, y=0} )
+				transitionStash.newTransition = transition.to(scrollView, {time=300, x=0} )
+				transitionStash.newTransition = transition.to(play_button, {time=300, y=35} )
+				transitionStash.newTransition = transition.to(menu_button, {time=300, y=35} )
 				if slideBtn then
 					slideBtn:removeSelf()
 					slideBtn = widget.newButton{
@@ -213,9 +227,9 @@ function scene:enterScene( event )
 					}
 					slideBtn.y = H/2
 					slideBtn.x = -35
-					transition.to(slideBtn, {time=300, x=scroll_bkg.width-45} )
-					transition.to( goodoverlay, { alpha=.25, xScale=1.0, yScale=1.0, time=0} )
-					transition.to( badoverlay, { alpha=.25, xScale=1.0, yScale=1.0, time=0} )
+					transitionStash.newTransition = transition.to(slideBtn, {time=300, x=scroll_bkg.width-45} )
+					transitionStash.newTransition = transition.to( goodoverlay, { alpha=.25, xScale=1.0, yScale=1.0, time=0} )
+					transitionStash.newTransition = transition.to( badoverlay, { alpha=.25, xScale=1.0, yScale=1.0, time=0} )
 				end
 				--Close Overlay if Up
 				if overlay == true and overlay_activity == false then
@@ -239,6 +253,7 @@ function scene:enterScene( event )
 		--------------------------------------------
 		--               ITEM DRAG                --
 		--------------------------------------------
+		local focus = 0;
 		-- Event for dragging an item
 		local function dragItem (event)
 			local phase = event.phase
@@ -292,7 +307,6 @@ function scene:enterScene( event )
 			return true
 		end
 		
-		local focus = 0;
 		--------------------------------------------
 		--              ITEM SELECT               --
 		--------------------------------------------
@@ -373,9 +387,9 @@ function scene:enterScene( event )
 		-- static_menu:insert(static_buttons_bkg)
 		
 		local function playUI (event)
-            transition.to(scrollView, {time=300, x=-85} )
+            transitionStash.newTransition = transition.to(scrollView, {time=300, x=-85} )
             slideBtn:removeSelf()
-            transition.to(play_button, {time=300, y=-35} )
+            transitionStash.newTransition = transition.to(play_button, {time=300, y=-35} )
             --make it so that we cannot access it again?
             --delete it!
 			print('clicked play')
@@ -423,7 +437,7 @@ function scene:enterScene( event )
 		overlayshade:setFillColor(0,0,0); overlayshade.alpha = 0;
 		local overlayrect = display.newImageRect("../images/overlay_grey.png",r_w,r_h);
 		overlayrect.alpha = 0; overlayrect.x = (w/2); overlayrect.y = (h/2);
-		local overlayGroup = display.newGroup();
+		overlayGroup = display.newGroup();
 		
 		--Buttons
 		local pauseText = display.newText("PAUSE",(w/2)-55,(h/2)-(r_h/2),"Arial Black",30);
@@ -497,7 +511,7 @@ function scene:enterScene( event )
 		pauseText.movy = "Yes"; backBtn.movy = "Yes"; restartBtn.movy = "Yes"; exitBtn.movy = "Yes"; overwriteBtn.movy = "Yes"
 		loadCBtn.movy = "Yes"; menuText.movy = "Yes"; successText.movy = "Yes"; settingsBtn.movy = "Yes";
 		
-		function assertDepth()
+		assertDepth = function()
 			group:insert(overlayshade)
 			group:insert(overlayrect)
 			group:insert(backBtn)
@@ -520,10 +534,10 @@ function scene:enterScene( event )
 		local function back_to_main(event)
 			if event.phase == "began" and backBtn.alpha > 0 then
 				scrollView.isOpen = true
-				transition.to(static_menu, {time=300, y=0} )
-				transition.to(scrollView, {time=300, x=0} )
-				transition.to(play_button, {time=300, y=35} )
-				transition.to(menu_button, {time=300, y=35} )
+				transitionStash.newTransition = transition.to(static_menu, {time=300, y=0} )
+				transitionStash.newTransition = transition.to(scrollView, {time=300, x=0} )
+				transitionStash.newTransition = transition.to(play_button, {time=300, y=35} )
+				transitionStash.newTransition = transition.to(menu_button, {time=300, y=35} )
 				if slideBtn then
 					slideBtn:removeSelf()
 					slideBtn = widget.newButton{
@@ -534,9 +548,9 @@ function scene:enterScene( event )
 					}
 					slideBtn.y = H/2
 					slideBtn.x = -35
-					transition.to(slideBtn, {time=300, x=scroll_bkg.width-45} )
-					transition.to( goodoverlay, { alpha=.25, xScale=1.0, yScale=1.0, time=0} )
-					transition.to( badoverlay, { alpha=.25, xScale=1.0, yScale=1.0, time=0} )
+					transitionStash.newTransition = transition.to(slideBtn, {time=300, x=scroll_bkg.width-45} )
+					transitionStash.newTransition = transition.to( goodoverlay, { alpha=.25, xScale=1.0, yScale=1.0, time=0} )
+					transitionStash.newTransition = transition.to( badoverlay, { alpha=.25, xScale=1.0, yScale=1.0, time=0} )
 				end
 				--Close Overlay if Up
 				if overlay == true and overlay_activity == false then
@@ -688,7 +702,7 @@ function scene:enterScene( event )
 			if event.phase == "ended" then
 				local target = event.target;
 				if target.alpha > 0 and overlay_section == "Save" then
-					index = 1;
+					local index = 1;
 					local xvals = {}; local yvals = {}; local num = 0; local rotation = {}; local types = {};
 					--Get Total Cost
 					local total = 0;
@@ -1006,10 +1020,10 @@ function scene:enterScene( event )
 						--Close SlideView
 						if scrollView.isOpen == true then
 							scrollView.isOpen = false
-							transition.to(static_menu, {time=300, y=-85} )
-							transition.to(scrollView, {time=300, x=-85} )
-							transition.to(play_button, {time=300, y=-35} )
-							transition.to(menu_button, {time=300, y=-35} )
+							transitionStash.newTransition = transition.to(static_menu, {time=300, y=-85} )
+							transitionStash.newTransition = transition.to(scrollView, {time=300, x=-85} )
+							transitionStash.newTransition = transition.to(play_button, {time=300, y=-35} )
+							transitionStash.newTransition = transition.to(menu_button, {time=300, y=-35} )
 
 							if slideBtn then
 								slideBtn:removeSelf()
@@ -1021,9 +1035,9 @@ function scene:enterScene( event )
 								}
 								slideBtn.y = H/2
 								slideBtn.x = scroll_bkg.width-45
-								transition.to(slideBtn, {time=300, x=-35} )
-								transition.to( goodoverlay, { alpha=0, xScale=1.0, yScale=1.0, time=300} )
-								transition.to( badoverlay, { alpha=0, xScale=1.0, yScale=1.0, time=300} )
+								transitionStash.newTransition = transition.to(slideBtn, {time=300, x=-35} )
+								transitionStash.newTransition = transition.to( goodoverlay, { alpha=0, xScale=1.0, yScale=1.0, time=300} )
+								transitionStash.newTransition = transition.to( badoverlay, { alpha=0, xScale=1.0, yScale=1.0, time=300} )
 
 							end
 						end
@@ -1116,7 +1130,7 @@ function scene:enterScene( event )
 		MONEY.x = display.contentWidth/2; MONEY.y = 15;
 		MONEY:setTextColor(255,0,0)
 		
-		function updateMONEY(event)
+		local function updateMONEY(event)
 			MONEY.text = "You Have $"..wallet;
 		end
 		Runtime:addEventListener("enterFrame",updateMONEY)
@@ -1127,7 +1141,7 @@ function scene:enterScene( event )
 		
 		--Collision
 		local threshold = 1;
-		function hit(event)
+		local function hit(event)
 			if (event.other).weapon ~= nil then
 				if event.force >= threshold then
 					local d = math.ceil((event.force*(event.other).weapon));
@@ -1210,7 +1224,7 @@ end
 
 		forceMultiplier = 10
 
-		function makeCannon()
+		makeCannon = function()
 			-- create a couple of display groups
 			interface = display.newGroup()
 			cannonGroup = display.newGroup()
@@ -1237,7 +1251,7 @@ end
 			
 		end
 
-		function createCrosshair(event) -- creates crosshair when a touch event begins
+		createCrosshair = function(event) -- creates crosshair when a touch event begins
 			-- creates the crosshair
 			local phase = event.phase
 			if (phase == 'began' and overlay == false and overlay_activity == false) then
@@ -1246,7 +1260,8 @@ end
 						crosshair = display.newImage( "../images/crosshair.png" )				-- prints crosshair	
 						crosshair.x = display.contentWidth - 300
 						crosshair.y = display.contentHeight - 200
-						showCrosshair = transition.to( crosshair, { alpha=1, xScale=0.5, yScale=0.5, time=200 } )
+						transitionStash.newTransition = transition.to( crosshair, { alpha=1, xScale=0.5, yScale=0.5, time=200 } )
+						--showCrosshair = transitionStash.newTransition;
 						startRotation = function()
 							crosshair.rotation = crosshair.rotation + 4
 						end
@@ -1258,7 +1273,7 @@ end
 			end
 		end
 
-		function fire( event )
+		fire = function( event )
 			local phase = event.phase
 			if "began" == phase then
 				display.getCurrentStage():setFocus( crosshair )
@@ -1314,7 +1329,8 @@ end
 				cannonfire = audio.loadSound("../sound/Single_cannon_shot.wav")
 				cannonfired = audio.play(cannonfire,{channel=2} )
 				-- make sure that the cannon is on top of the 
-				local hideCrosshair = transition.to( crosshair, { alpha=0, xScale=1.0, yScale=1.0, time=0, onComplete=stopRotation} )
+				transitionStash.newTransition = transition.to( crosshair, { alpha=0, xScale=1.0, yScale=1.0, time=0, onComplete=stopRotation} )
+				--hideCrosshair = transitionStash.newTransition
 				showCrosshair = false									-- helps ensure that only one crosshair appears
 				
 				if ( crosshairLine ) then	
@@ -1332,7 +1348,7 @@ end
 		end
 		
 		local deleteBall = function() if (cballExists) then cannonball:removeSelf() cballExists = false end end
-		function removeballbeyondfloor()
+		removeballbeyondfloor = function()
 			if( cannonball) then
 				if( cannonball.x < floorleft or cannonball.x > floorleft + floorwidth) then
 					Runtime:removeEventListener('enterFrame', removeballbeyondfloor)
@@ -1341,11 +1357,11 @@ end
 				end			
 			end
 		end
-		function removeballcollision()
+		removeballcollision = function()
 			cannonball:removeEventListener('collision', removeballcollision)  -- makes it so it only activates on the first collision
 			Runtime:removeEventListener('enterFrame', removeballbeyondfloor)
 			print('deleting the ball...')
-			timer.performWithDelay(5000, deleteBall, 1)	
+			timerStash.newTimer = timer.performWithDelay(5000, deleteBall, 1)	
 		end
 		
 		makeCannon()
@@ -1364,6 +1380,7 @@ function scene:exitScene( event )
 		Runtime:removeEventListener('enterFrame', removeballbeyondfloor)
 		Runtime:removeEventListener('enterFrame', startRotation)
 		Runtime:removeEventListener("enterFrame",success)
+		Runtime:removeEventListener( "enterFrame", monitorMem )
         
 		local num = group.numChildren;
 		while num >= 1 do
@@ -1375,6 +1392,22 @@ function scene:exitScene( event )
 			interface:remove(num)
 			num = num - 1
 		end
+		local num = overlayGroup.numChildren;
+		while num >= 1 do
+			overlayGroup:remove(num)
+			num = num - 1
+		end
+		overlay = nil;
+		overlay_activity = nil;
+		assertDepth = nil;
+		makeCannon = nil;
+		createCrosshair = nil;
+		startRotation = nil;
+		fire = nil;
+		stopRotation = nil;
+		deleteBall = nil;
+		removeballbeyondfloor = nil;
+		removeballcollision = nil;
 		--[[
 		local num = cannonGroup.numChildren;
 		while num >= 1 do
@@ -1390,6 +1423,28 @@ function scene:exitScene( event )
 				num = num - 1
 			end
 		end--]]
+		
+		--Cancel All Timers
+		local k, v
+
+		for k,v in pairs(timerStash) do
+			timer.cancel( v )
+			v = nil; k = nil
+		end
+
+		timerStash = nil
+		timerStash = {}
+		
+		--Cancel All Transitions
+		local k, v
+
+		for k,v in pairs(transitionStash) do
+			transition.cancel( v )
+			v = nil; k = nil
+		end
+
+		transitionStash = nil
+		transitionStash = {}
 		
 end
  

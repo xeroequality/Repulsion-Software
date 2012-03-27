@@ -3,6 +3,20 @@ local levels = require( "levelinfo" )
 local widget = require( "widget" )
 local scene = storyboard.newScene()
 
+local monitorMem = function()
+
+    collectgarbage()
+    print( "MemUsage: " .. collectgarbage("count") )
+
+    local textMem = system.getInfo( "textureMemoryUsed" ) / 1000000
+    print( "TexMem:   " .. textMem )
+end
+
+--Runtime:addEventListener( "enterFrame", monitorMem )
+
+transitionStash = {}
+timerStash = {};
+
 ---------------------------------------------------------------------------------
 -- BEGINNING OF YOUR IMPLEMENTATION
 ---------------------------------------------------------------------------------
@@ -125,7 +139,7 @@ function scene:enterScene( event )
 					group:insert(overlayVars.wallet)
 				end
 				-- Scale up overlay display object
-				transition.to(overlayVars.overlay, {time=500, xScale=1, yScale=1, onComplete=buildOverlay})
+				transitionStash.newTransition = transition.to(overlayVars.overlay, {time=500, xScale=1, yScale=1, onComplete=buildOverlay})
 			end
 		end
 		
@@ -166,7 +180,7 @@ function scene:enterScene( event )
 						overlayVars.overlay = nil
 					end
 				end
-				transition.to(overlayVars.overlay, {time=500, xScale=0.05, yScale=0.05, onComplete=removeOverlay})
+				transitionStash.newTransition = transition.to(overlayVars.overlay, {time=500, xScale=0.05, yScale=0.05, onComplete=removeOverlay})
 			end
 		end
 		
@@ -197,14 +211,14 @@ function scene:enterScene( event )
 		end
 
 		--Make the Space Backgrounds
-		space1 = display.newImage( "../images/space.png" )
+		local space1 = display.newImage( "../images/space.png" )
 		space1:setReferencePoint ( display.CenterReferencePoint )
 		space1.x = 50; space1.y = H/2
-		space2 = display.newImage("../images/space.png" )
+		local space2 = display.newImage("../images/space.png" )
 		space2:setReferencePoint ( display.CenterReferencePoint )
 		space2.x = -W*2+50; space2.y = H/2
 		--Make the Earth
-		earth = display.newImageRect("../images/earth_slice.png",600,185)
+		local earth = display.newImageRect("../images/earth_slice.png",600,185)
 		earth:setReferencePoint ( display.CenterReferencePoint )
 		earth.x = W/2-10; earth.y = H-80;
 		
@@ -223,18 +237,18 @@ function scene:enterScene( event )
 		--Bouncing buttons
 		bounceDown = function(event)
 			for i=1,5 do
-				transition.to(levelBtn[i].view, {time=1000, y=levelBtn[i].view.y+10})
+				transitionStash.newTransition = transition.to(levelBtn[i].view, {time=1000, y=levelBtn[i].view.y+10})
 			end
 			if bounceUp then
-				timer.performWithDelay(1000,bounceUp,1)
+				timerStash.newTimer = timer.performWithDelay(1000,bounceUp,1)
 			end
 		end
 		bounceUp = function(event)
 			for i=1,5 do
-				transition.to(levelBtn[i].view, {time=1000, y=levelBtn[i].view.y-10})
+				transitionStash.newTransition = transition.to(levelBtn[i].view, {time=1000, y=levelBtn[i].view.y-10})
 			end
 			if bounceDown then
-				timer.performWithDelay(1000,bounceDown,1)
+				timerStash.newTimer = timer.performWithDelay(1000,bounceDown,1)
 			end
 		end
 		-- Start button bouncing:
@@ -257,6 +271,35 @@ function scene:exitScene( event )
 		
 		--Remove the Runtime Listeners
 		Runtime:removeEventListener("enterFrame",moveSpace)
+		Runtime:removeEventListener( "enterFrame", monitorMem )
+		
+		--Cancel Functions
+		openOverlay = nil;
+		closeOverlay = nil;
+		bounceUp = nil;
+		bounceDown = nil;
+		
+		--Cancel All Timers
+		local k, v
+
+		for k,v in pairs(timerStash) do
+			timer.cancel( v )
+			v = nil; k = nil
+		end
+
+		timerStash = nil
+		timerStash = {}
+		
+		--Cancel All Transitions
+		local k, v
+
+		for k,v in pairs(transitionStash) do
+			transition.cancel( v )
+			v = nil; k = nil
+		end
+
+		transitionStash = nil
+		transitionStash = {}
 		
 end
 

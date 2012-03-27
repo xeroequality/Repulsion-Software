@@ -1149,7 +1149,8 @@ function scene:enterScene( event )
 					print((event.target).currentHP)
 					local h = (event.target).currentHP; local m = (event.target).maxHP;
 					if h < 0 then h = 0; end
-					(event.target).alpha = h/m;
+					local p = math.ceil(4*(h/m))*0.25;					
+					(event.target).alpha = p;
 					if (event.target).currentHP <= 0 then
 						(event.target):removeSelf()
 					end

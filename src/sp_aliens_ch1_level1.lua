@@ -104,8 +104,8 @@ function scene:enterScene( event )
 		---------
 		-- Floor
 		---------
-		local floorleft = -5*W
-		local floorwidth = 11*W
+		floorleft = -5*W
+		floorwidth = 11*W
 		local floor = display.newRect(floorleft,H-10,floorwidth,100)
 		floor:setFillColor(0)
 		physics.addBody(floor, "static", {friction=0.9, bounce=0.05} )
@@ -1406,6 +1406,8 @@ function scene:exitScene( event )
 		fire = nil;
 		stopRotation = nil;
 		deleteBall = nil;
+		floorleft = nil;
+		floorwidth = nil;
 		removeballbeyondfloor = nil;
 		removeballcollision = nil;
 		--[[

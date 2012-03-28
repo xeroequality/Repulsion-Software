@@ -24,7 +24,11 @@ Material.wood_plank = {
 	},
 	bounce=0,
 	density=0.8,
-	friction=0.9
+	friction=0.9,
+	ui = {
+		img="../images/ui_item_wooden_plank.png",
+		text="$50"
+	}
 }
 
 Material.wood_box = {
@@ -45,7 +49,11 @@ Material.wood_box = {
 	},
 	bounce=0,
 	density=2.0,
-	friction=0.9
+	friction=0.9,
+	ui = {
+		img="../images/ui_item_wooden_box.png",
+		text="$200"
+	}
 }
 
 
@@ -54,9 +62,9 @@ Material.wood_box = {
 --   that object will have all properties of that material.
 Material.clone = function(obj)
 	if obj then
-		if obj.id == 1 then
+		if obj.type == "wood_plank" then
 			cloner = Material.wood_plank
-		elseif obj.id == 2 then
+		elseif obj.type == "wood_box" then
 			cloner = Material.wood_box
 		end
 			obj.id=cloner.id
@@ -78,6 +86,10 @@ Material.clone = function(obj)
 			obj.bounce=cloner.bounce
 			obj.density=cloner.density
 			obj.friction=cloner.friction
+			obj.ui={
+				img=cloner.ui.img,
+				text=cloner.ui.text
+			}
 		return obj
 	end
 end

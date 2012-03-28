@@ -345,12 +345,12 @@ function scene:enterScene( event )
             --make it so that we cannot access it again?
             --delete it!
 			print('clicked play')
-            if event.phase== "ended" then
-                scrollView:removeSelf()
-                play_button:removeSelf()
-                print(scrollView)
-                print(play_button)
-            end
+			scrollView.destroy()
+			play_button:removeSelf()
+			scrollView = nil
+			play_button = nil
+			print(scrollView)
+			print(play_button)
 		end
 		
 		local function menuUI (event)
@@ -364,7 +364,7 @@ function scene:enterScene( event )
 			end
 		end
 		
-		play_button:addEventListener("tap",playUI);
+		play_button:addEventListener("touch",playUI);
 		menu_button:addEventListener("touch",menuUI);
 		
 		--Set Up the Width and Height Variables

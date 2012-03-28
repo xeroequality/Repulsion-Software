@@ -3,6 +3,8 @@
 -- Contains table for creating a scrollView object
 ----------------------------------------------------------
 local sv = require( "scrollview" )
+local W = display.contentWidth
+local H = display.contentHeight
 
 ScrollView = {
 	scrollview = nil,
@@ -21,7 +23,7 @@ ScrollView.new = function(svTable)
 	ScrollView.isOpen = true
 	ScrollView.bkgView = display.newImage(svTable.background)
 	ScrollView.bkgView.x = 0
-	ScrollView.bkgView.y = 0
+	ScrollView.bkgView.y = H*1.5
 	ScrollView.bounds.top = svTable.top
 	ScrollView.bounds.bottom = svTable.bottom
 	ScrollView.scrollview = sv.new{top=ScrollView.bounds.top, bottom=ScrollView.bounds.bottom}

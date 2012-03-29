@@ -9,7 +9,7 @@ save_and_load = {}
 save_and_load.save = function(slot,overlay_section,group)
 			if true then
 				if true and overlay_section == "Save" then
-					index = 1;
+					local index = 1;
 					local xvals = {}; local yvals = {}; local num = 0; local rotation = {}; local types = {};
 					--Get Total Cost
 					local total = 0;
@@ -81,7 +81,8 @@ save_and_load.save = function(slot,overlay_section,group)
 					end
 					supers = supers.."\n}\n}\n\nreturn PlayerBase";
 					--local path = system.pathForFile( "playerbase.lua", system.ResourceDirectory )
-					local file = io.open( "slot"..slot..".lua", "w" )
+					local path = system.pathForFile( "", system.ResourceDirectory )
+					local file = io.open( path.."slot"..slot..".lua", "w" )
 					file:write( supers )
 					io.close( file )
 					file = nil

@@ -10,7 +10,15 @@ Material.wood_plank = {
 	id=1,
 	img="../images/wood_plank.png",
 	img_dmg="../images/wood_plank.png",
-	shape={-37*0.5,-7*0.5,37*0.5,-7*0.5,37*0.5,7*0.5,-37*0.5,7*0.5},
+	img_ui="../images/ui_item_wooden_plank.png",
+	width=37,
+	height=7,
+	shape={
+		-37*0.5,-7*0.5,
+		37*0.5,-7*0.5,
+		37*0.5,7*0.5,
+		-37*0.5,7*0.5
+	},
 	scaleX=(1/3)*0.5,
 	scaleY=(1/3)*0.5,
 	maxHP=100,
@@ -25,17 +33,21 @@ Material.wood_plank = {
 	bounce=0,
 	density=0.8,
 	friction=0.9,
-	ui = {
-		img="../images/ui_item_wooden_plank.png",
-		text="$50"
-	}
 }
 
 Material.wood_box = {
 	id=2,
 	img="../images/wood_box.png",
 	img_dmg="../images/wood_box.png",
-	shape={-37*0.5,-37*0.5,37*0.5,-37*0.5,37*0.5,37*0.5,-37*0.5,37*0.5},
+	img_ui="../images/ui_item_wooden_box.png",
+	width=37,
+	height=37,
+	shape={
+		-18.2,-18.2,
+		18.2,-18.2,
+		18.2,18.2,
+		-18.2,18.2
+	},
 	scaleX=(1/3)*0.5,
 	scaleY=(1/3)*0.5,
 	maxHP=300,
@@ -50,29 +62,24 @@ Material.wood_box = {
 	bounce=0,
 	density=2.0,
 	friction=0.9,
-	ui = {
-		img="../images/ui_item_wooden_box.png",
-		text="$200"
-	}
 }
 
 
 -- Clone method:
 -- Pass in an object with a "type" that matches the material,
 --   that object will have all properties of that material.
-Material.clone = function(obj)
-	if obj then
-		if obj.type == "wood_plank" then
+
+Material.clone = function(id)
+		if id == 1 then
 			cloner = Material.wood_plank
-		elseif obj.type == "wood_box" then
+		elseif id == 2 then
 			cloner = Material.wood_box
 		end
-			obj.id=cloner.id
-			obj.img=cloner.img
+			obj=display.newImageRect(cloner.img, cloner.width, cloner.height)
 			obj.img_dmg=cloner.img_dmg
-			obj.shape=cloner.shape
-			obj.scaleX=cloner.scaleX
-			obj.scaleY=cloner.scaleY
+			obj.img_ui=cloner.img_ui
+			--obj.shape=cloner.shape
+			--obj:scale(cloner.scaleX,cloner.scaleY)
 			obj.maxHP=cloner.maxHP
 			obj.currentHP=cloner.maxHP
 			obj.cost=cloner.cost
@@ -86,12 +93,8 @@ Material.clone = function(obj)
 			obj.bounce=cloner.bounce
 			obj.density=cloner.density
 			obj.friction=cloner.friction
-			obj.ui={
-				img=cloner.ui.img,
-				text=cloner.ui.text
-			}
+			--obj.child = "Child";
 		return obj
-	end
 end
 
 return Material

@@ -167,13 +167,8 @@ pauseMenu.displayPreview = function(slot)
 	if off_ylarge > (max_h*2) then y_sc = (max_h/off_ylarge); end
 	--Now Draw the Objects
 	for i = 1,player.numObjects do
-		local obj = {};
-		obj.type = player.types[i];
-		obj = Materials.clone(obj)
-		obj = display.newImage(obj.img)
-		obj.type = player.types[i];
-		obj = Materials.clone(obj)
-		obj:scale(obj.scaleX,obj.scaleY)
+		local obj = display.newImage("")
+		obj = Materials.clone(player.id[i])
 		obj.rotation = player.rotations[i];
 		--Figure Out the Scale Based on Its Rotation
 		local r = obj.rotation
@@ -506,16 +501,11 @@ pauseMenu.loadLevel = function()
 	local enemy = Enemies.level1
 	objGroup = display.newGroup()
 	for i=1,enemy.numObjects do
-		local obj = {}
+		local obj = display.newImage("")
 		local baseX = enemy.baseX;
 		local baseY = enemy.baseY;
-		obj.type = enemy.types[i]
-		-- first clone: so obj.img refers to proper image
-		-- second clone: to pass data to object
-		obj = Materials.clone(obj)
-		obj = display.newImage(obj.img)
-		obj = Materials.clone(obj)
-		obj:scale(obj.scaleX,obj.scaleY)
+		-- obj.id = enemy.id[i]
+		obj = Materials.clone(enemy.id[i])
 		obj.x = enemy.x_vals[i]+baseX;
 		obj.y = enemy.y_vals[i]+baseY;
 		obj.rotation = enemy.rotations[i]

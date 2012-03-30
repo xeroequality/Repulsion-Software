@@ -1,17 +1,18 @@
-local storyboard = require( "storyboard" )
-local widget 	 = require( "widget" )
---local levelUI 	 = require( "levelUI")
-local ScrollView = require( "module_scrollview" )
-local physics 	 = require( "physics" )
-local Parallax 	 = require( "module_parallax" )
-local Materials  = require( "materials" )
-local Enemy 	 = require( "enemybase" )
-local IO	     = require( "save_and_load" )
-local Pause		 = require( "pause_overlay" )
-local MenuSettings = require( "settings" )
-local scene 	 = storyboard.newScene()
-local cannonfired
-local cannonfire
+local storyboard 		= require( "storyboard" )
+local widget 	 		= require( "widget" )
+--local levelUI 	 	= require( "levelUI")
+local ScrollView		= require( "module_scrollview" )
+local physics			= require( "physics" )
+local Parallax			= require( "module_parallax" )
+local Materials			= require( "materials" )
+local Units  			= require( "units" )
+--local Enemy				= require( "enemybase" )
+local IO	     		= require( "save_and_load" )
+local Pause				= require( "pause_overlay" )
+local MenuSettings 		= require( "settings" )
+local scene 	 		= storyboard.newScene()
+local weaponSFXed
+local weaponSFX
 
 widget.setTheme("theme_ios")	
 transitionStash = {}	  	
@@ -69,6 +70,7 @@ end
 -- Called immediately after scene has moved onscreen:
 function scene:enterScene( event )
         local group = self.view
+		local W = display.contentWidth; local H = display.contentHeight;
         
         -----------------------------------------------------------------------------
         -- INSERT code here (e.g. start timers, load audio, start listeners, etc.)
@@ -86,10 +88,14 @@ function scene:enterScene( event )
 		--------------------
 		-- Material Objects
 		--------------------
-		local wood_plank = Materials.wood_plank
-		local wood_box = Materials.wood_box
-		local W = display.contentWidth; local H = display.contentHeight;
-		
+
+		local levelObjs = { -- Use this to choose what is items are available in this level
+			Materials.wood_plank,
+			Materials.wood_box,
+			Units.cannon
+		}
+		print ('levelObjs: ' .. #levelObjs)
+
 		---------
 		-- Floor
 		---------
@@ -107,13 +113,11 @@ function scene:enterScene( event )
 		--              Overlays                  --
 		--------------------------------------------
 		local goodoverlay = display.newImage("../images/greenoverlay.png")
-		goodoverlay:setReferencePoint ( display.CenterReferencePoint )
 		goodoverlay.x = 160; goodoverlay.y = H/2;
 		goodoverlay.alpha = .25
 		goodoverlay.width = 745
 		
 		local badoverlay = display.newImage("../images/redoverlay.png")
-		badoverlay:setReferencePoint ( display.CenterReferencePoint )
 		badoverlay.x = 700; badoverlay.y = H/2;
 		badoverlay.alpha = .25
 		badoverlay.width = 675
@@ -126,18 +130,14 @@ function scene:enterScene( event )
 			top=0,
 			bottom=0
 		}
-		scrollView.addItem{
-			id=wood_box.id,
-			img=wood_box.ui.img,
-			text=wood_box.ui.text
-		}
-		scrollView.addItem{
-			id=wood_plank.id,
-			img=wood_plank.ui.img,
-			text=wood_plank.ui.text
-		}
-		
-		local cost = {wood_plank.cost,wood_box.cost}
+		for i=1,#levelObjs do
+			scrollView.addItem{
+				id=levelObjs[i].id,
+				cost=levelObjs[i].cost,
+				img=levelObjs[i].img_ui,
+				print('levelObjs[i].id ' .. levelObjs[i].id)
+			}
+		end
 
 		--Overlay Variables
 		overlay = false; --Is the Overlay Up?
@@ -149,7 +149,7 @@ function scene:enterScene( event )
 		menu_button.x = 115+30; menu_button.y = 35; play_button.static = "Yes";
 		
 		--------------------------------------------
-		--             	   Slide UI               --
+		--             	   Slide UI               --				How is this function different than the static menus function??????
 		--------------------------------------------
 		
 		-- Event for when open/close button is pressed
@@ -253,7 +253,7 @@ function scene:enterScene( event )
 					-- If it doesn't already have a bodyType, then add it to physics
 					-- If it does, set it's body type to dynamic
 					if not target.bodyType then
-						physics.addBody(target, "dynamic", {friction=target.friction, shape=target.shape })
+						physics.addBody(target, "dynamic", {friction=target.friction}) --, shape=target.shape })
 					else
 						target.bodyType = "dynamic"
 					end
@@ -272,32 +272,34 @@ function scene:enterScene( event )
 		--              ITEM SELECT               --
 		--------------------------------------------
 		-- Event for selecting an item from scrollView
+		local playerGroup = display.newGroup()
+		local materialGroup = display.newGroup()
+		unitGroup = display.newGroup()
 		local function pickItem (event)
+			local newObj = display.newImage("")
 			local phase = event.phase
 			local target = event.target
 			if phase == "began" then
-				if wallet >= cost[target.id] then
-					if target.id == 1 then
-						newObj = display.newImage("../images/wood_plank.png")
-						newObj.type = "wood_plank"
-					elseif target.id == 2 then
-						newObj = display.newImage("../images/wood_box.png")
-						newObj.type = "wood_box"
+				if wallet >= target.cost then
+					if target.id < 1000 then
+						newObj = Materials.clone(target.id)
+						materialGroup:insert(newObj)
+					elseif target.id >= 1000 then
+						newObj = Units.clone(target.id)
+						unitGroup:insert(newObj)
+						print('#unitGroup: ' .. unitGroup.numChildren)
 					else
 						print("null target")
 						return true
 					end
-					newObj = Materials.clone(newObj)
+					
 					wallet = wallet - newObj.cost
-					newObj:scale(newObj.scaleX,newObj.scaleY)
-					newObj.child = "Child";
 					newObj.x = event.x
 					newObj.y = event.y
 					newObj:addEventListener("touch",dragItem)
 					display.getCurrentStage():setFocus(newObj)
-				
+
 					--Drag This Object
-					display.getCurrentStage():setFocus(newObj)
 					newObj.isFocus = true
 					newObj.x0 = event.x - newObj.x
 					newObj.y0 = event.y - newObj.y
@@ -307,9 +309,8 @@ function scene:enterScene( event )
 						newObj:setLinearVelocity(0,0)
 						newObj.angularVelocity = 0
 					end
-					focus = newObj;
-					group:insert(newObj)
-					Pause.assertDepth();
+					local focus = newObj;
+					--Pause.assertDepth();
 				else
 					print("not enough money!")
 					return true
@@ -323,7 +324,7 @@ function scene:enterScene( event )
 					-- If it doesn't already have a bodyType, then add it to physics
 					-- If it does, set it's body type to dynamic
 					if not newObj.bodyType then
-						physics.addBody(newObj, "dynamic", {friction=newObj.friction, shape=newObj.shape })
+						physics.addBody(newObj, "dynamic", {friction=newObj.friction}) --, shape=newObj.shape })
 					else
 						newObj.bodyType = "dynamic"
 					end
@@ -341,26 +342,27 @@ function scene:enterScene( event )
 		--------------------------------------------
 		--             STATIC MENUS               --
 		--------------------------------------------
-		static_menu = display.newGroup()
-		
-		-- local static_buttons_bkg = display.newImage("../images/ui_bkg_static_buttons.png")
-		-- static_buttons_bkg.x = -2				-- -2 to eliminate gap by the edge of the screen
-		-- static_buttons_bkg.y = 75
-		-- static_menu:insert(static_buttons_bkg)
+		local static_menu = display.newGroup()
 		
 		local function playUI (event)
-            transitionStash.newTransition = transition.to(scrollView, {time=300, x=-85} )
             slideBtn:removeSelf()
-            transitionStash.newTransition = transition.to(play_button, {time=300, y=-35} )
             --make it so that we cannot access it again?
             --delete it!
 			print('clicked play')
+			transitionStash.newTransition = transition.to(menu_button, {time=300, x=-10} )
 			scrollView.destroy()
 			play_button:removeSelf()
+			goodoverlay:removeSelf()
+			badoverlay:removeSelf()
 			scrollView = nil
 			play_button = nil
-			print(scrollView)
-			print(play_button)
+			showCrosshair = false 										-- helps ensure that only one crosshair appears
+			print('here')
+			for i=1,unitGroup.numChildren do
+				print('unitGroup: ' .. unitGroup[i].id)
+				unitGroup[i]:removeEventListener("touch", dragItem)
+				unitGroup[i]:addEventListener('touch',createCrosshair)
+			end
 		end
 		
 		local function menuUI (event)
@@ -379,53 +381,53 @@ function scene:enterScene( event )
 		
 		group = pauseMenu.createOverlay(group);
 		
-		closeView = function()
-			--Close SlideView
-			if scrollView.isOpen == true then
-				scrollView.isOpen = false
-				transitionStash.newTransition = transition.to(static_menu, {time=300, y=-85} )
-				transitionStash.newTransition = transition.to(scrollView.scrollview, {time=300, x=-85} )
-				transitionStash.newTransition = transition.to(play_button, {time=300, y=-35} )
-				transitionStash.newTransition = transition.to(menu_button, {time=300, y=-35} )
+		-- closeView = function()
+			-- --Close SlideView
+			-- if scrollView.isOpen == true then
+				-- scrollView.isOpen = false
+				-- transitionStash.newTransition = transition.to(static_menu, {time=300, y=-85} )
+				-- transitionStash.newTransition = transition.to(scrollView.scrollview, {time=300, x=-85} )
+				-- transitionStash.newTransition = transition.to(play_button, {time=300, y=-35} )
+				-- transitionStash.newTransition = transition.to(menu_button, {time=300, y=-35} )
 
-				if slideBtn then
-					slideBtn:removeSelf()
-					slideBtn = widget.newButton{
-						default="../images/ui_btn_buildmenu_right.png",
-						over="../images/ui_btn_buildmenu_right_pressed.png",
-						width=35, height=35,
-						onRelease=slideUI
-					}
-					slideBtn.y = H/2
-					slideBtn.x = scrollView.bkgView.width-45
-					transitionStash.newTransition = transition.to(slideBtn, {time=300, x=-35} )
-					transitionStash.newTransition = transition.to( goodoverlay, { alpha=0, xScale=1.0, yScale=1.0, time=300} )
-					transitionStash.newTransition = transition.to( badoverlay, { alpha=0, xScale=1.0, yScale=1.0, time=300} )
+				-- if slideBtn then
+					-- slideBtn:removeSelf()
+					-- slideBtn = widget.newButton{
+						-- default="../images/ui_btn_buildmenu_right.png",
+						-- over="../images/ui_btn_buildmenu_right_pressed.png",
+						-- width=35, height=35,
+						-- onRelease=slideUI
+					-- }
+					-- slideBtn.y = H/2
+					-- slideBtn.x = scrollView.bkgView.width-45
+					-- transitionStash.newTransition = transition.to(slideBtn, {time=300, x=-35} )
+					-- transitionStash.newTransition = transition.to( goodoverlay, { alpha=0, xScale=1.0, yScale=1.0, time=300} )
+					-- transitionStash.newTransition = transition.to( badoverlay, { alpha=0, xScale=1.0, yScale=1.0, time=300} )
 
-				end
-			end
-		end
-		openView = function()
-			scrollView.isOpen = true
-			transitionStash.newTransition = transition.to(static_menu, {time=300, y=0} )
-			transitionStash.newTransition = transition.to(scrollView.scrollview, {time=300, x=0} )
-			transitionStash.newTransition = transition.to(play_button, {time=300, y=35} )
-			transitionStash.newTransition = transition.to(menu_button, {time=300, y=35} )
-			if slideBtn then
-				slideBtn:removeSelf()
-				slideBtn = widget.newButton{
-					default="../images/ui_btn_buildmenu_left.png",
-					over="../images/ui_btn_buildmenu_left_pressed.png",
-					width=35, height=35,
-					onRelease=slideUI
-				}
-				slideBtn.y = H/2
-				slideBtn.x = -35
-				transitionStash.newTransition = transition.to(slideBtn, {time=300, x=scrollView.bkgView.width-45} )
-				transitionStash.newTransition = transition.to( goodoverlay, { alpha=.25, xScale=1.0, yScale=1.0, time=0} )
-				transitionStash.newTransition = transition.to( badoverlay, { alpha=.25, xScale=1.0, yScale=1.0, time=0} )
-			end
-		end
+				-- end
+			-- end
+		-- end
+		-- openView = function()
+			-- scrollView.isOpen = true
+			-- transitionStash.newTransition = transition.to(static_menu, {time=300, y=0} )
+			-- transitionStash.newTransition = transition.to(scrollView.scrollview, {time=300, x=0} )
+			-- transitionStash.newTransition = transition.to(play_button, {time=300, y=35} )
+			-- transitionStash.newTransition = transition.to(menu_button, {time=300, y=35} )
+			-- if slideBtn then
+				-- slideBtn:removeSelf()
+				-- slideBtn = widget.newButton{
+					-- default="../images/ui_btn_buildmenu_left.png",
+					-- over="../images/ui_btn_buildmenu_left_pressed.png",
+					-- width=35, height=35,
+					-- onRelease=slideUI
+				-- }
+				-- slideBtn.y = H/2
+				-- slideBtn.x = -35
+				-- transitionStash.newTransition = transition.to(slideBtn, {time=300, x=scrollView.bkgView.width-45} )
+				-- transitionStash.newTransition = transition.to( goodoverlay, { alpha=.25, xScale=1.0, yScale=1.0, time=0} )
+				-- transitionStash.newTransition = transition.to( badoverlay, { alpha=.25, xScale=1.0, yScale=1.0, time=0} )
+			-- end
+		-- end
 
 		local function restart_level(event)
 			if event.phase == "ended" and restartBtn.alpha > 0 then
@@ -489,10 +491,6 @@ function scene:enterScene( event )
 		end
 		Runtime:addEventListener("enterFrame",updateMONEY)
 		
-		----------------------------------------------
-		--           GENERATE ENEMY BASE            --
-		----------------------------------------------
-		
 		--Collision
 		local threshold = 1;
 		hit = function(event)
@@ -514,62 +512,35 @@ function scene:enterScene( event )
 		-- In future levels, the ONLY thing that needs to change is the first line:
 		local objGroup = Pause.loadLevel();
 		
-		--objGroup:addEventListener('collision', removeball)
 		group:insert(goodoverlay)
 		group:insert(badoverlay)
 		--group:insert(scrollView)
 		-- group:insert(static_menu)
 		-- group:insert(slideBtn.view)
-		group:insert(cannonballGroup)
-		group:insert(cannonGroup)
+		group:insert(materialGroup)
+		group:insert(unitGroup)
+		--group:insert(projectileGroup)
+		--group:insert(cannonGroup)
 		group:insert(MONEY)
 		group:insert(HPText)
 		group:insert(objGroup)
+		-- group:insert(projectile)
 
 end
 
 		----------------------------------------------
 		--           		Cannon		            --
 		----------------------------------------------
-		local cannonBase    = nil
-		local cannon        = nil
-		cannonGroup   = nil
-		--cannonballGroup = nil
+
 		cballExists = false
-
+		
 		forceMultiplier = 10
-
-		makeCannon = function()
-			-- create a couple of display groups
-			interface = display.newGroup()
-			cannonGroup = display.newGroup()
-			cannonballGroup = display.newGroup()
-			interface:insert(cannonGroup)
-	
-			-- load the images
-			cannon      = display.newImage('../images/cannon_sm.png')
-			cannonBase  = display.newImage('../images/cannon_base_sm.png')
-	
-			cannonGroup:insert(cannon)
-			cannonGroup:insert(cannonBase)
-			cannon:translate(8,-30)
-
-			
-			-- move the cannon to the right spot
-			cannonGroup.x = 240
-			cannonGroup.y = 240
-
-			-- add the cannons to the stage and creat touch event for the crosshair
-			--display.getCurrentStage():insert(cannonGroup)
-			showCrosshair = false 										-- helps ensure that only one crosshair appears
-			cannonGroup:addEventListener('touch',createCrosshair)
-			
-		end
 
 		createCrosshair = function(event) -- creates crosshair when a touch event begins
 			-- creates the crosshair
 			local phase = event.phase
-			if (phase == 'began' and overlay == false and overlay_activity == false) then
+			clickedUnit = event.target
+			if (phase == 'began') then
 				if not (cballExists) then
 					if not (showCrosshair) then										-- helps ensure that only one crosshair appears
 						crosshair = display.newImage( "../images/crosshair.png" )				-- prints crosshair	
@@ -581,7 +552,6 @@ end
 							crosshair.rotation = crosshair.rotation + 4
 						end
 						Runtime:addEventListener( "enterFrame", startRotation )
-						interface:insert(crosshair)
 						crosshair:addEventListener('touch',fire)
 					end
 				end
@@ -591,6 +561,7 @@ end
 		fire = function( event )
 			local phase = event.phase
 			if "began" == phase then
+				print('clickedUnit.x: ' .. clickedUnit.x .. ' clickedUnit.y: ' .. clickedUnit.y)
 				display.getCurrentStage():setFocus( crosshair )
 				crosshair.isFocus = true
 				crosshairLine = nil
@@ -600,22 +571,17 @@ end
 					
 					if ( crosshairLine ) then
 						crosshairLine.parent:remove( crosshairLine ) -- erase previous line, if any
-						--cannonLine.parent:remove( cannonLine ) -- erase previous line, if any
 					end		
 						
 					crosshairLine = display.newLine(crosshair.x,crosshair.y, event.x,event.y) -- draws the line from the crosshair
 					local cannonRotation = (180/math.pi)*math.atan((event.y-crosshair.y)/(event.x-crosshair.x)) -- rotates the cannon based on the trajectory line
 					if (event.x < crosshair.x) then
-						cannon.rotation = cannonRotation + 180  -- since arctan goes from -pi/2 to pi/2, this is necessary to make the cannon point backwards
+						clickedUnit[1].rotation = cannonRotation + 180  -- since arctan goes from -pi/2 to pi/2, this is necessary to make the cannon point backwards
 					else
-						cannon.rotation = cannonRotation
+						clickedUnit[1].rotation = cannonRotation
 					end
 					crosshairLine:setColor( 0, 255, 0, 200 )
 					crosshairLine.width = 8
-					
-					--cannonLine = display.newLine( cannon.x,cannon.y, event.x-cannon.x,event.y-cannon.y ) -- draws the line for the cannon
-					--cannonLine:setColor( 255, 255, 255, 50 )
-					--cannonLine.width = 8
 					
 				elseif "ended" == phase or "cancelled" == phase then 						-- have this happen after collision is detected.
 				display.getCurrentStage():setFocus( nil )
@@ -626,45 +592,54 @@ end
 				end
 
 				-- make a new image
-				cannonball = display.newImage('../images/cannonball.png')	
+				projectile = display.newImage(obj.img_projectile)
+				projectile:scale(clickedUnit.scaleX,clickedUnit.scaleY)
 				cballExists = true
 
 				-- move the image
-				cannonball.x = 300
-				cannonball.y = 240
-				cannonball.weapon = 5;
-				cannonballGroup:insert(cannonball)
+				--print('Parallax.incX' .. Parallax.incX)
+				projectile.x = clickedUnit.x
+				projectile.y = clickedUnit.y
+				projectile.weapon = 5;
+				unitGroup:insert(projectile)
+				print('unitGroup: ' .. unitGroup.numChildren)
 
-				-- apply physics to the cannonball
-				physics.addBody( cannonball, { density=3.0, friction=0.2, bounce=0.05, radius=15 } )
-				cannonball.isBullet = true
 
-				-- fire the cannonball            
-				cannonball:applyForce( (event.x - crosshair.x)*forceMultiplier, (event.y - (crosshair.y))*forceMultiplier, cannonball.x, cannonball.y )
-				cannonfire = audio.loadSound("../sound/Single_cannon_shot.wav")
-				cannonfired = audio.play(cannonfire,{channel=2} )
+				-- apply physics to the projectile
+				physics.addBody( projectile, { density=3.0, friction=0.2, bounce=0.05, radius=15 } )
+				projectile.isBullet = true
+
+				-- fire the projectile            
+				projectile:applyForce( (event.x - crosshair.x)*forceMultiplier, (event.y - (crosshair.y))*forceMultiplier, clickedUnit.x, clickedUnit.y )
+				weaponSFX = audio.loadSound(clickedUnit.sfx)
+				weaponSFXed = audio.play(weaponSFX,{channel=2} )
 				-- make sure that the cannon is on top of the 
 				transitionStash.newTransition = transition.to( crosshair, { alpha=0, xScale=1.0, yScale=1.0, time=0, onComplete=stopRotation} )
 				showCrosshair = false									-- helps ensure that only one crosshair appears
 				
 				if ( crosshairLine ) then	
 					crosshairLine.parent:remove( crosshairLine ) -- erase previous line, if any
-					--cannonLine.parent:remove( cannonLine ) -- erase previous line, if any
 				end
-				--interface:insert(cannonballGroup)
 				
 				Runtime:addEventListener('enterFrame', removeballbeyondfloor)
-				cannonball:addEventListener('collision', removeballcollision)
+				projectile:addEventListener('collision', removeballcollision)
 				
 			end
 
 			end
 		end
 		
-		 local deleteBall = function() if (cballExists) then cannonball:removeSelf() cballExists = false end end
+		 local deleteBall = function()
+			if (cballExists) then
+				projectile:removeSelf()
+				cballExists = false
+				print('ball deleted')
+			end
+		end
+		 
 		 removeballbeyondfloor = function()
-			 if( cannonball) then
-				if( cannonball.x < floorleft or cannonball.x > floorleft + floorwidth) then
+			 if( projectile) then
+				if( projectile.x < floorleft or projectile.x > floorleft + floorwidth) then
 					Runtime:removeEventListener('enterFrame', removeballbeyondfloor)
 					print('deleting the ball...2')
 					deleteBall()
@@ -672,14 +647,12 @@ end
 			end
 		end
 		removeballcollision = function()
-			cannonball:removeEventListener('collision', removeballcollision)  -- makes it so it only activates on the first collision
+			projectile:removeEventListener('collision', removeballcollision)  -- makes it so it only activates on the first collision
 			Runtime:removeEventListener('enterFrame', removeballbeyondfloor)
 			print('deleting the ball')
 			timerStash.newTimer = timer.performWithDelay(5000, deleteBall, 1)
 		end
-		
-		makeCannon()
- 
+		 
 -- Called when scene is about to move offscreen:
 function scene:exitScene( event )
         local group = self.view
@@ -724,24 +697,21 @@ function scene:exitScene( event )
 		shiftScene = nil;
 		closeView = nil; openView = nil;
 		hit = nil;
-		--[[
-		local num = cannonGroup.numChildren;
-		while num >= 1 do
-			if cannonGroup[num] ~= nil then
-				cannonGroup:remove(num)
-				num = num - 1
+		
+		-- local num = cannonGroup.numChildren;
+		for i=1, unitGroup.numChildren do
+			if unitGroup[i] ~= nil then
+				unitGroup:remove(i)
 			end
 		end
-		local num = cannonballGroup.numChildren;
-		while num >= 1 do
-			if cannonballGroup[num] ~= nil then
-				cannonballGroup:remove(num)
-				num = num - 1
+		unitGroup = nil;		-- Could we just use a remove parent function that will remove the whole group and all it's contents
+
+		for i=1, playerGroup.numChildren do
+			if playerGroup[i] ~= nil then
+				playerGroup:remove(i)
 			end
-		end--]]
-		
-		 cannonGroup = nil;
-		 cannonballGroup = nil;
+		end
+		 playerGroup = nil;
 		 
 		 --Nil the Whole Freakin' Overlay
 		 Pause.nilEverything()

@@ -34,9 +34,10 @@ ScrollView.addItem = function(itemTable)
 	local item = {}
 	item.view = display.newImage(itemTable.img)
 	item.view.id = itemTable.id
+	item.view.cost = itemTable.cost
 	item.view.x = 0
 	item.view.y = 50+(ScrollView.numItems)*100
-	item.textView = display.newText(itemTable.text,0,0,native.systemFont,28)
+	item.textView = display.newText('$' .. itemTable.cost,0,0,native.systemFont,28)
 	item.textView:setTextColor(0)
 	item.textView:scale(0.5,0.5)
 	item.textView.x = 0

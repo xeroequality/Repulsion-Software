@@ -38,6 +38,16 @@ function scene:enterScene( event )
         -----------------------------------------------------------------------------
         -- INSERT code here (e.g. start timers, load audio, start listeners, etc.)
 		-----------------------------------------------------------------------------
+		local displayObjects = {
+			space1 = display.newImage( "../images/space.png" ),
+			space2 = display.newImage( "../images/space.png" ),
+			logo = display.newImageRect("../images/logo2.png",480,48),
+			alienShips = {},
+			e = display.newImageRect("../images/earth_slice.png",600,185),
+			e_light1 = display.newImage("../images/earth_lightsource.png"),
+			e_light2 = display.newImage("../images/earth_lightsource.png")
+		}
+		
 		playBtn = widget.newButton{
 			labelColor = { default={255}, over={128} },
 			default="../images/btn_play.png",
@@ -52,73 +62,88 @@ function scene:enterScene( event )
 		--Get the Width and Height of the Screen
 		local w = display.contentWidth
 		local h = display.contentHeight
-		local active = true;
 		
-		--O FORTUNA!!!!
-		-- local o_fortuna = audio.loadStream("../sound/O Fortuna.mp3");
-		local o_fortuna = audio.loadStream("../sound/O Fortuna.mp3");
-		local o_play = audio.play(o_fortuna, {loops=-1, fadein=0});
+		local o_fortuna = audio.loadStream("../sound/O Fortuna.mp3")
+		local o_play = audio.play(o_fortuna, {loops=-1, fadein=0})
 
 		--Make the Space Backgrounds
-		local space1 = display.newImage( "../images/space.png" )
-		space1:setReferencePoint ( display.CenterReferencePoint )
-		space1.x = 0; space1.y = h/2
-		local space2 = display.newImage("../images/space.png" )
-		space2:setReferencePoint ( display.CenterReferencePoint )
-		space2.x = -w*2; space2.y = h/2
+		displayObjects.space1:setReferencePoint ( display.CenterReferencePoint )
+		displayObjects.space1.x = 0; displayObjects.space1.y = h/2
+		displayObjects.space2:setReferencePoint ( display.CenterReferencePoint )
+		displayObjects.space2.x = -w*2; displayObjects.space2.y = h/2
 		
 		--Move the Space Background
-		moveSpace = function(event)
+		local moveSpace = function(event)
 			--Check to See if Any of the Backgrounds Have Moved Past a Certain Point
-			if space1.x >= 2*w then
-				space1.x = -2*w
+			if displayObjects.space1.x >= 2*w then
+				displayObjects.space1.x = -2*w
 			end
-			if space2.x >= 2*w then
-				space2.x = -2*w
+			if displayObjects.space2.x >= 2*w then
+				displayObjects.space2.x = -2*w
 			end
 			--Increment the Backgrounds' X Position
-			space1.x = space1.x + 1
-			space2.x = space2.x + 1
+			displayObjects.space1.x = displayObjects.space1.x + 1
+			displayObjects.space2.x = displayObjects.space2.x + 1
 		end
 		
-		local logo = display.newImageRect("../images/logo2.png",480,48)
-		logo.x = w/2; logo.y = h/2-80
+		displayObjects.logo.x = w/2; displayObjects.logo.y = h/2-80
 		
-		local e = display.newImageRect("../images/earth_slice.png",600,185)
-		e:setReferencePoint ( display.CenterReferencePoint )
-		e.x = w/2-10; e.y = h-80
-		local e_light1 = display.newImage("../images/earth_lightsource.png")
-		e_light1:setReferencePoint( display.CenterReferencePoint )
-		e_light1.x = 0; e_light1.y = h/2;
-		local e_light2 = display.newImage("../images/earth_lightsource.png")
-		e_light2:setReferencePoint( display.CenterReferencePoint )
-		e_light2.x = -w*2; e_light2.y = h/2;
+		displayObjects.alienShips = {}
+		local moveShips = function(event)
+			for i=1,10 do
+				if displayObjects.alienShips[i].loc >= 2*math.pi then
+					displayObjects.alienShips[i].loc = 0
+				end
+				displayObjects.alienShips[i].x = w/2+(250+displayObjects.alienShips[i].spread)*math.cos(displayObjects.alienShips[i].loc)
+				displayObjects.alienShips[i].y = h+(200+displayObjects.alienShips[i].spread)*math.sin(displayObjects.alienShips[i].loc)
+				displayObjects.alienShips[i].loc = displayObjects.alienShips[i].loc + displayObjects.alienShips[i].step
+			end
+		end
+		
+		for i=1,10 do
+			local rand = math.random(1,100)
+			displayObjects.alienShips[i] = display.newImage("../images/background_UFO.png")
+			displayObjects.alienShips[i]:scale(rand/500,rand/500)
+			displayObjects.alienShips[i].loc = 0
+			displayObjects.alienShips[i].spread = math.random(-20,20)
+			rand = rand/5000
+			displayObjects.alienShips[i].step = rand
+		end
+		
+		displayObjects.e:setReferencePoint ( display.CenterReferencePoint )
+		displayObjects.e.x = w/2-10; displayObjects.e.y = h-80
+		displayObjects.e_light1:setReferencePoint( display.CenterReferencePoint )
+		displayObjects.e_light1.x = 0; displayObjects.e_light1.y = h/2;
+		displayObjects.e_light2:setReferencePoint( display.CenterReferencePoint )
+		displayObjects.e_light2.x = -w*2; displayObjects.e_light2.y = h/2;
 		
 		--Move the Lights
 		moveLight = function(event)
-			if active == true then
-				if e_light1.x <= -2*w then
-					e_light1.x = 2*w
-				end
-				if e_light2.x <= -2*w then
-					e_light2.x = 2*w
-				end
-				e_light1.x = e_light1.x - 1
-				e_light2.x = e_light2.x - 1
+			if displayObjects.e_light1.x <= -2*w then
+				displayObjects.e_light1.x = 2*w
 			end
+			if displayObjects.e_light2.x <= -2*w then
+				displayObjects.e_light2.x = 2*w
+			end
+			displayObjects.e_light1.x = displayObjects.e_light1.x - 1
+			displayObjects.e_light2.x = displayObjects.e_light2.x - 1
 		end
 		
 		--Add the Runtime Listeners
 		Runtime:addEventListener("enterFrame",moveSpace)
 		Runtime:addEventListener("enterFrame",moveLight)
+		Runtime:addEventListener("enterFrame",moveShips)
 		
-		group:insert(space1)
-		group:insert(space2)
-		group:insert(e)
-		group:insert(logo)
+		group:insert(displayObjects.space1)
+		group:insert(displayObjects.space2)
+		group:insert(displayObjects.e)
+		group:insert(displayObjects.logo)
 		group:insert(playBtn.view)
-		group:insert(e_light1)
-		group:insert(e_light2)
+		for i=1,10 do
+			group:insert(displayObjects.alienShips[i])
+		end
+		group:insert(displayObjects.e_light1)
+		group:insert(displayObjects.e_light2)
         
 end
  
@@ -133,14 +158,8 @@ function scene:exitScene( event )
 		--Remove the Runtime Listeners
 		Runtime:removeEventListener("enterFrame",moveSpace)
 		Runtime:removeEventListener("enterFrame",moveLight)
-		moveSpace = nil;
-		moveLight = nil;
-		
-        local num = group.numChildren;
-		while num >= 1 do
-			group:remove(num)
-			num = num - 1
-		end
+		Runtime:removeEventListener("enterFrame",moveShips)
+
 end
  
  

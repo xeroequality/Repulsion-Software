@@ -296,6 +296,8 @@ function scene:enterScene( event )
 					wallet = wallet - newObj.cost
 					newObj.x = event.x
 					newObj.y = event.y
+					newObj.id = target.id
+					newObj.child = "Child"; --When the Save Function Runs, It Will Save These Kind of Objects
 					newObj:addEventListener("touch",dragItem)
 					display.getCurrentStage():setFocus(newObj)
 
@@ -310,7 +312,7 @@ function scene:enterScene( event )
 						newObj.angularVelocity = 0
 					end
 					local focus = newObj;
-					--Pause.bringMenutoFront();
+					Pause.bringMenutoFront(group);
 				else
 					print("not enough money!")
 					return true
@@ -450,7 +452,7 @@ function scene:enterScene( event )
 		
 		local save = function(event)
 			if event.phase == "ended" and (event.target).alpha > 0 and overlay_section == "Save" then
-				IO.save(slot,overlay_section,group);
+				IO.save(slot,overlay_section,materialGroup);
 				slots[slot].alpha = 1;
 				slots[slot+10].alpha = 0;
 				local str = Pause.displayPreview(slot);
@@ -460,9 +462,9 @@ function scene:enterScene( event )
 		end
 		local load = function(event)
 			if event.phase == "ended" and (event.target).alpha > 0 and overlay_section == "Load" then
-				group = IO.load(slot,group,levelWallet);
-				for i = 2,group.numChildren do
-					local child = group[i];
+				materialGroup = IO.load(slot,group,levelWallet);
+				for i = 2,materialGroup.numChildren do
+					local child = materialGroup[i];
 					if child.child ~= nil then
 						child:addEventListener("touch",dragItem);
 					end

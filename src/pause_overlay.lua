@@ -20,6 +20,7 @@ pauseMenu.switchTo = function(event)
 				menuText.alpha = 0;
 				for k = 1, 10 do
 					local path = system.pathForFile( "", system.ResourceDirectory )
+					local path = system.pathForFile( "", system.ResourceDirectory )
 					local f = io.open( path.."slot"..k..".lua", "r" )
 					if f ~= nil then
 						slots[k].alpha = 1;
@@ -43,6 +44,7 @@ pauseMenu.switchTo = function(event)
 				overwriteBtn.alpha = 1;
 				menuText.alpha = 0;
 				for k = 1, 10 do
+					local path = system.pathForFile( "", system.ResourceDirectory )
 					local path = system.pathForFile( "", system.ResourceDirectory )
 					local f = io.open( path.."slot"..k..".lua", "r" )
 					if f ~= nil then
@@ -153,7 +155,7 @@ pauseMenu.displayPreview = function(slot)
 	--Get the Largest X and Smallest Y Offset Value
 	local off_xlarge = player.x_vals[1];
 	local off_ylarge = -1*player.y_vals[1];
-	for i = 2,player.numObjects do
+	for i = 1,player.numObjects do
 		if player.x_vals[i] > off_xlarge then
 			off_xlarge = player.x_vals[i];
 		end
@@ -167,8 +169,7 @@ pauseMenu.displayPreview = function(slot)
 	if off_ylarge > (max_h*2) then y_sc = (max_h/off_ylarge); end
 	--Now Draw the Objects
 	for i = 1,player.numObjects do
-		local obj = display.newImage("")
-		obj = Materials.clone(player.id[i])
+		local obj = Materials.clone(player.id[i])
 		obj.rotation = player.rotations[i];
 		--Figure Out the Scale Based on Its Rotation
 		local r = obj.rotation
@@ -201,7 +202,8 @@ pauseMenu.confirm = function(event)
 		end
 		--Get Text
 		local str = "Slot "..slot.."\n";
-		local f = io.open("slot"..slot..".lua","r")
+		local path = system.pathForFile( "", system.ResourceDirectory )
+		local f = io.open( path.."slot"..slot..".lua", "r" )
 		if f == nil then
 			str = str.."\nNo File";
 		else

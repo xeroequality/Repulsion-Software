@@ -75,14 +75,18 @@ Material.clone = function(id)
 		elseif id == 2 then
 			cloner = Material.wood_box
 		end
+			--obj=display.newImageRect(cloner.img, cloner.width, cloner.height)
 			obj=display.newImageRect(cloner.img, cloner.width, cloner.height)
 			obj.img_dmg=cloner.img_dmg
 			obj.img_ui=cloner.img_ui
+			obj.id = id;
 			--obj.shape=cloner.shape
 			--obj:scale(cloner.scaleX,cloner.scaleY)
 			obj.maxHP=cloner.maxHP
 			obj.currentHP=cloner.maxHP
 			obj.cost=cloner.cost
+			obj.scaleX = cloner.scaleX;
+			obj.scaleY = cloner.scaleY;
 			obj.resist={
 				basic=(cloner.resist).basic,
 				fire=(cloner.resist).fire,

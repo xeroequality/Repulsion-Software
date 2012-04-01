@@ -526,7 +526,7 @@ function scene:enterScene( event )
 		end
 		local load = function(event)
 			if event.phase == "ended" and (event.target).alpha > 0 and overlay_section == "Load" then
-				materialGroup = IO.load(slot,group,levelWallet);
+				materialGroup = IO.load(slot,materialGroup,levelWallet);
 				for i = 1,materialGroup.numChildren do
 					local child = materialGroup[i];
 					if child.child ~= nil then
@@ -590,6 +590,7 @@ function scene:enterScene( event )
 		
 		group:insert(goodoverlay)
 		group:insert(badoverlay)
+		group:insert(HPText)
 		--group:insert(scrollView)
 		-- group:insert(static_menu)
 		-- group:insert(slideBtn.view)
@@ -601,7 +602,6 @@ function scene:enterScene( event )
 		group:insert(rotate_button)
 		group:insert(menu_button)
 		group:insert(MONEY)
-		group:insert(HPText)
 		group:insert(objGroup)
 		-- group:insert(projectile)
 

@@ -47,6 +47,7 @@ end
 function scene:createScene( event )
         local group = self.view
 		physics.start()
+		physics.setDrawMode("hybrid")
 
 		-- -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
 		-- Setup Parameters for Parallax View

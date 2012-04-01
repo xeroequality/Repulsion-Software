@@ -117,10 +117,10 @@ Material.glass_sheet = {
 	width=37,
 	height=6,
 	shape={
-		-18,-6,
-		 18,-6,
-		 18, 6,
-		-18, 6
+		-18,-3,
+		 18,-3,
+		 18, 3,
+		-18, 3
 	},
 	scaleX=(1/6),
 	scaleY=(1/6),
@@ -291,11 +291,11 @@ Material.clone = function(id)
 		elseif id == 13 then
 			cloner = Material.aerogel
 		end
-			obj=display.newImageRect(cloner.img, cloner.width, cloner.height)
+			obj=display.newImage(cloner.img)
 			obj.img_dmg=cloner.img_dmg
 			obj.img_ui=cloner.img_ui
 			obj.shape=cloner.shape
-			--obj:scale(cloner.scaleX,cloner.scaleY)
+			obj:scale(cloner.scaleX,cloner.scaleY)
 			obj.maxHP=cloner.maxHP
 			obj.currentHP=cloner.maxHP
 			obj.cost=cloner.cost

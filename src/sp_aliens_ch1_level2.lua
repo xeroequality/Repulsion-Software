@@ -115,6 +115,7 @@ function scene:enterScene( event )
         audio.fadeOut(prev_music, { time=5000 })
         --o_play = audio.play(music_bg, {channel=3,fadein=5000 } )
 		physics.start()
+		physics.setDrawMode("hybrid")
 		local slideBtn
 		--------------------
 		-- Material Objects
@@ -136,6 +137,7 @@ function scene:enterScene( event )
 		floorwidth = 11*W
 		local floor = display.newRect(floorleft,H-10,floorwidth,100)
 		floor:setFillColor(0)
+		local levelFilter = { categoryBits = 1, maskBits = 1 }
 		physics.addBody(floor, "static", {friction=0.9, bounce=0.05} )
 		group:insert(floor)
 		
@@ -377,7 +379,7 @@ end
 				end
 
 				-- make a new image
-				projectile = display.newImage(obj.img_projectile)
+				projectile = display.newImage(clickedUnit.img_projectile)
 				projectile:scale(clickedUnit.scaleX,clickedUnit.scaleY)
 				cballExists = true
 
@@ -391,7 +393,8 @@ end
 
 
 				-- apply physics to the projectile
-				physics.addBody( projectile, { density=3.0, friction=0.2, bounce=0.05, radius=15 } )
+				local playerProjectileCollisionFilter = { categoryBits = 4, maskBits = 5 } 
+				physics.addBody( projectile, { density=3.0, friction=0.2, bounce=0.05, radius=15, filter=playerProjectileCollisionFilter } )
 				projectile.isBullet = true
 
 				-- fire the projectile            

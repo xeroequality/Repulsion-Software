@@ -63,7 +63,8 @@ EnemyBase.loadBase = function(level)
 		obj.y = level.baseY + level.y_vals[i];
 		obj.rotation = level.rotations[i]
 		obj:addEventListener("postCollision",hit);
-		physics.addBody(obj, {density=obj.density,friction=obj.friction,bounce=obj.bounce--[[,shape=obj.shape]] })
+		local enemyCollisionFilter = { categoryBits = 4, maskBits = 5 }
+		physics.addBody(obj, {density=obj.density, friction=obj.friction, bounce=obj.bounce, shape=obj.shape, filter=enemyCollisionFilter })
 		enemyGroup:insert(obj)
 	end
 	return enemyGroup

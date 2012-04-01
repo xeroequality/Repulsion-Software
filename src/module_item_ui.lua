@@ -70,8 +70,16 @@ UI.dragItem = function(event)
 		elseif phase == "ended" or phase == "cancelled" then
 			-- If it doesn't already have a bodyType, then add it to physics
 			-- If it does, set it's body type to dynamic
+			local playerCollisionFilter = { categoryBits = 2, maskBits = 3 }
 			if not target.bodyType then
-				physics.addBody(target, "dynamic", {friction=target.friction}) --, shape=target.shape })
+				if target.id < 1000 then
+					physics.addBody(target, "dynamic", {friction=target.friction, bounce=target.bounce, density=target.density, shape=target.shape, filter=playerCollisionFilter })
+				elseif target.id >= 1000 then
+					physics.addBody( target, "dynamic",
+						{ friction=target.friction, bounce=target.bounce, density=target.density,  shape=target.objShape, filter=playerCollisionFilter },
+						{ friction=target.friction, bounce=target.bounce, density=target.density, shape=target.objBaseShape, filter=playerCollisionFilter }
+					)
+				end
 			else
 				target.bodyType = "dynamic"
 			end
@@ -138,8 +146,16 @@ UI.pickItem = function(event)
 		elseif phase == "ended" or phase == "cancelled" then
 			-- If it doesn't already have a bodyType, then add it to physics
 			-- If it does, set it's body type to dynamic
+			local playerCollisionFilter = { categoryBits = 2, maskBits = 3 }
 			if not newObj.bodyType then
-				physics.addBody(newObj, "dynamic", {friction=newObj.friction, shape=newObj.shape })
+				if newObj.id < 1000 then
+					physics.addBody(newObj, "dynamic", { friction=newObj.friction, bounce=newObj.bounce, density=newObj.density, shape=newObj.shape, filter=playerCollisionFilter })
+				elseif newObj.id >= 1000 then
+					physics.addBody( newObj, "dynamic",
+						{ friction=newObj.friction, bounce=newObj.bounce, density=newObj.density, shape=newObj.objShape, filter=playerCollisionFilter },
+						{ friction=newObj.friction, bounce=newObj.bounce, density=newObj.density, shape=newObj.objBaseShape, filter=playerCollisionFilter }
+					)
+				end
 			else
 				newObj.bodyType = "dynamic"
 			end

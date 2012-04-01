@@ -18,7 +18,13 @@ Unit.cannon = {
 		x=8,
 		y=-30
 	},
-	shape={
+	objShape={	 -- obj (weapon) array of shape vertices
+		-20,-10,
+		20,-10,
+		20,10,
+		-20,10
+	},
+	objBaseShape={
 		-18.5,-18.5,
 		18.5,-18.5,
 		18.5,18.5,
@@ -54,11 +60,12 @@ Unit.clone = function(id)
 		obj.img_base = display.newImage(cloner.img_base)
 		obj.img_dmg=cloner.img_dmg
 		obj.img_base_dmg=cloner.img_base_dmg
-		obj.img_projectile=cloner.img_projectile
+		unitObjGroup.img_projectile=cloner.img_projectile
 		unitObjGroup.sfx=cloner.sfx
 		obj.rotation=cloner.rotation
 		obj:translate(cloner.translate.x,cloner.translate.y)
-		unitObjGroup.shape=cloner.shape
+		unitObjGroup.objShape=cloner.objShape
+		unitObjGroup.objBaseShape=cloner.objBaseShape
 		unitObjGroup.scaleX=cloner.scaleX
 		unitObjGroup.scaleY=cloner.scaleY
 		unitObjGroup:scale(cloner.scaleX,cloner.scaleY)

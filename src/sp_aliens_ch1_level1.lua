@@ -46,23 +46,53 @@ end
 function scene:createScene( event )
         local group = self.view
 		physics.start()
+
+		-- -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+		-- Setup Parameters for Parallax View
+		-- -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+		local params = {
+			-- Define Desired Level Width, Height, and Group Association
+			width = W,
+			height = H,
+			group = group,
+			
+			-- Define Background Image Parameters
+			background = {
+				-- Filename, True Image Width & Height, Starting X, Starting Y, and Speed
+				img = "../images/background_chapter1_level1_background.png",
+				width = 1500,
+				height = H,
+				left = 0,
+				bottom = H,
+				speed = 0.5
+			},
+			-- Define Foreground (Back) Image Parameters
+			midground = {
+				-- Filename, True Image Width & Height, Starting X, Starting Y, and Speed
+				img = "../images/background_chapter1_level1_foreground_F.png",
+				width = 750,
+				height = 450,
+				left = 0,
+				bottom = H,
+				speed = 0.6
+			},
+			-- Define Foreground (Near) Image Parameters
+			foreground = {
+				-- Filename, True Image Width & Height, Starting X, Starting Y, and Speed
+				img = "../images/background_chapter1_level1_foreground_N.png",
+				width = 960,
+				height = 332,
+				left = 0,
+				bottom = H,
+				speed = 0.7
+			}
+		}
 		
- 		-- Instantiate Parallax Background
-		background = Parallax.levelScene(
-		{
-			Width = display.contentWidth * 3,
-			Height = display.contentHeight,
-			Group = group,
-			
-			Background = "../images/background_chapter1_level1_background.png",
-			BGW = 1500, BGH = 320,
-			
-			Foreground_Far = "../images/background_chapter1_level1_foreground_F.png",
-			FGF_W =750, FGF_H = 450,
-			
-			Foreground_Near = "../images/background_chapter1_level1_foreground_N.png",
-			FGN_W = 960, FGN_H = 332,
-		} )
+		-- -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+		-- Instantiate Parallax and Pass-In Parameters
+		-- -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+		local background = Parallax.levelScene(params)
+		
 
 end
  

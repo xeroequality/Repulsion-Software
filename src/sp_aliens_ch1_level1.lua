@@ -6,7 +6,7 @@ local physics			= require( "physics" )
 local Parallax			= require( "module_parallax" )
 local Materials			= require( "materials" )
 local Units  			= require( "units" )
---local Enemy				= require( "enemybase" )
+local Enemy				= require( "enemybase" )
 local IO	     		= require( "save_and_load" )
 local Pause				= require( "pause_overlay" )
 local MenuSettings 		= require( "settings" )
@@ -518,7 +518,7 @@ function scene:enterScene( event )
 		end
 		
 		-- In future levels, the ONLY thing that needs to change is the first line:
-		local objGroup = Pause.loadLevel();
+		local objGroup = Enemy.loadBase(Enemy.level1)
 		
 		group:insert(goodoverlay)
 		group:insert(badoverlay)

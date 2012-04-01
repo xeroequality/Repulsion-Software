@@ -91,7 +91,7 @@ function scene:createScene( event )
 		-- -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
 		-- Instantiate Parallax and Pass-In Parameters
 		-- -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
-		local background = Parallax.levelScene(params)
+		background = Parallax.levelScene(params)
 		
 
 end
@@ -174,11 +174,11 @@ function scene:enterScene( event )
 		overlay_activity = false; --Is There Overlay Animation Going On?
 		
 		local play_button = display.newImage("../images/ui_play_button.png");
-		play_button.x = 45+30; play_button.y = 35; play_button.static = "Yes";
+		play_button.x = 45+30; play_button.y = 35; play_button.static = "Yes"; play_button.movy = "Yes";
 		local rotate_button = display.newImage("../images/ui_rotate_button.png");
-		rotate_button.x = 115+30; rotate_button.y = 35; rotate_button.static = "Yes";
+		rotate_button.x = 115+30; rotate_button.y = 35; rotate_button.static = "Yes"; rotate_button.movy = "Yes";
 		local menu_button = display.newImage("../images/ui_menu_button.png");
-		menu_button.x = 185+30; menu_button.y = 35; menu_button.static = "Yes";
+		menu_button.x = 185+30; menu_button.y = 35; menu_button.static = "Yes"; menu_button.movy = "Yes";
 		
 		--------------------------------------------
 		--             	   Slide UI               --				How is this function different than the static menus function??????
@@ -337,8 +337,8 @@ function scene:enterScene( event )
 
 					--Drag This Object
 					newObj.isFocus = true
-					newObj.x0 = event.x - newObj.x
-					newObj.y0 = event.y - newObj.y
+					newObj.x0 = event.x - newObj.x;
+					newObj.y0 = event.y - newObj.y;
 					-- If physics is already applied to target, make it kinematic
 					if newObj.bodyType then
 						newObj.bodyType = "kinematic"
@@ -435,7 +435,7 @@ function scene:enterScene( event )
 			if event.phase == "ended" then
 				focus.rotation = math.floor(focus.rotation)
 				focus.rotation = focus.rotation + 90;
-				if foucs.width ~= focus.height then focus.y = focus.y - (focus.height/(focus.width/focus.height)); end
+				if focus.width ~= focus.height then focus.y = focus.y - (focus.height/(focus.width/focus.height)); end
 			end
 		end
 		
@@ -560,6 +560,7 @@ function scene:enterScene( event )
 		local MONEY = display.newText("You Have $"..wallet,0,0,native.systemFont,12);
 		MONEY.x = display.contentWidth/2+60; MONEY.y = 15;
 		MONEY:setTextColor(255,0,0)
+		MONEY.movy = "Yes";
 		
 		local function updateMONEY(event)
 			MONEY.text = "You Have $"..wallet;
@@ -733,81 +734,110 @@ end
 		 
 -- Called when scene is about to move offscreen:
 function scene:exitScene( event )
-        local group = self.view
-        
-        -----------------------------------------------------------------------------
-        --      INSERT code here (e.g. stop timers, remove listeners, unload sounds, etc.)
-        -----------------------------------------------------------------------------
-		--Remove the Runtime Listeners
-		--scrollGroup:removeEventListener(scroll)
-		
-		Runtime:removeEventListener('enterFrame',removeballbeyondfloor)
-		Runtime:removeEventListener('enterFrame',startRotation)
-        
-		local num = group.numChildren;
-		while num >= 1 do
-			group:remove(num)
-			num = num - 1
+	local group = self.view
+	
+	-----------------------------------------------------------------------------
+	--      INSERT code here (e.g. stop timers, remove listeners, unload sounds, etc.)
+	-----------------------------------------------------------------------------
+	--Remove the Runtime Listeners
+	--scrollGroup:removeEventListener(scroll)
+	
+	Runtime:removeEventListener('enterFrame',removeballbeyondfloor)
+	Runtime:removeEventListener('enterFrame',startRotation)
+	Runtime:removeEventListener("enterFrame",updateMONEY)
+	Runtime:removeEventListener("enterFrame",showHP)
+	
+	local num = group.numChildren;
+	while num >= 1 do
+		group:remove(num)
+		num = num - 1
+	end
+	local num = overlayGroup.numChildren;
+	while num >= 1 do
+		overlayGroup:remove(num)
+		num = num - 1
+	end
+	group:removeSelf();
+	overlayGroup:removeSelf();
+	overlay = nil;
+	overlay_activity = nil;
+	bringMenutoFront = nil;
+	makeCannon = nil;
+	createCrosshair = nil;
+	startRotation = nil;
+	fire = nil;
+	stopRotation = nil;
+	deleteBall = nil;
+	floorleft = nil;
+	floorwidth = nil;
+	removeballbeyondfloor = nil;
+	removeballcollision = nil;
+	shiftScene = nil;
+	closeView = nil; openView = nil;
+	hit = nil;
+	background = nil;
+	
+	--[[package.loaded["widget"] = nil
+	_G["widget"] = nil
+	package.loaded["module_scrollview"] = nil
+	_G["module_scrollview"] = nil
+	package.loaded["physics"] = nil
+	_G["physics"] = nil
+	package.loaded["module_parallax"] = nil
+	_G["module_parallax"] = nil
+	package.loaded["materials"] = nil
+	_G["materials"] = nil
+	package.loaded["units"] = nil
+	_G["units"] = nil
+	package.loaded["enemybase"] = nil
+	_G["enemybase"] = nil
+	package.loaded["save_and_load"] = nil
+	_G["save_and_load"] = nil
+	package.loaded["pause_overlay"] = nil
+	_G["pause_overlay"] = nil
+	package.loaded["settings"] = nil
+	_G["settings"] = nil
+	package.loaded["scrollview"] = nil
+	_G["scrollview"] = nil
+	package.loaded["parallax"] = nil
+	_G["parallax"] = nil--]]
+	
+	--[[local num = cannonGroup.numChildren;
+	for i=1, unitGroup.numChildren do
+		if unitGroup[i] ~= nil then
+			unitGroup:remove(i)
 		end
-		local num = overlayGroup.numChildren;
-		while num >= 1 do
-			overlayGroup:remove(num)
-			num = num - 1
-		end
-		overlay = nil;
-		overlay_activity = nil;
-		bringMenutoFront = nil;
-		makeCannon = nil;
-		createCrosshair = nil;
-		startRotation = nil;
-		fire = nil;
-		stopRotation = nil;
-		deleteBall = nil;
-		floorleft = nil;
-		floorwidth = nil;
-		removeballbeyondfloor = nil;
-		removeballcollision = nil;
-		shiftScene = nil;
-		closeView = nil; openView = nil;
-		hit = nil;
-		background = nil;
-		
-		--[[local num = cannonGroup.numChildren;
-		for i=1, unitGroup.numChildren do
-			if unitGroup[i] ~= nil then
-				unitGroup:remove(i)
-			end
-		end
-		unitGroup = nil;		-- Could we just use a remove parent function that will remove the whole group and all it's contents
+	end
+	unitGroup = nil;		-- Could we just use a remove parent function that will remove the whole group and all it's contents
 
-		for i=1, playerGroup.numChildren do
-			if playerGroup[i] ~= nil then
-				playerGroup:remove(i)
-			end
+	for i=1, playerGroup.numChildren do
+		if playerGroup[i] ~= nil then
+			playerGroup:remove(i)
 		end
-		 playerGroup = nil;--]]
-		 
-		 --Nil the Whole Freakin' Overlay
-		 Pause.nilEverything()
-		 
-		 --Cancel All Timers
-		 local k, v
-		 
-		 for k,v in pairs(timerStash) do
-			timer.cancel( v )
-			v = nil; k = nil
-		end
-		
-		timerStash = nil
-		timerStash = {}
-		
-		--Cancel All Transitions
-		local k, v
-		
-		for k,v in pairs(transitionStash) do
-			transition.cancel( v )
-			v = nil; k = nil
-		end
+	end
+	 playerGroup = nil;--]]
+	 
+	 --Nil the Whole Freakin' Overlay
+	 Pause.nilEverything()
+	 
+	 --Cancel All Timers
+	 local k, v
+	 
+	 for k,v in pairs(timerStash) do
+		timer.cancel( v )
+		v = nil; k = nil
+	end
+	
+	timerStash = nil
+	timerStash = {}
+	
+	--Cancel All Transitions
+	local k, v
+	
+	for k,v in pairs(transitionStash) do
+		transition.cancel( v )
+		v = nil; k = nil
+	end
 
 	 transitionStash = nil
 	 transitionStash = {}
@@ -827,7 +857,7 @@ function scene:destroyScene( event )
 			slideBtn = nil
 		end
 		if scrollView then
-			scrollView:removeSelf();
+			scrollView.destroy();
 			scrollView = nil
 		end
 		if rotate_button then

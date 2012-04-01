@@ -28,6 +28,7 @@ EnemyBase.level1 = {
 }
 
 EnemyBase.loadBase = function(level)
+	local physics = require("physics")
 	local enemyGroup = display.newGroup()
 	for i=1,level.numObjects do
 		local obj = {}

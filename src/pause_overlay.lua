@@ -435,7 +435,7 @@ pauseMenu.createOverlay = function(group)
 		return group;
 end
 
-pauseMenu.assertDepth = function(group)
+pauseMenu.bringMenutoFront = function(group)
 	group:insert(overlayshade)
 	group:insert(overlayrect)
 	group:insert(backBtn)

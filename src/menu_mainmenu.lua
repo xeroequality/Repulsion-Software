@@ -114,25 +114,25 @@ function scene:enterScene( event )
 		--Single Player Button
 		spBtn.view:setReferencePoint( display.CenterReferencePoint )
 		spBtn.view.x = pW
-		spBtn.view.y = cH-115
+		spBtn.view.y = cH-160
 		spBtn.view.alpha = 0.01; --Only Visible One
 		
 		--Multi-Player Button
 		mpBtn.view:setReferencePoint( display.CenterReferencePoint )
 		mpBtn.view.x = pW
-		mpBtn.view.y = cH-115
+		mpBtn.view.y = cH-160
 		mpBtn.view.alpha = 0
 		
 		--Settings Button
 		settingsBtn.view:setReferencePoint( display.CenterReferencePoint )
 		settingsBtn.view.x = pW
-		settingsBtn.view.y = cH-115
+		settingsBtn.view.y = cH-160
 		settingsBtn.view.alpha = 0
 		
 		--About Us Button
 		aboutBtn.view:setReferencePoint( display.CenterReferencePoint )
 		aboutBtn.view.x = pW
-		aboutBtn.view.y = cH-115
+		aboutBtn.view.y = cH-160
 		aboutBtn.view.alpha = 0
 		
 		--Here Are the Runtime Functions for the Main Menu

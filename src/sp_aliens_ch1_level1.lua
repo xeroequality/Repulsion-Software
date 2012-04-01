@@ -59,32 +59,32 @@ function scene:createScene( event )
 			-- Define Background Image Parameters
 			background = {
 				-- Filename, True Image Width & Height, Starting X, Starting Y, and Speed
-				img="../images/background_chapter1_level1_background.png",
-				width=1500,
-				height=H,
-				left=0,
-				bottom=H,
-				speed=0.5
+				img = "../images/background_chapter1_level1_background.png",
+				width = 1500,
+				height = H,
+				left = 0,
+				bottom = H,
+				speed = 0.5
 			},
 			-- Define Foreground (Back) Image Parameters
 			midground = {
 				-- Filename, True Image Width & Height, Starting X, Starting Y, and Speed
-				img="../images/background_chapter1_level1_foreground_F.png",
-				width=750,
-				height=450,
-				left=0,
-				bottom=H,
-				speed=0.6
+				img = "../images/background_chapter1_level1_foreground_F.png",
+				width = 750,
+				height = 450,
+				left = 0,
+				bottom = H,
+				speed = 0.6
 			},
 			-- Define Foreground (Near) Image Parameters
 			foreground = {
 				-- Filename, True Image Width & Height, Starting X, Starting Y, and Speed
-				img="../images/background_chapter1_level1_foreground_N.png",
-				width=960,
-				height=332,
-				left=0,
-				bottom=H,
-				speed=0.7
+				img = "../images/background_chapter1_level1_foreground_N.png",
+				width = 960,
+				height = 332,
+				left = 0,
+				bottom = H,
+				speed = 0.7
 			}
 		}
 		

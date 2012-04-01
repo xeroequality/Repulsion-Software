@@ -1,7 +1,9 @@
 --Item ScrollView UI
 
 UI = {
-	focus = nil
+	focus = nil,
+	badx = 700,
+	badw = 675
 }
 
 local setFocus = function(focus)
@@ -12,6 +14,31 @@ local getFocus = function()
 	return UI.focus;
 end
 UI.getFocus = getFocus;
+
+UI.createSlideBtn = function(which_way,place_at_back)
+	local widget = require("widget")
+	if which_way == "left" then --Which Direction Should the Arrow Face
+		slideBtn = widget.newButton{
+			default="../images/ui_btn_buildmenu_left.png",
+			over="../images/ui_btn_buildmenu_left_pressed.png",
+			width=35, height=35,
+			onRelease=UI.slideUI
+		}
+	else
+		slideBtn = widget.newButton{
+			default="../images/ui_btn_buildmenu_right.png",
+			over="../images/ui_btn_buildmenu_right_pressed.png",
+			width=35, height=35,
+			onRelease=UI.slideUI
+		}
+	end
+	slideBtn.y = H/2
+	if place_at_back == false then --Place it in Back?
+		slideBtn.x = scrollView.bkgView.width-45
+	else
+		slideBtn.x = -35;
+	end
+end
 
 -- Event for dragging an item
 UI.dragItem = function(event)
@@ -35,7 +62,7 @@ UI.dragItem = function(event)
 			target.x = event.x - target.x0
 			target.y = event.y - target.y0
 			--Player can only place item in their area
-			if target.x > badoverlay.x - badoverlay.width/2 then
+			if target.x > UI.badx - UI.badw/2 then
 				wallet = wallet + target.cost
 				target:removeSelf()
 				return true
@@ -98,7 +125,6 @@ UI.pickItem = function(event)
 			end
 			UI.focus = newObj;
 			local Pause = require("pause_overlay");
-			group = Pause.bringMenutoFront(group);
 			materialGroup = Pause.bringMenutoFront(materialGroup);
 		else
 			print("not enough money!")
@@ -219,31 +245,6 @@ UI.createMenuUI = function()
 	play_button:addEventListener("touch",UI.playUI);
 	rotate_button:addEventListener("touch",UI.rotateUI);
 	menu_button:addEventListener("touch",UI.menuUI);
-end
-
-UI.createSlideBtn = function(which_way,place_at_back)
-	local widget = require("widget")
-	if which_way == "left" then --Which Direction Should the Arrow Face
-		slideBtn = widget.newButton{
-			default="../images/ui_btn_buildmenu_left.png",
-			over="../images/ui_btn_buildmenu_left_pressed.png",
-			width=35, height=35,
-			onRelease=UI.slideUI
-		}
-	else
-		slideBtn = widget.newButton{
-			default="../images/ui_btn_buildmenu_right.png",
-			over="../images/ui_btn_buildmenu_right_pressed.png",
-			width=35, height=35,
-			onRelease=UI.slideUI
-		}
-	end
-	slideBtn.y = H/2
-	if place_at_back == false then --Place it in Back?
-		slideBtn.x = scrollView.bkgView.width-45
-	else
-		slideBtn.x = -35;
-	end
 end
 
 return UI;

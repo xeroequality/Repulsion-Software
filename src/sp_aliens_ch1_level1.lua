@@ -221,6 +221,7 @@ function scene:enterScene( event )
 		end
 		local function exit_level(event)
 			if event.phase == "ended" and exitBtn.alpha > 0 then
+				scrollView.destroy()
 				exitNOW()
 			end
 		end
@@ -274,7 +275,7 @@ function scene:enterScene( event )
 		MONEY:setTextColor(255,0,0)
 		MONEY.movy = "Yes";
 		
-		local function updateMONEY(event)
+		updateMONEY = function(event)
 			MONEY.text = "You Have $"..wallet;
 		end
 		Runtime:addEventListener("enterFrame",updateMONEY)
@@ -492,12 +493,13 @@ function scene:exitScene( event )
 	background = nil;
 	focus = nil;
 	wallet = nil;
+	updateMONEY = nil;
 	
 	playerGroup = nil; materialGroup = nil; unitGroup = nil;
 	
-	if play_button then play_button:removeSelf(); play_button = nil; end
-	if rotate_button then rotate_button:removeSelf(); rotate_button = nil; end
-	if menu_button then menu_button:removeSelf(); menu_button = nil; end
+	--if play_button then play_button:removeSelf(); play_button = nil; end
+	--if rotate_button then rotate_button:removeSelf(); rotate_button = nil; end
+	--if menu_button then menu_button:removeSelf(); menu_button = nil; end
 	
 	--[[package.loaded["widget"] = nil
 	_G["widget"] = nil

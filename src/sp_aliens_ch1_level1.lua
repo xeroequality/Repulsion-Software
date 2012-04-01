@@ -10,6 +10,7 @@ local Enemy				= require( "enemybase" )
 local IO	     		= require( "save_and_load" )
 local Pause				= require( "pause_overlay" )
 local MenuSettings 		= require( "settings" )
+local ItemUI		    = require( "module_item_ui" )
 local scene 	 		= storyboard.newScene()
 local weaponSFXed
 local weaponSFX
@@ -143,7 +144,7 @@ function scene:enterScene( event )
 		group:insert(floor)
 		
 		local levelWallet = 50000; --The Amount of Money for This Level
-		local wallet = levelWallet; --The Current Amount of Money
+		wallet = levelWallet; --The Current Amount of Money
 		
 		--------------------------------------------
 		--              Overlays                  --
@@ -161,7 +162,7 @@ function scene:enterScene( event )
 		--------------------------------------------
 		--              SCROLLVIEW                --
 		--------------------------------------------
-		local scrollView = ScrollView.new{
+		scrollView = ScrollView.new{
 			background="../images/ui_bkg_buildmenu.png",
 			top=0,
 			bottom=0
@@ -179,206 +180,29 @@ function scene:enterScene( event )
 		overlay = false; --Is the Overlay Up?
 		overlay_activity = false; --Is There Overlay Animation Going On?
 		
-		local play_button = display.newImage("../images/ui_play_button.png");
-		play_button.x = 45+30; play_button.y = 35; play_button.static = "Yes"; play_button.movy = "Yes";
-		local rotate_button = display.newImage("../images/ui_rotate_button.png");
-		rotate_button.x = 115+30; rotate_button.y = 35; rotate_button.static = "Yes"; rotate_button.movy = "Yes";
-		local menu_button = display.newImage("../images/ui_menu_button.png");
-		menu_button.x = 185+30; menu_button.y = 35; menu_button.static = "Yes"; menu_button.movy = "Yes";
+		UI.createMenuUI();
 		
 		--------------------------------------------
 		--             	   Slide UI               --				How is this function different than the static menus function??????
-		--------------------------------------------
-		
-		-- Event for when open/close button is pressed
-			-- If scrollView is "open", close it
-			-- If scrollView is "closed", open it
-		local function slideUI (event)
-			if scrollView.isOpen then
-				print("closing scrollView")
-				scrollView.isOpen = false
-				transitionStash.newTransition = transition.to(static_menu, {time=300, y=-85} )
-				transitionStash.newTransition = transition.to(scrollView.scrollview, {time=300, x=-85} )
-				transitionStash.newTransition = transition.to(play_button, {time=300, y=-35} )
-				transitionStash.newTransition = transition.to(rotate_button, {time=300, y=-35} )
-				transitionStash.newTransition = transition.to(menu_button, {time=300, y=-35} )
-
-				if slideBtn then
-					slideBtn:removeSelf()
-					slideBtn = widget.newButton{
-						default="../images/ui_btn_buildmenu_right.png",
-						over="../images/ui_btn_buildmenu_right_pressed.png",
-						width=35, height=35,
-						onRelease=slideUI
-					}
-					slideBtn.y = H/2
-					slideBtn.x = scrollView.bkgView.width-45
-					transitionStash.newTransition = transition.to(slideBtn, {time=300, x=-35} )
-					transitionStash.newTransition = transition.to( goodoverlay, { alpha=0, xScale=1.0, yScale=1.0, time=0} )
-					transitionStash.newTransition = transition.to( badoverlay, { alpha=0, xScale=1.0, yScale=1.0, time=0} )
-
-				end
-			elseif not scrollView.isOpen then
-				print("opening scrollView")
-				scrollView.isOpen = true
-				transitionStash.newTransition = transition.to(static_menu, {time=300, y=0} )
-				transitionStash.newTransition = transition.to(scrollView.scrollview, {time=300, x=0} )
-				transitionStash.newTransition = transition.to(play_button, {time=300, y=35} )
-				transitionStash.newTransition = transition.to(rotate_button, {time=300, y=35} )
-				transitionStash.newTransition = transition.to(menu_button, {time=300, y=35} )
-				if slideBtn then
-					slideBtn:removeSelf()
-					slideBtn = widget.newButton{
-						default="../images/ui_btn_buildmenu_left.png",
-						over="../images/ui_btn_buildmenu_left_pressed.png",
-						width=35, height=35,
-						onRelease=slideUI
-					}
-					slideBtn.y = H/2
-					slideBtn.x = -35
-					transitionStash.newTransition = transition.to(slideBtn, {time=300, x=scrollView.bkgView.width-45} )
-					transitionStash.newTransition = transition.to( goodoverlay, { alpha=.25, xScale=1.0, yScale=1.0, time=0} )
-					transitionStash.newTransition = transition.to( badoverlay, { alpha=.25, xScale=1.0, yScale=1.0, time=0} )
-				end
-				--Close Overlay if Up
-				if overlay == true and overlay_activity == false then
-					overlay = false;
-					overlay_activity = true;
-					print("Here")
-				end
-			end
-			return true
-		end
-		
-		slideBtn = widget.newButton{
-			default="../images/ui_btn_buildmenu_left.png",
-			over="../images/ui_btn_buildmenu_left_pressed.png",
-			width=35, height=35,
-			onRelease=slideUI
-		}
-		slideBtn.y = H/2
-		slideBtn.x = scrollView.bkgView.width-45
+		--------------------------------------------		
+		UI.createSlideBtn("left",false);
 		
 		--------------------------------------------
 		--               ITEM DRAG                --
 		--------------------------------------------
-		local focus = 0;
-		-- Event for dragging an item
-		local function dragItem (event)
-			local phase = event.phase
-			local target = event.target
-			if scrollView.isOpen and overlay == false and overlay_activity == false then						-- need an and if touch.y is less than 150 so that it doesnt work when the scrollview is above the static button area
-			if phase == "began" then
-				display.getCurrentStage():setFocus(target)
-				target.isFocus = true
-				target.x0 = event.x - target.x
-				target.y0 = event.y - target.y
-				-- If physics is already applied to target, make it kinematic
-				if target.bodyType then
-					target.bodyType = "kinematic"
-					target:setLinearVelocity(0,0)
-					target.angularVelocity = 0
-				end
-				focus = event.target;
-			elseif target.isFocus then
-				if phase == "moved" then
-					target.x = event.x - target.x0
-					target.y = event.y - target.y0
-					--Player can only place item in their area
-					if target.x > badoverlay.x - badoverlay.width/2 then
-						wallet = wallet + target.cost
-						target:removeSelf()
-						return true
-					end
-				elseif phase == "ended" or phase == "cancelled" then
-					-- If it doesn't already have a bodyType, then add it to physics
-					-- If it does, set it's body type to dynamic
-					if not target.bodyType then
-						physics.addBody(target, "dynamic", {friction=target.friction}) --, shape=target.shape })
-					else
-						target.bodyType = "dynamic"
-					end
-					display.getCurrentStage():setFocus(nil)
-					target.isFocus = false
-					--target:removeEventListener(dragItem)
-				end
-			end
-			end
-			focus = target
-			return true
-		end
+		focus = 0;
+		
 
 		--------------------------------------------
 		--              ITEM SELECT               --
 		--------------------------------------------
 		-- Event for selecting an item from scrollView
-		local playerGroup = display.newGroup()
-		local materialGroup = display.newGroup()
+		playerGroup = display.newGroup()
+		materialGroup = display.newGroup()
 		unitGroup = display.newGroup()
-		local function pickItem (event)
-			local newObj = display.newImage("")
-			local phase = event.phase
-			local target = event.target
-			if phase == "began" then
-				if wallet >= target.cost then
-					if target.id < 1000 then
-						newObj = Materials.clone(target.id)
-						materialGroup:insert(newObj)
-					elseif target.id >= 1000 then
-						newObj = Units.clone(target.id)
-						unitGroup:insert(newObj)
-						print('#unitGroup: ' .. unitGroup.numChildren)
-					else
-						print("null target")
-						return true
-					end
-					
-					wallet = wallet - newObj.cost
-					newObj.x = event.x
-					newObj.y = event.y
-					newObj.id = target.id
-					newObj.child = "Child"; --When the Save Function Runs, It Will Save These Kind of Objects
-					newObj:addEventListener("touch",dragItem)
-					display.getCurrentStage():setFocus(newObj)
-
-					--Drag This Object
-					newObj.isFocus = true
-					newObj.x0 = event.x - newObj.x;
-					newObj.y0 = event.y - newObj.y;
-					-- If physics is already applied to target, make it kinematic
-					if newObj.bodyType then
-						newObj.bodyType = "kinematic"
-						newObj:setLinearVelocity(0,0)
-						newObj.angularVelocity = 0
-					end
-					focus = newObj;
-					Pause.bringMenutoFront(group);
-				else
-					print("not enough money!")
-					return true
-				end
-			end
-			if newObj.isFocus then
-				if phase == "moved" then
-					newObj.x = event.x - newObj.x0
-					newObj.y = event.y - newObj.y0
-				elseif phase == "ended" or phase == "cancelled" then
-					-- If it doesn't already have a bodyType, then add it to physics
-					-- If it does, set it's body type to dynamic
-					if not newObj.bodyType then
-						physics.addBody(newObj, "dynamic", {friction=newObj.friction, shape=newObj.shape })
-					else
-						newObj.bodyType = "dynamic"
-					end
-					display.getCurrentStage():setFocus(nil)
-					newObj.isFocus = false
-				end
-			end
-			return true
-		end
 		
 		for i=1,#scrollView.items do
-			scrollView.items[i].view:addEventListener("touch",pickItem)
+			scrollView.items[i].view:addEventListener("touch",ItemUI.pickItem)
 		end
 		
 		--------------------------------------------
@@ -386,128 +210,8 @@ function scene:enterScene( event )
 		--------------------------------------------
 		local static_menu = display.newGroup()
 		
-		local function playUI (event)
-            slideBtn:removeSelf()
-            --make it so that we cannot access it again?
-            --delete it!
-			print('clicked play')
-			transitionStash.newTransition = transition.to(menu_button, {time=500, x=-10} )
-			scrollView.destroy()
-			play_button:removeSelf()
-			rotate_button:removeSelf()
-			goodoverlay:removeSelf()
-			badoverlay:removeSelf()
-			scrollView = nil
-			play_button = nil
-			rotate_button = nil;
-			showCrosshair = false 										-- helps ensure that only one crosshair appears
-			print('here')
-			for i=1,unitGroup.numChildren do
-				print('unitGroup: ' .. unitGroup[i].id)
-				unitGroup[i]:removeEventListener("touch", dragItem)
-				unitGroup[i]:addEventListener('touch',createCrosshair)
-			end
-		end
-		
-		local function menuUI (event)
-				-- Need to create a overlay and shade effect and pause the game when the menu button is pressed
-			if event.phase == "began" then
-				if overlay == false and overlay_activity == false then --Put Up the Overlay
-					print('clicked menu')
-					overlay_activity = true;
-					overlay = true;
-				end
-			end
-		end
-		
-		local function rotateUI(event)
-			--Rotate the Object that is in Focus (the Last Touched Object)
-			--[[if event.phase == "began" then
-				physics.pause();
-				local last = focus.rotation;
-				j = display.newImage("../images/ui_rotate_button_pressed.png");
-				j.x = (event.target).x; j.y = (event.target).y;
-			end
-			print(event.phase)
-			focus.rotation = focus.rotation + 5;
-			if event.phase == "ended" then
-				physics.start();
-				display.remove(j);
-				j = nil;
-				if focus.rotation >= (last+90) or focus.rotation <= (last-90) then
-					focus.y = focus.y - (focus.height/2);
-				end
-			end--]]
-			if event.phase == "ended" then
-				focus.rotation = math.floor(focus.rotation)
-				focus.rotation = focus.rotation + 90;
-				if focus.width ~= focus.height then focus.y = focus.y - (focus.height/(focus.width/focus.height)); end
-			end
-		end
-		
-		play_button:addEventListener("touch",playUI);
-		rotate_button:addEventListener("touch",rotateUI);
-		menu_button:addEventListener("touch",menuUI);
-		
-		group = pauseMenu.createOverlay(group);
-		
-		closeView = function()
-			if scrollView then
-				--Close SlideView
-				if scrollView.isOpen == true then
-					scrollView.isOpen = false
-					transitionStash.newTransition = transition.to(static_menu, {time=300, y=-85} )
-					transitionStash.newTransition = transition.to(scrollView.scrollview, {time=300, x=-85} )
-					transitionStash.newTransition = transition.to(play_button, {time=300, y=-35} )
-					transitionStash.newTransition = transition.to(rotate_button, {time=300, y=-35} )
-					transitionStash.newTransition = transition.to(menu_button, {time=300, y=-35} )
-
-					if slideBtn then
-						slideBtn:removeSelf()
-						slideBtn = widget.newButton{
-							default="../images/ui_btn_buildmenu_right.png",
-							over="../images/ui_btn_buildmenu_right_pressed.png",
-							width=35, height=35,
-							onRelease=slideUI
-						}
-						slideBtn.y = H/2
-						slideBtn.x = scrollView.bkgView.width-45
-						transitionStash.newTransition = transition.to(slideBtn, {time=300, x=-35} )
-						transitionStash.newTransition = transition.to( goodoverlay, { alpha=0, xScale=1.0, yScale=1.0, time=300} )
-						transitionStash.newTransition = transition.to( badoverlay, { alpha=0, xScale=1.0, yScale=1.0, time=300} )
-
-					end
-				end
-			else
-				transitionStash.newTransition = transition.to(menu_button, {time=300, y=-35} )
-			end
-		end
-		openView = function()
-			if scrollView then
-				scrollView.isOpen = true
-				transitionStash.newTransition = transition.to(static_menu, {time=300, y=0} )
-				transitionStash.newTransition = transition.to(scrollView.scrollview, {time=300, x=0} )
-				transitionStash.newTransition = transition.to(play_button, {time=300, y=35} )
-				transitionStash.newTransition = transition.to(rotate_button, {time=300, y=35} )
-				transitionStash.newTransition = transition.to(menu_button, {time=300, y=35} )
-				if slideBtn then
-					slideBtn:removeSelf()
-					slideBtn = widget.newButton{
-						default="../images/ui_btn_buildmenu_left.png",
-						over="../images/ui_btn_buildmenu_left_pressed.png",
-						width=35, height=35,
-						onRelease=slideUI
-					}
-					slideBtn.y = H/2
-					slideBtn.x = -35
-					transitionStash.newTransition = transition.to(slideBtn, {time=300, x=scrollView.bkgView.width-45} )
-					transitionStash.newTransition = transition.to( goodoverlay, { alpha=.25, xScale=1.0, yScale=1.0, time=0} )
-					transitionStash.newTransition = transition.to( badoverlay, { alpha=.25, xScale=1.0, yScale=1.0, time=0} )
-				end
-			else
-				transitionStash.newTransition = transition.to(menu_button, {time=300, y=35} )
-			end
-		end
+		group = Pause.createOverlay(group);
+		group = Pause.bringMenutoFront(group);
 
 		local function restart_level(event)
 			if event.phase == "ended" and restartBtn.alpha > 0 then
@@ -536,11 +240,11 @@ function scene:enterScene( event )
 				for i = 1,materialGroup.numChildren do
 					local child = materialGroup[i];
 					if child.child ~= nil then
-						child:addEventListener("touch",dragItem);
+						child:addEventListener("touch",ItemUI.dragItem);
 					end
 				end
 				focus = materialGroup[1];
-				Pause.bringMenutoFront(group);
+				group = Pause.bringMenutoFront(group);
 			end
 		end
 		
@@ -610,6 +314,8 @@ function scene:enterScene( event )
 		group:insert(MONEY)
 		group:insert(objGroup)
 		-- group:insert(projectile)
+		
+		group = Pause.bringMenutoFront(group);
 
 end
 
@@ -782,6 +488,14 @@ function scene:exitScene( event )
 	closeView = nil; openView = nil;
 	hit = nil;
 	background = nil;
+	focus = nil;
+	wallet = nil;
+	
+	playerGroup = nil; materialGroup = nil; unitGroup = nil;
+	
+	if play_button then play_button:removeSelf(); play_button = nil; end
+	if rotate_button then rotate_button:removeSelf(); rotate_button = nil; end
+	if menu_button then menu_button:removeSelf(); menu_button = nil; end
 	
 	--[[package.loaded["widget"] = nil
 	_G["widget"] = nil

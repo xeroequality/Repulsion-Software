@@ -216,7 +216,8 @@ end
 
 pauseMenu.back_to_main = function(event)
 	if event.phase == "began" and backBtn.alpha > 0 then
-		openView();
+		local UI = require("module_item_ui");
+		UI.slideUI();
 		--Close Overlay if Up
 		if overlay == true and overlay_activity == false then
 			overlay = false;
@@ -241,7 +242,8 @@ pauseMenu.overlay_animation = function(event)
 				nr_scale = (1-r_scale)/anim_time;
 				nr_scale = (nr_scale+r_scale)/r_scale;
 				physics.pause() --Pause the Physics
-				closeView();
+				local UI = require("module_item_ui");
+				UI.slideUI();
 			end
 			--Control Visibility of the Overlay Shade
 			overlayshade.alpha = overlayshade.alpha + (s_alpha/anim_time)

@@ -496,26 +496,4 @@ pauseMenu.nilEverything = function()
 	collectgarbage()
 end
 
---Load the Enemy Base
-pauseMenu.loadLevel = function()
-	local Enemies = require( "enemybase" )
-	local Materials = require( "materials" )
-	local enemy = Enemies.level1
-	objGroup = display.newGroup()
-	for i=1,enemy.numObjects do
-		local obj = display.newImage("")
-		local baseX = enemy.baseX;
-		local baseY = enemy.baseY;
-		-- obj.id = enemy.id[i]
-		obj = Materials.clone(enemy.id[i])
-		obj.x = enemy.x_vals[i]+baseX;
-		obj.y = enemy.y_vals[i]+baseY;
-		obj.rotation = enemy.rotations[i]
-		physics.addBody(obj, {density=obj.density,friction=obj.friction,bounce=obj.bounce,shape=obj.shape} )
-		objGroup:insert(obj)
-		obj:addEventListener("postCollision",hit);
-	end
-	return objGroup
-end
-
 return pauseMenu;

@@ -27,4 +27,19 @@ EnemyBase.level1 = {
 	}
 }
 
+EnemyBase.loadBase = function(level)
+	local enemyGroup = display.newGroup()
+	for i=1,level.numObjects do
+		local obj = {}
+		obj.id = level.id[i]
+		obj = Material.clone(obj.id)
+		obj.x = level.baseX + level.x_vals[i];
+		obj.y = level.baseY + level.y_vals[i];
+		obj.rotation = level.rotations[i]
+		physics.addBody(obj, {density=obj.density,friction=obj.friction,bounce=obj.bounce--[[,shape=obj.shape]] })
+		enemyGroup:insert(obj)
+	end
+	return enemyGroup
+end
+
 return EnemyBase

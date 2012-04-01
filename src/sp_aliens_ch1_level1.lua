@@ -168,12 +168,7 @@ function scene:enterScene( event )
 			bottom=0
 		}
 		for i=1,#levelObjs do
-			scrollView.addItem{
-				id=levelObjs[i].id,
-				cost=levelObjs[i].cost,
-				img=levelObjs[i].img_ui,
-				print('levelObjs[i].id ' .. levelObjs[i].id)
-			}
+			scrollView.addItem(levelObjs[i])
 		end
 
 		--Overlay Variables

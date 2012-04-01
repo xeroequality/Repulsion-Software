@@ -32,7 +32,7 @@ ScrollView.new = function(svTable)
 end
 ScrollView.addItem = function(itemTable)
 	local item = {}
-	item.view = display.newImage(itemTable.img)
+	item.view = display.newImage(itemTable.img_ui)
 	item.view.id = itemTable.id
 	item.view.cost = itemTable.cost
 	item.view.x = 0

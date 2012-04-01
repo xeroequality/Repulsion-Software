@@ -125,10 +125,6 @@ function scene:enterScene( event )
 			Materials.wood_box,
 			Materials.glass_sheet,
 			Materials.granite_slab,
-			Materials.glass_tri,
-			Materials.wood_plank_alien,
-			Materials.wood_box_alien,
-			Materials.aerogel,
 			Units.cannon
 		}
 		print ('levelObjs: ' .. #levelObjs)

@@ -203,15 +203,13 @@ UI.playUI = function(event)
 	scrollView.destroy()
 	play_button:removeSelf()
 	rotate_button:removeSelf()
-	goodoverlay:removeSelf()
-	badoverlay:removeSelf()
 	scrollView = nil
 	play_button = nil
 	rotate_button = nil;
 	showCrosshair = false 										-- helps ensure that only one crosshair appears
 	for i=1,unitGroup.numChildren do
 		print('unitGroup: ' .. unitGroup[i].id)
-		unitGroup[i]:removeEventListener("touch", dragItem)
+		unitGroup[i]:removeEventListener("touch",UI.dragItem)
 		unitGroup[i]:addEventListener('touch',createCrosshair)
 	end
 end

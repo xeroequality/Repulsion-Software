@@ -146,7 +146,6 @@ function scene:enterScene( event )
 		closeOverlay = function(event)
 			if overlayVars.isOpen then
 				print("closing overlay")
-				overlayVars.isOpen = false
 				if overlayVars.closeBtn and overlayVars.closeBtn.view then
 					overlayVars.closeBtn.view:removeSelf()
 					overlayVars.closeBtn.view = nil
@@ -175,6 +174,7 @@ function scene:enterScene( event )
 				end
 				local function removeOverlay(event)
 					print("overlay closed")
+					overlayVars.isOpen = false
 					if overlayVars.overlay then
 						overlayVars.overlay:removeSelf()
 						overlayVars.overlay = nil

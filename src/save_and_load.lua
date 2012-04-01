@@ -105,7 +105,7 @@ save_and_load.save = function(slot,overlay_section,group)
 			local function deleteText()
 				successText:removeSelf()
 			end
-			successText.text = "Load Successful!";
+			successText.text = "Save Successful!";
 			successTime = maxSuccessTime;
 			successText:setTextColor(0,255,0);
 			timer.performWithDelay(3000,deleteText,1);
@@ -141,7 +141,7 @@ save_and_load.load = function(slot,group,levelWallet)
 				obj.id = player.id[i];
 				obj.rotation = player.rotations[i]
 				obj.child = "Child";
-				physics.addBody(obj, {density=obj.density,friction=obj.friction,bounce=obj.bounce,shape=obj.shape} )
+				physics.addBody(obj, {density=obj.density,friction=obj.friction,bounce=obj.bounce} )
 				group:insert(obj)
 			end
 			local successText = display.newText("",50,10,native.systemFont,20);

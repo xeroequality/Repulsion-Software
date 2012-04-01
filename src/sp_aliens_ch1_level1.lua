@@ -122,6 +122,12 @@ function scene:enterScene( event )
 		local levelObjs = { -- Use this to choose what is items are available in this level
 			Materials.wood_plank,
 			Materials.wood_box,
+			Materials.glass_sheet,
+			Materials.granite_slab,
+			Materials.glass_tri,
+			Materials.wood_plank_alien,
+			Materials.wood_box_alien,
+			Materials.aerogel,
 			Units.cannon
 		}
 		print ('levelObjs: ' .. #levelObjs)
@@ -136,7 +142,7 @@ function scene:enterScene( event )
 		physics.addBody(floor, "static", {friction=0.9, bounce=0.05} )
 		group:insert(floor)
 		
-		local levelWallet = 10000; --The Amount of Money for This Level
+		local levelWallet = 50000; --The Amount of Money for This Level
 		local wallet = levelWallet; --The Current Amount of Money
 		
 		--------------------------------------------
@@ -360,7 +366,7 @@ function scene:enterScene( event )
 					-- If it doesn't already have a bodyType, then add it to physics
 					-- If it does, set it's body type to dynamic
 					if not newObj.bodyType then
-						physics.addBody(newObj, "dynamic", {friction=newObj.friction}) --, shape=newObj.shape })
+						physics.addBody(newObj, "dynamic", {friction=newObj.friction, shape=newObj.shape })
 					else
 						newObj.bodyType = "dynamic"
 					end

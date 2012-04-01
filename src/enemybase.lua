@@ -37,6 +37,7 @@ EnemyBase.loadBase = function(level)
 		obj.x = level.baseX + level.x_vals[i];
 		obj.y = level.baseY + level.y_vals[i];
 		obj.rotation = level.rotations[i]
+		obj:addEventListener("postCollision",hit);
 		physics.addBody(obj, {density=obj.density,friction=obj.friction,bounce=obj.bounce--[[,shape=obj.shape]] })
 		enemyGroup:insert(obj)
 	end

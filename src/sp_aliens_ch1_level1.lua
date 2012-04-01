@@ -381,53 +381,53 @@ function scene:enterScene( event )
 		
 		group = pauseMenu.createOverlay(group);
 		
-		-- closeView = function()
-			-- --Close SlideView
-			-- if scrollView.isOpen == true then
-				-- scrollView.isOpen = false
-				-- transitionStash.newTransition = transition.to(static_menu, {time=300, y=-85} )
-				-- transitionStash.newTransition = transition.to(scrollView.scrollview, {time=300, x=-85} )
-				-- transitionStash.newTransition = transition.to(play_button, {time=300, y=-35} )
-				-- transitionStash.newTransition = transition.to(menu_button, {time=300, y=-35} )
+		closeView = function()
+			--Close SlideView
+			if scrollView.isOpen == true then
+				scrollView.isOpen = false
+				transitionStash.newTransition = transition.to(static_menu, {time=300, y=-85} )
+				transitionStash.newTransition = transition.to(scrollView.scrollview, {time=300, x=-85} )
+				transitionStash.newTransition = transition.to(play_button, {time=300, y=-35} )
+				transitionStash.newTransition = transition.to(menu_button, {time=300, y=-35} )
 
-				-- if slideBtn then
-					-- slideBtn:removeSelf()
-					-- slideBtn = widget.newButton{
-						-- default="../images/ui_btn_buildmenu_right.png",
-						-- over="../images/ui_btn_buildmenu_right_pressed.png",
-						-- width=35, height=35,
-						-- onRelease=slideUI
-					-- }
-					-- slideBtn.y = H/2
-					-- slideBtn.x = scrollView.bkgView.width-45
-					-- transitionStash.newTransition = transition.to(slideBtn, {time=300, x=-35} )
-					-- transitionStash.newTransition = transition.to( goodoverlay, { alpha=0, xScale=1.0, yScale=1.0, time=300} )
-					-- transitionStash.newTransition = transition.to( badoverlay, { alpha=0, xScale=1.0, yScale=1.0, time=300} )
+				if slideBtn then
+					slideBtn:removeSelf()
+					slideBtn = widget.newButton{
+						default="../images/ui_btn_buildmenu_right.png",
+						over="../images/ui_btn_buildmenu_right_pressed.png",
+						width=35, height=35,
+						onRelease=slideUI
+					}
+					slideBtn.y = H/2
+					slideBtn.x = scrollView.bkgView.width-45
+					transitionStash.newTransition = transition.to(slideBtn, {time=300, x=-35} )
+					transitionStash.newTransition = transition.to( goodoverlay, { alpha=0, xScale=1.0, yScale=1.0, time=300} )
+					transitionStash.newTransition = transition.to( badoverlay, { alpha=0, xScale=1.0, yScale=1.0, time=300} )
 
-				-- end
-			-- end
-		-- end
-		-- openView = function()
-			-- scrollView.isOpen = true
-			-- transitionStash.newTransition = transition.to(static_menu, {time=300, y=0} )
-			-- transitionStash.newTransition = transition.to(scrollView.scrollview, {time=300, x=0} )
-			-- transitionStash.newTransition = transition.to(play_button, {time=300, y=35} )
-			-- transitionStash.newTransition = transition.to(menu_button, {time=300, y=35} )
-			-- if slideBtn then
-				-- slideBtn:removeSelf()
-				-- slideBtn = widget.newButton{
-					-- default="../images/ui_btn_buildmenu_left.png",
-					-- over="../images/ui_btn_buildmenu_left_pressed.png",
-					-- width=35, height=35,
-					-- onRelease=slideUI
-				-- }
-				-- slideBtn.y = H/2
-				-- slideBtn.x = -35
-				-- transitionStash.newTransition = transition.to(slideBtn, {time=300, x=scrollView.bkgView.width-45} )
-				-- transitionStash.newTransition = transition.to( goodoverlay, { alpha=.25, xScale=1.0, yScale=1.0, time=0} )
-				-- transitionStash.newTransition = transition.to( badoverlay, { alpha=.25, xScale=1.0, yScale=1.0, time=0} )
-			-- end
-		-- end
+				end
+			end
+		end
+		openView = function()
+			scrollView.isOpen = true
+			transitionStash.newTransition = transition.to(static_menu, {time=300, y=0} )
+			transitionStash.newTransition = transition.to(scrollView.scrollview, {time=300, x=0} )
+			transitionStash.newTransition = transition.to(play_button, {time=300, y=35} )
+			transitionStash.newTransition = transition.to(menu_button, {time=300, y=35} )
+			if slideBtn then
+				slideBtn:removeSelf()
+				slideBtn = widget.newButton{
+					default="../images/ui_btn_buildmenu_left.png",
+					over="../images/ui_btn_buildmenu_left_pressed.png",
+					width=35, height=35,
+					onRelease=slideUI
+				}
+				slideBtn.y = H/2
+				slideBtn.x = -35
+				transitionStash.newTransition = transition.to(slideBtn, {time=300, x=scrollView.bkgView.width-45} )
+				transitionStash.newTransition = transition.to( goodoverlay, { alpha=.25, xScale=1.0, yScale=1.0, time=0} )
+				transitionStash.newTransition = transition.to( badoverlay, { alpha=.25, xScale=1.0, yScale=1.0, time=0} )
+			end
+		end
 
 		local function restart_level(event)
 			if event.phase == "ended" and restartBtn.alpha > 0 then

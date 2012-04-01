@@ -117,10 +117,10 @@ Material.glass_sheet = {
 	width=37,
 	height=6,
 	shape={
-		-18,-6,
-		 18,-6,
-		 18, 6,
-		-18, 6
+		-18,-3,
+		 18,-3,
+		 18, 3,
+		-18, 3
 	},
 	scaleX=(1/6),
 	scaleY=(1/6),
@@ -150,9 +150,9 @@ Material.glass_tri = {
 	width=37,
 	height=37,
 	shape={
-		  0, 18,
-		 18,-18,
-		-18,-18
+		  0,-18,
+		 18, 18,
+		-18, 18
 	},
 	scaleX=(1/6),
 	scaleY=(1/6),
@@ -243,7 +243,7 @@ Material.wood_box_alien = {
 Material.aerogel = {
 	id = 13,
 	img="../images/aerogel.png",
-	img_dmg="../images/aerogel",
+	img_dmg="../images/aerogel.png",
 	img_ui="../images/ui_item_aerogel.png",
 	width=37,
 	height=37,
@@ -269,6 +269,39 @@ Material.aerogel = {
 	friction=1
 }
 
+------------------------------
+-- Aerogel
+-- Faction: Aliens
+------------------------------
+Material.nanotube = {
+	id = 14,
+	img="../images/nanotube.png",
+	img_dmg="../images/nanotube.png",
+	img_ui="../images/ui_item_nanotube.png",
+	width=37,
+	height=14,
+	shape={
+		-18,-7,
+		 18,-7,
+		 18, 7,
+		-18, 7
+	},
+	scaleX=(1/6),
+	scaleY=(1/6),
+	maxHP=500,
+	cost=150,
+	resist={
+		basic=0.5,
+		fire=2,
+		water=1,
+		explosive=1,
+		electric=0.5
+	},
+	bounce=0,
+	density=1.5,
+	friction=1
+}
+
 
 -- Clone method:
 -- Pass in an object with an "id" that matches the material,
@@ -290,6 +323,8 @@ Material.clone = function(id)
 			cloner = Material.wood_box_alien
 		elseif id == 13 then
 			cloner = Material.aerogel
+		elseif id == 14 then
+			cloner = Material.nanotube
 		end
 			obj=display.newImageRect(cloner.img, cloner.width, cloner.height)
 			obj.img_dmg=cloner.img_dmg

@@ -71,7 +71,7 @@ UI.dragItem = function(event)
 			-- If it doesn't already have a bodyType, then add it to physics
 			-- If it does, set it's body type to dynamic
 			if not target.bodyType then
-				physics.addBody(target, "dynamic", {friction=target.friction}) --, shape=target.shape })
+				physics.addBody(target, "dynamic", {friction=target.friction, shape=target.shape })
 			else
 				target.bodyType = "dynamic"
 			end

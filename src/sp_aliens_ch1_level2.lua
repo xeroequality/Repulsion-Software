@@ -1,6 +1,5 @@
 local storyboard 		= require( "storyboard" )
 local widget 	 		= require( "widget" )
---local levelUI 	 	= require( "levelUI")
 local ScrollView		= require( "module_scrollview" )
 local physics			= require( "physics" )
 local Parallax			= require( "module_parallax" )
@@ -147,12 +146,12 @@ function scene:enterScene( event )
 		--------------------------------------------
 		--              Overlays                  --
 		--------------------------------------------
-		local goodoverlay = display.newImage("../images/greenoverlay.png")
+		goodoverlay = display.newImage("../images/greenoverlay.png")
 		goodoverlay.x = 160; goodoverlay.y = H/2;
 		goodoverlay.alpha = .25
 		goodoverlay.width = 745
 		
-		local badoverlay = display.newImage("../images/redoverlay.png")
+		badoverlay = display.newImage("../images/redoverlay.png")
 		badoverlay.x = 700; badoverlay.y = H/2;
 		badoverlay.alpha = .25
 		badoverlay.width = 675

@@ -40,7 +40,9 @@ UI.createSlideBtn = function(which_way,place_at_back)
 	end
 end
 
--- Event for dragging an item
+--------------------------------------------
+--               ITEM DRAG                --
+--------------------------------------------
 UI.dragItem = function(event)
 	local phase = event.phase
 	local target = event.target
@@ -93,6 +95,9 @@ UI.dragItem = function(event)
 	return true
 end
 
+--------------------------------------------
+--              ITEM SELECT               --
+--------------------------------------------
 UI.pickItem = function(event)
 	local newObj = display.newImage("")
 	local phase = event.phase
@@ -107,7 +112,6 @@ UI.pickItem = function(event)
 			elseif target.id >= 1000 then
 				newObj = Units.clone(target.id)
 				unitGroup:insert(newObj)
-				print('#unitGroup: ' .. unitGroup.numChildren)
 			else
 				print("null target")
 				return true
@@ -117,6 +121,7 @@ UI.pickItem = function(event)
 			newObj.x = event.x
 			newObj.y = event.y
 			newObj.id = target.id
+			newObj:toFront()
 			newObj.child = "Child"; --When the Save Function Runs, It Will Save These Kind of Objects
 			newObj:addEventListener("touch",UI.dragItem)
 			display.getCurrentStage():setFocus(newObj)
@@ -151,7 +156,7 @@ UI.pickItem = function(event)
 				if newObj.id < 1000 then
 					physics.addBody(newObj, "dynamic", { friction=newObj.friction, bounce=newObj.bounce, density=newObj.density, shape=newObj.shape, filter=playerCollisionFilter })
 				elseif newObj.id >= 1000 then
-					physics.addBody( newObj, "dynamic",
+					physics.addBody( unitGroup, "dynamic",
 						{ friction=newObj.friction, bounce=newObj.bounce, density=newObj.density, shape=newObj.objShape, filter=playerCollisionFilter },
 						{ friction=newObj.friction, bounce=newObj.bounce, density=newObj.density, shape=newObj.objBaseShape, filter=playerCollisionFilter }
 					)
@@ -217,6 +222,8 @@ UI.playUI = function(event)
 	print('clicked play')
 	transitionStash.newTransition = transition.to(menu_button, {time=500, x=-10} )
 	scrollView.destroy()
+	goodoverlay:removeSelf()
+	badoverlay:removeSelf()
 	play_button:removeSelf()
 	rotate_button:removeSelf()
 	scrollView = nil

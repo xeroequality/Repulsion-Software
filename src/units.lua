@@ -19,16 +19,16 @@ Unit.cannon = {
 		y=-30
 	},
 	objShape={	 -- obj (weapon) array of shape vertices
-		-20,-10,
-		20,-10,
-		20,10,
-		-20,10
+		0,10,
+		0,-10,
+		40,-10,
+		40,10
 	},
 	objBaseShape={
-		-18.5,-18.5,
-		18.5,-18.5,
-		18.5,18.5,
-		-18.5,18.5
+		0,10,				-- Top left point going clockwise
+		40,10,
+		40,23,
+		0,23				-- Bottom left
 	},
 	scaleX=(1/3),
 	scaleY=(1/3),

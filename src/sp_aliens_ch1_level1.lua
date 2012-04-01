@@ -145,8 +145,10 @@ function scene:enterScene( event )
 		
 		local play_button = display.newImage("../images/ui_play_button.png");
 		play_button.x = 45+30; play_button.y = 35; play_button.static = "Yes";
+		local rotate_button = display.newImage("../images/ui_rotate_button.png");
+		rotate_button.x = 115+30; rotate_button.y = 35; rotate_button.static = "Yes";
 		local menu_button = display.newImage("../images/ui_menu_button.png");
-		menu_button.x = 115+30; menu_button.y = 35; play_button.static = "Yes";
+		menu_button.x = 185+30; menu_button.y = 35; menu_button.static = "Yes";
 		
 		--------------------------------------------
 		--             	   Slide UI               --				How is this function different than the static menus function??????
@@ -162,6 +164,7 @@ function scene:enterScene( event )
 				transitionStash.newTransition = transition.to(static_menu, {time=300, y=-85} )
 				transitionStash.newTransition = transition.to(scrollView.scrollview, {time=300, x=-85} )
 				transitionStash.newTransition = transition.to(play_button, {time=300, y=-35} )
+				transitionStash.newTransition = transition.to(rotate_button, {time=300, y=-35} )
 				transitionStash.newTransition = transition.to(menu_button, {time=300, y=-35} )
 
 				if slideBtn then
@@ -185,6 +188,7 @@ function scene:enterScene( event )
 				transitionStash.newTransition = transition.to(static_menu, {time=300, y=0} )
 				transitionStash.newTransition = transition.to(scrollView.scrollview, {time=300, x=0} )
 				transitionStash.newTransition = transition.to(play_button, {time=300, y=35} )
+				transitionStash.newTransition = transition.to(rotate_button, {time=300, y=35} )
 				transitionStash.newTransition = transition.to(menu_button, {time=300, y=35} )
 				if slideBtn then
 					slideBtn:removeSelf()
@@ -222,6 +226,7 @@ function scene:enterScene( event )
 		--------------------------------------------
 		--               ITEM DRAG                --
 		--------------------------------------------
+		local focus = 0;
 		-- Event for dragging an item
 		local function dragItem (event)
 			local phase = event.phase
@@ -266,8 +271,7 @@ function scene:enterScene( event )
 			focus = target
 			return true
 		end
-		
-		local focus = 0;
+
 		--------------------------------------------
 		--              ITEM SELECT               --
 		--------------------------------------------
@@ -311,7 +315,7 @@ function scene:enterScene( event )
 						newObj:setLinearVelocity(0,0)
 						newObj.angularVelocity = 0
 					end
-					local focus = newObj;
+					focus = newObj;
 					Pause.bringMenutoFront(group);
 				else
 					print("not enough money!")
@@ -351,13 +355,15 @@ function scene:enterScene( event )
             --make it so that we cannot access it again?
             --delete it!
 			print('clicked play')
-			transitionStash.newTransition = transition.to(menu_button, {time=300, x=-10} )
+			transitionStash.newTransition = transition.to(menu_button, {time=500, x=-10} )
 			scrollView.destroy()
 			play_button:removeSelf()
+			rotate_button:removeSelf()
 			goodoverlay:removeSelf()
 			badoverlay:removeSelf()
 			scrollView = nil
 			play_button = nil
+			rotate_button = nil;
 			showCrosshair = false 										-- helps ensure that only one crosshair appears
 			print('here')
 			for i=1,unitGroup.numChildren do
@@ -378,7 +384,33 @@ function scene:enterScene( event )
 			end
 		end
 		
+		local function rotateUI(event)
+			--Rotate the Object that is in Focus (the Last Touched Object)
+			--[[if event.phase == "began" then
+				physics.pause();
+				local last = focus.rotation;
+				j = display.newImage("../images/ui_rotate_button_pressed.png");
+				j.x = (event.target).x; j.y = (event.target).y;
+			end
+			print(event.phase)
+			focus.rotation = focus.rotation + 5;
+			if event.phase == "ended" then
+				physics.start();
+				display.remove(j);
+				j = nil;
+				if focus.rotation >= (last+90) or focus.rotation <= (last-90) then
+					focus.y = focus.y - (focus.height/2);
+				end
+			end--]]
+			if event.phase == "ended" then
+				focus.rotation = math.floor(focus.rotation)
+				focus.rotation = focus.rotation + 90;
+				if foucs.width ~= focus.height then focus.y = focus.y - (focus.height/(focus.width/focus.height)); end
+			end
+		end
+		
 		play_button:addEventListener("touch",playUI);
+		rotate_button:addEventListener("touch",rotateUI);
 		menu_button:addEventListener("touch",menuUI);
 		
 		group = pauseMenu.createOverlay(group);
@@ -391,6 +423,7 @@ function scene:enterScene( event )
 					transitionStash.newTransition = transition.to(static_menu, {time=300, y=-85} )
 					transitionStash.newTransition = transition.to(scrollView.scrollview, {time=300, x=-85} )
 					transitionStash.newTransition = transition.to(play_button, {time=300, y=-35} )
+					transitionStash.newTransition = transition.to(rotate_button, {time=300, y=-35} )
 					transitionStash.newTransition = transition.to(menu_button, {time=300, y=-35} )
 
 					if slideBtn then
@@ -419,6 +452,7 @@ function scene:enterScene( event )
 				transitionStash.newTransition = transition.to(static_menu, {time=300, y=0} )
 				transitionStash.newTransition = transition.to(scrollView.scrollview, {time=300, x=0} )
 				transitionStash.newTransition = transition.to(play_button, {time=300, y=35} )
+				transitionStash.newTransition = transition.to(rotate_button, {time=300, y=35} )
 				transitionStash.newTransition = transition.to(menu_button, {time=300, y=35} )
 				if slideBtn then
 					slideBtn:removeSelf()
@@ -463,12 +497,13 @@ function scene:enterScene( event )
 		local load = function(event)
 			if event.phase == "ended" and (event.target).alpha > 0 and overlay_section == "Load" then
 				materialGroup = IO.load(slot,group,levelWallet);
-				for i = 2,materialGroup.numChildren do
+				for i = 1,materialGroup.numChildren do
 					local child = materialGroup[i];
 					if child.child ~= nil then
 						child:addEventListener("touch",dragItem);
 					end
 				end
+				focus = materialGroup[1];
 				Pause.bringMenutoFront(group);
 			end
 		end
@@ -493,7 +528,7 @@ function scene:enterScene( event )
 
 		
 		local MONEY = display.newText("You Have $"..wallet,0,0,native.systemFont,12);
-		MONEY.x = display.contentWidth/2; MONEY.y = 15;
+		MONEY.x = display.contentWidth/2+60; MONEY.y = 15;
 		MONEY:setTextColor(255,0,0)
 		
 		local function updateMONEY(event)
@@ -531,6 +566,9 @@ function scene:enterScene( event )
 		group:insert(unitGroup)
 		--group:insert(projectileGroup)
 		--group:insert(cannonGroup)
+		group:insert(play_button)
+		group:insert(rotate_button)
+		group:insert(menu_button)
 		group:insert(MONEY)
 		group:insert(HPText)
 		group:insert(objGroup)
@@ -681,11 +719,6 @@ function scene:exitScene( event )
 			group:remove(num)
 			num = num - 1
 		end
-		local num = interface.numChildren;
-		while num >= 1 do
-			interface:remove(num)
-			num = num - 1
-		end
 		local num = overlayGroup.numChildren;
 		while num >= 1 do
 			overlayGroup:remove(num)
@@ -707,8 +740,9 @@ function scene:exitScene( event )
 		shiftScene = nil;
 		closeView = nil; openView = nil;
 		hit = nil;
+		background = nil;
 		
-		-- local num = cannonGroup.numChildren;
+		--[[local num = cannonGroup.numChildren;
 		for i=1, unitGroup.numChildren do
 			if unitGroup[i] ~= nil then
 				unitGroup:remove(i)
@@ -721,7 +755,7 @@ function scene:exitScene( event )
 				playerGroup:remove(i)
 			end
 		end
-		 playerGroup = nil;
+		 playerGroup = nil;--]]
 		 
 		 --Nil the Whole Freakin' Overlay
 		 Pause.nilEverything()
@@ -765,6 +799,10 @@ function scene:destroyScene( event )
 		if scrollView then
 			scrollView:removeSelf();
 			scrollView = nil
+		end
+		if rotate_button then
+			rotate_button:removeSelf();
+			rotate_button = nil;
 		end
         
 end

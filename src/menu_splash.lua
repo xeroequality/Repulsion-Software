@@ -118,7 +118,7 @@ function scene:enterScene( event )
 		displayObjects.e_light2.x = -w*2; displayObjects.e_light2.y = h/2;
 		
 		--Move the Lights
-		moveLight = function(event)
+		local moveLight = function(event)
 			if displayObjects.e_light1.x <= -2*w then
 				displayObjects.e_light1.x = 2*w
 			end

@@ -5,4 +5,4 @@ display.setStatusBar( display.HiddenStatusBar )
 local storyboard = require "storyboard"
 
 -- load menu screen
-storyboard.gotoScene( "sp_aliens_ch1_level1" )
+storyboard.gotoScene( "menu_splash" )

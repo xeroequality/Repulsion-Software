@@ -1,6 +1,17 @@
 --Item ScrollView UI
 
-UI = {}
+UI = {
+	focus = nil
+}
+
+local setFocus = function(focus)
+	UI.focus = focus;
+end
+UI.setFocus = setFocus;
+local getFocus = function()
+	return UI.focus;
+end
+UI.getFocus = getFocus;
 
 -- Event for dragging an item
 UI.dragItem = function(event)
@@ -18,7 +29,7 @@ UI.dragItem = function(event)
 			target:setLinearVelocity(0,0)
 			target.angularVelocity = 0
 		end
-		focus = event.target;
+		UI.focus = event.target;
 	elseif target.isFocus then
 		if phase == "moved" then
 			target.x = event.x - target.x0
@@ -43,7 +54,7 @@ UI.dragItem = function(event)
 		end
 	end
 	end
-	focus = target
+	UI.focus = target
 	return true
 end
 
@@ -85,7 +96,7 @@ UI.pickItem = function(event)
 				newObj:setLinearVelocity(0,0)
 				newObj.angularVelocity = 0
 			end
-			focus = newObj;
+			UI.focus = newObj;
 			local Pause = require("pause_overlay");
 			group = Pause.bringMenutoFront(group);
 			materialGroup = Pause.bringMenutoFront(materialGroup);
@@ -191,9 +202,9 @@ end
 
 UI.rotateUI = function(event)
 	if event.phase == "ended" then
-		focus.rotation = math.floor(focus.rotation)
-		focus.rotation = focus.rotation + 90;
-		if focus.width ~= focus.height then focus.y = focus.y - (focus.height/(focus.width/focus.height)); end
+		UI.focus.rotation = math.floor((UI.focus).rotation)
+		UI.focus.rotation = UI.focus.rotation + 90;
+		if UI.focus.width ~= UI.focus.height then UI.focus.y = UI.focus.y - (UI.focus.height/(UI.focus.width/UI.focus.height)); end
 	end
 end
 	

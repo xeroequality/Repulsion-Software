@@ -190,7 +190,8 @@ function scene:enterScene( event )
 		--------------------------------------------
 		--               ITEM DRAG                --
 		--------------------------------------------
-		focus = 0;
+		local focus = 0;
+		ItemUI.setFocus(focus);
 		
 
 		--------------------------------------------
@@ -258,6 +259,7 @@ function scene:enterScene( event )
 		HPText:scale(0.5,0.5)
 		HPText.x = display.contentWidth/2+120; HPText.y = 100; HPText:setTextColor(0);
 		local function showHP(event)
+			focus = UI.getFocus();
 			if focus ~= 0 then
 				HPText.text = "This Object's HP is "..focus.maxHP.."\nCost: "..focus.cost.."\nBasicR: "..(focus.resist).basic;
 				HPText.text = HPText.text.."\nFireR: "..(focus.resist).fire.."\nWaterR: "..(focus.resist).water.."\nExplosiveR: "..(focus.resist).explosive;

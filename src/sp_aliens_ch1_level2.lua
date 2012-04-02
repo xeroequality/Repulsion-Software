@@ -3,6 +3,7 @@ local widget 	 		= require( "widget" )
 local ScrollView		= require( "module_scrollview" )
 local physics			= require( "physics" )
 local Parallax			= require( "module_parallax" )
+local Overlays 			= require( "module_overlays" )
 local Materials			= require( "materials" )
 local Units  			= require( "units" )
 local Enemy				= require( "enemybase" )
@@ -28,7 +29,7 @@ timerStash = {};
 ---------------------------------------------------------------------------------
 
 local function restart(event)
-	local label = "sp_aliens_ch1_level2"
+	local label = "sp_aliens_ch1_level1"
 	print("released button " .. label)
 	storyboard.gotoScene( label, "fade", 200)
 	return true	-- indicates successful touch
@@ -46,6 +47,7 @@ end
 function scene:createScene( event )
         local group = self.view
 		physics.start()
+		--physics.setDrawMode("hybrid")
 
 		-- -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
 		-- Setup Parameters for Parallax View
@@ -69,7 +71,7 @@ function scene:createScene( event )
 			-- Define Foreground (Back) Image Parameters
 			midground = {
 				-- Filename, True Image Width & Height, Starting X, Starting Y, and Speed
-				img = "../images/background_chapter1_level1_foreground_F.png",
+				img = "../images/background/chicago_skyline.png",
 				width = 750,
 				height = 450,
 				left = 0,
@@ -79,7 +81,7 @@ function scene:createScene( event )
 			-- Define Foreground (Near) Image Parameters
 			foreground = {
 				-- Filename, True Image Width & Height, Starting X, Starting Y, and Speed
-				img = "../images/background_chapter1_level1_foreground_N.png",
+				img = "../images/background/chicago_skyline.png",
 				width = 960,
 				height = 332,
 				left = 0,
@@ -114,17 +116,15 @@ function scene:enterScene( event )
         audio.fadeOut(prev_music, { time=5000 })
         --o_play = audio.play(music_bg, {channel=3,fadein=5000 } )
 		physics.start()
-		physics.setDrawMode("hybrid")
 		local slideBtn
 		--------------------
 		-- Material Objects
 		--------------------
 
 		local levelObjs = { -- Use this to choose what is items are available in this level
-			Materials.wood_plank,
-			Materials.wood_box,
-			Materials.glass_sheet,
-			Materials.granite_slab,
+			Materials.wood_plank_alien,
+			Materials.wood_box_alien,
+			Materials.aerogel,
 			Units.cannon
 		}
 		print ('levelObjs: ' .. #levelObjs)
@@ -136,25 +136,33 @@ function scene:enterScene( event )
 		floorwidth = 11*W
 		local floor = display.newRect(floorleft,H-10,floorwidth,100)
 		floor:setFillColor(0)
-		local levelFilter = { categoryBits = 1, maskBits = 1 }
 		physics.addBody(floor, "static", {friction=0.9, bounce=0.05} )
 		group:insert(floor)
 		
-		local levelWallet = 50000; --The Amount of Money for This Level
+		local levelWallet = 4000; --The Amount of Money for This Level
 		wallet = levelWallet; --The Current Amount of Money
 		
 		--------------------------------------------
 		--              Overlays                  --
 		--------------------------------------------
-		goodoverlay = display.newImage("../images/greenoverlay.png")
-		goodoverlay.x = 160; goodoverlay.y = H/2;
-		goodoverlay.alpha = .25
-		goodoverlay.width = 745
-		
-		badoverlay = display.newImage("../images/redoverlay.png")
-		badoverlay.x = 700; badoverlay.y = H/2;
-		badoverlay.alpha = .25
-		badoverlay.width = 675
+		Overlays.setGood{
+			x=-100,
+			y=H/2,
+			width=500,
+			height=H,
+			alpha=0.25
+		}
+		Overlays.setBad{
+			x=400,
+			y=H/2,
+			width=1100,
+			height=H,
+			alpha=0.25
+		}
+		Overlays.show()
+		group:insert(Overlays.good.view)
+		group:insert(Overlays.bad.view)
+		UI.setOverlayModule(Overlays)
 		
 		--------------------------------------------
 		--              SCROLLVIEW                --
@@ -293,8 +301,8 @@ function scene:enterScene( event )
 		-- In future levels, the ONLY thing that needs to change is the first line:
 		local objGroup = Enemy.loadBase(Enemy.level2)
 		
-		group:insert(goodoverlay)
-		group:insert(badoverlay)
+		--group:insert(goodoverlay)
+		--group:insert(badoverlay)
 		group:insert(HPText)
 		--group:insert(scrollView)
 		-- group:insert(static_menu)
@@ -378,7 +386,7 @@ end
 				end
 
 				-- make a new image
-				projectile = display.newImage(clickedUnit.img_projectile)
+				projectile = display.newImage(obj.img_projectile)
 				projectile:scale(clickedUnit.scaleX,clickedUnit.scaleY)
 				cballExists = true
 
@@ -392,8 +400,7 @@ end
 
 
 				-- apply physics to the projectile
-				local playerProjectileCollisionFilter = { categoryBits = 4, maskBits = 5 } 
-				physics.addBody( projectile, { density=3.0, friction=0.2, bounce=0.05, radius=15, filter=playerProjectileCollisionFilter } )
+				physics.addBody( projectile, { density=3.0, friction=0.2, bounce=0.05, radius=15 } )
 				projectile.isBullet = true
 
 				-- fire the projectile            

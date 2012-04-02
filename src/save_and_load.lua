@@ -141,7 +141,7 @@ save_and_load.load = function(slot,group,levelWallet)
 				obj.id = player.id[i];
 				obj.rotation = player.rotations[i]
 				obj.child = "Child";
-				physics.addBody(obj, {density=obj.density,friction=obj.friction,bounce=obj.bounce} )
+				physics.addBody(obj, {density=obj.density,friction=obj.friction,bounce=obj.bounce,shape=obj.shape} )
 				group:insert(obj)
 			end
 			local successText = display.newText("",50,10,native.systemFont,20);

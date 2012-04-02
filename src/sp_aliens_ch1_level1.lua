@@ -1,6 +1,5 @@
 local storyboard 		= require( "storyboard" )
 local widget 	 		= require( "widget" )
---local levelUI 	 	= require( "levelUI")
 local ScrollView		= require( "module_scrollview" )
 local physics			= require( "physics" )
 local Parallax			= require( "module_parallax" )
@@ -48,7 +47,7 @@ end
 function scene:createScene( event )
         local group = self.view
 		physics.start()
-		physics.setDrawMode("hybrid")
+		--physics.setDrawMode("hybrid")
 
 		-- -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
 		-- Setup Parameters for Parallax View
@@ -123,10 +122,8 @@ function scene:enterScene( event )
 		--------------------
 
 		local levelObjs = { -- Use this to choose what is items are available in this level
-			Materials.wood_plank,
-			Materials.wood_box,
-			Materials.glass_sheet,
-			Materials.granite_slab,
+			Materials.wood_plank_alien,
+			Materials.wood_box_alien,
 			Units.cannon
 		}
 		print ('levelObjs: ' .. #levelObjs)
@@ -141,7 +138,7 @@ function scene:enterScene( event )
 		physics.addBody(floor, "static", {friction=0.9, bounce=0.05} )
 		group:insert(floor)
 		
-		local levelWallet = 50000; --The Amount of Money for This Level
+		local levelWallet = 5000; --The Amount of Money for This Level
 		wallet = levelWallet; --The Current Amount of Money
 		
 		--------------------------------------------
@@ -150,12 +147,12 @@ function scene:enterScene( event )
 		Overlays.setGood{
 			x=-100,
 			y=H/2,
-			width=400,
+			width=500,
 			height=H,
 			alpha=0.25
 		}
 		Overlays.setBad{
-			x=300,
+			x=400,
 			y=H/2,
 			width=1100,
 			height=H,

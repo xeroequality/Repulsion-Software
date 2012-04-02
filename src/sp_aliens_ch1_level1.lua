@@ -192,6 +192,8 @@ function scene:enterScene( event )
 		local focus = 0;
 		ItemUI.setFocus(focus);
 		
+		group = Pause.createOverlay(group);
+		
 
 		--------------------------------------------
 		--              ITEM SELECT               --
@@ -200,6 +202,7 @@ function scene:enterScene( event )
 		playerGroup = display.newGroup()
 		materialGroup = display.newGroup()
 		unitGroup = display.newGroup()
+		group:insert(materialGroup); group:insert(unitGroup);
 		
 		for i=1,#scrollView.items do
 			scrollView.items[i].view:addEventListener("touch",ItemUI.pickItem)
@@ -209,9 +212,6 @@ function scene:enterScene( event )
 		--             STATIC MENUS               --
 		--------------------------------------------
 		local static_menu = display.newGroup()
-		
-		group = Pause.createOverlay(group);
-		group = Pause.bringMenutoFront(group);
 
 		local function restart_level(event)
 			if event.phase == "ended" and restartBtn.alpha > 0 then
@@ -227,7 +227,7 @@ function scene:enterScene( event )
 		
 		local save = function(event)
 			if event.phase == "ended" and (event.target).alpha > 0 and overlay_section == "Save" then
-				IO.save(slot,overlay_section,materialGroup);
+				IO.save(slot,overlay_section);
 				slots[slot].alpha = 1;
 				slots[slot+10].alpha = 0;
 				local str = Pause.displayPreview(slot);
@@ -237,9 +237,17 @@ function scene:enterScene( event )
 		end
 		local load = function(event)
 			if event.phase == "ended" and (event.target).alpha > 0 and overlay_section == "Load" then
-				materialGroup = IO.load(slot,materialGroup,levelWallet);
+				IO.load(slot,levelWallet);
+				--Add Listeners to New Materials
 				for i = 1,materialGroup.numChildren do
 					local child = materialGroup[i];
+					if child.child ~= nil then
+						child:addEventListener("touch",ItemUI.dragItem);
+					end
+				end
+				--Add Listeners to New Unit
+				for i = 1,unitGroup.numChildren do
+					local child = unitGroup[i];
 					if child.child ~= nil then
 						child:addEventListener("touch",ItemUI.dragItem);
 					end

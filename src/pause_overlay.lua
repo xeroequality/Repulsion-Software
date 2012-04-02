@@ -141,6 +141,7 @@ pauseMenu.displayPreview = function(slot)
 	_G["slot"..slot] = nil
 	local Play	 = require( "slot"..slot )
 	local Materials = require( "materials" )
+	local Units = require("units")
 	local player = Play.structure;
 	
 	local str = "Slot "..slot.."\n";
@@ -169,24 +170,46 @@ pauseMenu.displayPreview = function(slot)
 	if off_ylarge > (max_h*2) then y_sc = (max_h/off_ylarge); end
 	--Now Draw the Objects
 	for i = 1,player.numObjects do
-		local obj = Materials.clone(player.id[i])
-		obj.rotation = player.rotations[i];
-		--Figure Out the Scale Based on Its Rotation
-		local r = obj.rotation
-		while r > 360 do
-			r = r - 360;
+		if player.id[i] < 1000 then
+			local obj = Materials.clone(player.id[i])
+			obj.rotation = player.rotations[i];
+			--Figure Out the Scale Based on Its Rotation
+			local r = obj.rotation
+			while r > 360 do
+				r = r - 360;
+			end
+			r = r * (math.pi/360); --Get Radians
+			local s = math.abs(math.cos(r));
+			local xs = (x_sc*(s))+(y_sc*(1-s));
+			local ys = (x_sc*(1-s))+(y_sc*(s))
+			obj:scale(xs,ys)
+			
+			obj.x = (player.x_vals[i]*xs)+baseX;
+			obj.y = (player.y_vals[i]*ys)+baseY;
+			
+			overlayGroup:insert(obj);
+			obj:toFront()
+		else
+			local obj = Units.clone(player.id[i])
+			obj.rotation = player.rotations[i];
+			--Figure Out the Scale Based on Its Rotation
+			local r = obj.rotation
+			while r > 360 do
+				r = r - 360;
+			end
+			r = r * (math.pi/360); --Get Radians
+			local s = math.abs(math.cos(r));
+			local xs = (x_sc*(s))+(y_sc*(1-s));
+			local ys = (x_sc*(1-s))+(y_sc*(s))
+			obj:scale(xs,ys)
+			
+			obj.x = (player.x_vals[i]*xs)+baseX;
+			obj.y = (player.y_vals[i]*ys)+baseY;
+			
+			overlayGroup:insert(obj);
+			obj:toFront()
+
 		end
-		r = r * (math.pi/360); --Get Radians
-		local s = math.abs(math.cos(r));
-		local xs = (x_sc*(s))+(y_sc*(1-s));
-		local ys = (x_sc*(1-s))+(y_sc*(s))
-		obj:scale(xs,ys)
-		
-		obj.x = (player.x_vals[i]*xs)+baseX;
-		obj.y = (player.y_vals[i]*ys)+baseY;
-		
-		overlayGroup:insert(obj);
-		obj:toFront()
 	end
 	return str;
 end

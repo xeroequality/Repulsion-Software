@@ -6,15 +6,32 @@ save_and_load = {}
 		--local successTime = 0; --Time for the Text to Stay Up
 		--local maxSuccessTime = 60; --How Long Does It Stay Up?
 
-save_and_load.save = function(slot,overlay_section,group)
+save_and_load.save = function(slot,overlay_section)
 	if true then
 		if true and overlay_section == "Save" then
 			local index = 1;
 			local xvals = {}; local yvals = {}; local num = 0; local rotation = {}; local types = {}; local scX = {}; local scY = {};
 			--Get Total Cost
 			local total = 0;
-			for i = 1, group.numChildren do
-				local child = group[i];
+			--Materials
+			for i = 1, materialGroup.numChildren do
+				local child = materialGroup[i];
+				if child.child ~= nil then
+					--Save the Structure
+					num = num + 1;
+					xvals[index] = child.x;
+					yvals[index] = child.y;
+					rotation[index] = child.rotation;
+					types[index] = child.id;
+					scX[index] = child.xScale;
+					scY[index] = child.yScale;
+					index = index + 1;
+					total = total + child.cost;
+				end
+			end
+			--Units
+			for i = 1, unitGroup.numChildren do
+				local child = unitGroup[i];
 				if child.child ~= nil then
 					--Save the Structure
 					num = num + 1;
@@ -112,19 +129,30 @@ save_and_load.save = function(slot,overlay_section,group)
 		end
 	end
 end
-save_and_load.load = function(slot,group,levelWallet)
+save_and_load.load = function(slot,levelWallet)
 	if true then
 		local Play	 = require( "slot"..slot )
 		local player = Play.structure;
 		local Materials = require( "materials" )
+		local Units = require("units")
 		if player.totalCost <= levelWallet then
 			local wallet = levelWallet - player.totalCost;
 			--Destroy All Children Objects Before Loading
-			local num = group.numChildren;
+			local num = materialGroup.numChildren;
 			while num >= 1 do
-				local c = group[num];
+				local c = materialGroup[num];
 				if c.child ~= nil then
-					group:remove(num)
+					materialGroup:remove(num)
+					--c:removeSelf();
+				end
+				num = num - 1;
+			end
+			--Unit Group
+			local num = unitGroup.numChildren;
+			while num >= 1 do
+				local c = unitGroup[num];
+				if c.child ~= nil then
+					unitGroup:remove(num)
 					--c:removeSelf();
 				end
 				num = num - 1;
@@ -141,6 +169,7 @@ save_and_load.load = function(slot,group,levelWallet)
 					obj.y = player.y_vals[i]+baseY;
 					obj.rotation = player.rotations[i]
 					obj.child = "Child";
+					materialGroup:insert(obj);
 					physics.addBody(obj, "dynamic", { friction=obj.friction, bounce=obj.bounce, density=obj.density, shape=obj.shape, filter=playerCollisionFilter })
 				elseif player.id[i] >= 1000 then
 					obj = Units.clone(player.id[i])
@@ -153,8 +182,8 @@ save_and_load.load = function(slot,group,levelWallet)
 						{ friction=obj.friction, bounce=obj.bounce, density=obj.density, shape=obj.objBaseShape, filter=playerCollisionFilter }
 					)
 					obj.child = "Child";
+					unitGroup:insert(obj)
 				end
-				group:insert(obj)
 			end
 			local successText = display.newText("",50,10,native.systemFont,20);
 			local function deleteText()
@@ -174,7 +203,6 @@ save_and_load.load = function(slot,group,levelWallet)
 			successText:setTextColor(255,0,0);
 			timer.performWithDelay(3000,deleteText,1);
 		end
-		return group;
 	end
 end
 		

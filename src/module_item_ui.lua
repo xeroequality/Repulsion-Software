@@ -145,7 +145,7 @@ UI.pickItem = function(event)
 			end
 			UI.focus = newObj;
 			local Pause = require("pause_overlay");
-			materialGroup = Pause.bringMenutoFront(materialGroup);
+			group = Pause.bringMenutoFront(group);
 		else
 			print("not enough money!")
 			return true

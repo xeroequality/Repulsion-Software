@@ -18,7 +18,7 @@ save_and_load.save = function(slot,overlay_section,group)
 				if child.child ~= nil then
 					--Save the Structure
 					num = num + 1;
-					xvals[index] = child.x+group[1].x;
+					xvals[index] = child.x;
 					yvals[index] = child.y;
 					rotation[index] = child.rotation;
 					types[index] = child.id;
@@ -137,15 +137,15 @@ save_and_load.load = function(slot,group,levelWallet)
 				local playerCollisionFilter = { categoryBits = 2, maskBits = 3 }
 				if player.id[i] < 1000 then
 					obj = Materials.clone(player.id[i])
-					obj.x = player.x_vals[i]
-					obj.y = player.y_vals[i]
+					obj.x = player.x_vals[i]+baseX;
+					obj.y = player.y_vals[i]+baseY;
 					obj.rotation = player.rotations[i]
 					obj.child = "Child";
 					physics.addBody(obj, "dynamic", { friction=obj.friction, bounce=obj.bounce, density=obj.density, shape=obj.shape, filter=playerCollisionFilter })
 				elseif player.id[i] >= 1000 then
 					obj = Units.clone(player.id[i])
-					obj.x = player.x_vals[i]
-					obj.y = player.y_vals[i]
+					obj.x = player.x_vals[i]+baseX;
+					obj.y = player.y_vals[i]+baseY;
 					obj.rotation = player.rotations[i]
 					obj.child = "Child";
 					physics.addBody( obj, "dynamic",

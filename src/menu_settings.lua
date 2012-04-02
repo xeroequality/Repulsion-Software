@@ -55,7 +55,7 @@ function scene:enterScene( event )
 			labelColor = { default={255}, over={128} },
 			default="../images/btn_back.png",
 			over="../images/btn_back_pressed.png",
-			width=80, height=40,
+			width=96, height=32,
 			onRelease = onBackBtnRelease
 		}
 		backBtn.view:setReferencePoint( display.CenterReferencePoint )

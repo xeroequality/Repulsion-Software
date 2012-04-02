@@ -4,6 +4,7 @@ local widget 	 		= require( "widget" )
 local ScrollView		= require( "module_scrollview" )
 local physics			= require( "physics" )
 local Parallax			= require( "module_parallax" )
+local Overlays 			= require( "module_overlays" )
 local Materials			= require( "materials" )
 local Units  			= require( "units" )
 local Enemy				= require( "enemybase" )
@@ -146,15 +147,24 @@ function scene:enterScene( event )
 		--------------------------------------------
 		--              Overlays                  --
 		--------------------------------------------
-		local goodoverlay = display.newImage("../images/greenoverlay.png")
-		goodoverlay.x = 160; goodoverlay.y = H/2;
-		goodoverlay.alpha = .25
-		goodoverlay.width = 745
-		
-		local badoverlay = display.newImage("../images/redoverlay.png")
-		badoverlay.x = 700; badoverlay.y = H/2;
-		badoverlay.alpha = .25
-		badoverlay.width = 675
+		Overlays.setGood{
+			x=-100,
+			y=H/2,
+			width=400,
+			height=H,
+			alpha=0.25
+		}
+		Overlays.setBad{
+			x=300,
+			y=H/2,
+			width=1100,
+			height=H,
+			alpha=0.25
+		}
+		Overlays.show()
+		group:insert(Overlays.good.view)
+		group:insert(Overlays.bad.view)
+		UI.setOverlayModule(Overlays)
 		
 		--------------------------------------------
 		--              SCROLLVIEW                --
@@ -293,8 +303,8 @@ function scene:enterScene( event )
 		-- In future levels, the ONLY thing that needs to change is the first line:
 		local objGroup = Enemy.loadBase(Enemy.level1)
 		
-		group:insert(goodoverlay)
-		group:insert(badoverlay)
+		--group:insert(goodoverlay)
+		--group:insert(badoverlay)
 		group:insert(HPText)
 		--group:insert(scrollView)
 		-- group:insert(static_menu)

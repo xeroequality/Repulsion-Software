@@ -2,6 +2,7 @@
 
 UI = {
 	focus = nil,
+	overlayModule = nil,
 	badx = 700,
 	badw = 675
 }
@@ -9,11 +10,17 @@ UI = {
 local setFocus = function(focus)
 	UI.focus = focus;
 end
-UI.setFocus = setFocus;
+UI.setFocus = setFocus
+
 local getFocus = function()
 	return UI.focus;
 end
-UI.getFocus = getFocus;
+UI.getFocus = getFocus
+
+local setOverlayModule = function(overlayModule)
+	UI.overlayModule = overlayModule
+end
+UI.setOverlayModule = setOverlayModule
 
 UI.createSlideBtn = function(which_way,place_at_back)
 	local widget = require("widget")
@@ -222,8 +229,7 @@ UI.playUI = function(event)
 	print('clicked play')
 	transitionStash.newTransition = transition.to(menu_button, {time=500, x=-10} )
 	scrollView.destroy()
-	goodoverlay:removeSelf()
-	badoverlay:removeSelf()
+	UI.overlayModule.destroy()
 	play_button:removeSelf()
 	rotate_button:removeSelf()
 	scrollView = nil

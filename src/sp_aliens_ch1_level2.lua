@@ -328,7 +328,7 @@ end
 
 		cballExists = false
 		
-		forceMultiplier = 10
+		forceMultiplier = 2
 
 		createCrosshair = function(event) -- creates crosshair when a touch event begins
 			-- creates the crosshair
@@ -386,7 +386,7 @@ end
 				end
 
 				-- make a new image
-				projectile = display.newImage(obj.img_projectile)
+				projectile = display.newImage(clickedUnit.img_projectile)
 				projectile:scale(clickedUnit.scaleX,clickedUnit.scaleY)
 				cballExists = true
 
@@ -400,7 +400,8 @@ end
 
 
 				-- apply physics to the projectile
-				physics.addBody( projectile, { density=3.0, friction=0.2, bounce=0.05, radius=15 } )
+				local playerProjectileCollisionFilter = { categoryBits = 4, maskBits = 5 } 
+				physics.addBody( projectile, { density=3.0, friction=0.2, bounce=0.05, radius=5, filter=playerProjectileCollisionFilter} )
 				projectile.isBullet = true
 
 				-- fire the projectile            

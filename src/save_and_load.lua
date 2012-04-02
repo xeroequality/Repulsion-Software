@@ -130,18 +130,30 @@ save_and_load.load = function(slot,group,levelWallet)
 				num = num - 1;
 			end
 			for i=1,player.numObjects do
-				local baseX = player.baseX;
-				local baseY = player.baseY;
+				local baseX = player.baseX
+				local baseY = player.baseY
 				-- first clone: so obj.img refers to proper image
 				-- second clone: to pass data to object
-				obj = Materials.clone(player.id[i])
-				--obj:scale(obj.scaleX,obj.scaleY)
-				obj.x = player.x_vals[i]+baseX;
-				obj.y = player.y_vals[i]+baseY
-				obj.id = player.id[i];
-				obj.rotation = player.rotations[i]
-				obj.child = "Child";
-				physics.addBody(obj, {density=obj.density,friction=obj.friction,bounce=obj.bounce,shape=obj.shape} )
+				local playerCollisionFilter = { categoryBits = 2, maskBits = 3 }
+				if player.id[i] < 1000 then
+					obj = Materials.clone(player.id[i])
+					obj.x = player.x_vals[i]
+					obj.y = player.y_vals[i]
+					obj.rotation = player.rotations[i]
+					obj.child = "Child";
+					physics.addBody(obj, "dynamic", { friction=obj.friction, bounce=obj.bounce, density=obj.density, shape=obj.shape, filter=playerCollisionFilter })
+				elseif player.id[i] >= 1000 then
+					obj = Units.clone(player.id[i])
+					obj.x = player.x_vals[i]
+					obj.y = player.y_vals[i]
+					obj.rotation = player.rotations[i]
+					obj.child = "Child";
+					physics.addBody( obj, "dynamic",
+						{ friction=obj.friction, bounce=obj.bounce, density=obj.density, shape=obj.objShape, filter=playerCollisionFilter },
+						{ friction=obj.friction, bounce=obj.bounce, density=obj.density, shape=obj.objBaseShape, filter=playerCollisionFilter }
+					)
+					obj.child = "Child";
+				end
 				group:insert(obj)
 			end
 			local successText = display.newText("",50,10,native.systemFont,20);

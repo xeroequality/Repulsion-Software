@@ -327,6 +327,7 @@ Material.clone = function(id)
 			cloner = Material.nanotube
 		end
 			obj=display.newImage(cloner.img)
+			obj.id=cloner.id
 			obj.img_dmg=cloner.img_dmg
 			obj.img_ui=cloner.img_ui
 			obj.shape=cloner.shape

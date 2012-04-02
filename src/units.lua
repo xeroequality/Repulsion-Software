@@ -42,7 +42,7 @@ Unit.cannon = {
 		electric=1
 	},
 	bounce=0,
-	density=0.8,
+	density=10,
 	friction=0.9,
 }
 

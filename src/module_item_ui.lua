@@ -163,7 +163,7 @@ UI.pickItem = function(event)
 				if newObj.id < 1000 then
 					physics.addBody(newObj, "dynamic", { friction=newObj.friction, bounce=newObj.bounce, density=newObj.density, shape=newObj.shape, filter=playerCollisionFilter })
 				elseif newObj.id >= 1000 then
-					physics.addBody( unitGroup, "dynamic",
+					physics.addBody( newObj, "dynamic",
 						{ friction=newObj.friction, bounce=newObj.bounce, density=newObj.density, shape=newObj.objShape, filter=playerCollisionFilter },
 						{ friction=newObj.friction, bounce=newObj.bounce, density=newObj.density, shape=newObj.objBaseShape, filter=playerCollisionFilter }
 					)

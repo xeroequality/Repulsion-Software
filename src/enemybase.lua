@@ -2,7 +2,8 @@
 -- enemybase.lua
 -- Contains table of values that represent the enemy's base.
 ----------------------------------------------------------
-local Material = require("materials")
+local Materials = require("materials")
+local Units = require("units")
 W = display.contentWidth
 H = display.contentHeight
 
@@ -95,14 +96,25 @@ EnemyBase.loadBase = function(level)
 	local enemyGroup = display.newGroup()
 	for i=1,level.numObjects do
 		local obj = {}
-		obj.id = level.id[i]
-		obj = Material.clone(obj.id)
-		obj.x = level.baseX + level.x_vals[i];
-		obj.y = level.baseY + level.y_vals[i];
-		obj.rotation = level.rotations[i]
-		obj:addEventListener("postCollision",hit);
 		local enemyCollisionFilter = { categoryBits = 4, maskBits = 5 }
-		physics.addBody(obj, {density=obj.density, friction=obj.friction, bounce=obj.bounce, shape=obj.shape, filter=enemyCollisionFilter })
+		if level.id[i] < 1000 then
+			obj = Materials.clone(level.id[i])
+			obj.x = level.baseX + level.x_vals[i]
+			obj.y = level.baseY + level.y_vals[i]
+			obj.rotation = level.rotations[i]
+			obj:addEventListener("postCollision",hit);
+			physics.addBody(obj, "dynamic", { friction=obj.friction, bounce=obj.bounce, density=obj.density, shape=obj.shape, filter=enemyCollisionFilter })
+		elseif level.id[i] >= 1000 then
+			obj = Units.clone(level.id[i])
+			obj.x = level.baseX + level.x_vals[i];
+			obj.y = level.baseY + level.y_vals[i];
+			obj.rotation = level.rotations[i]
+			obj:addEventListener("postCollision",hit);
+			physics.addBody( obj, "dynamic",
+				{ density=obj.objDensity, friction=obj.objFriction, bounce=obj.objBounce, shape=obj.objShape, filter=enemyCollisionFilter },
+				{ density=obj.objBaseDensity, friction=obj.objBaseFriction, bounce=obj.objBaseBounce, shape=obj.objBaseShape, filter=enemyCollisionFilter }
+			)
+		end
 		enemyGroup:insert(obj)
 	end
 	return enemyGroup

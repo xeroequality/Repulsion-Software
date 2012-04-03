@@ -35,8 +35,8 @@ Material.wood_plank = {
 		electric=1
 	},
 	density=0.8,
-	friction=0.9
-	bounce=0,
+	friction=0.9,
+	bounce=0
 }
 
 ------------------------------
@@ -68,8 +68,8 @@ Material.wood_box = {
 		electric=1
 	},
 	density=0.9,
-	friction=0.9
-	bounce=0,
+	friction=0.9,
+	bounce=0
 }
 
 ------------------------------
@@ -101,8 +101,8 @@ Material.granite_slab = {
 		electric=0.5
 	},
 	density=5.0,
-	friction=0.9
-	bounce=0,
+	friction=0.9,
+	bounce=0
 }
 
 ------------------------------
@@ -134,8 +134,8 @@ Material.glass_sheet = {
 		electric=0.5
 	},
 	density=2.0,
-	friction=0.8
-	bounce=0,
+	friction=0.8,
+	bounce=0
 }
 
 ------------------------------
@@ -166,8 +166,8 @@ Material.glass_tri = {
 		electric=0.5
 	},
 	density=2.0,
-	friction=0.8
-	bounce=0,
+	friction=0.8,
+	bounce=0
 }
 
 ------------------------------
@@ -199,8 +199,8 @@ Material.wood_plank_alien = {
 		electric=2
 	},
 	density=0.8,
-	friction=1
-	bounce=0,
+	friction=1,
+	bounce=0
 }
 
 ------------------------------
@@ -232,8 +232,8 @@ Material.wood_box_alien = {
 		electric=2
 	},
 	density=0.8,
-	friction=1
-	bounce=0,
+	friction=1,
+	bounce=0
 }
 
 ------------------------------
@@ -265,8 +265,8 @@ Material.aerogel = {
 		electric=0.5
 	},
 	density=0.1,
-	friction=1
-	bounce=0,
+	friction=1,
+	bounce=0
 }
 
 ------------------------------
@@ -298,8 +298,8 @@ Material.nanotube = {
 		electric=0.5
 	},
 	density=1.5,
-	friction=1
-	bounce=0,
+	friction=1,
+	bounce=0
 }
 
 

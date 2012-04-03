@@ -82,11 +82,11 @@ UI.dragItem = function(event)
 			local playerCollisionFilter = { categoryBits = 2, maskBits = 3 }
 			if not target.bodyType then
 				if target.id < 1000 then
-					physics.addBody(target, "dynamic", {friction=target.friction, bounce=target.bounce, density=target.density, shape=target.shape, filter=playerCollisionFilter })
+					physics.addBody(target, "dynamic", { density=target.density, friction=target.friction, bounce=target.bounce, shape=target.shape, filter=playerCollisionFilter })
 				elseif target.id >= 1000 then
 					physics.addBody( target, "dynamic",
-						{ friction=target.friction, bounce=target.bounce, density=target.density,  shape=target.objShape, filter=playerCollisionFilter },
-						{ friction=target.friction, bounce=target.bounce, density=target.density, shape=target.objBaseShape, filter=playerCollisionFilter }
+						{ density=target.objDensity, friction=target.objFriction, bounce=target.objBounce, shape=target.objShape, filter=playerCollisionFilter },
+						{ density=target.objBaseDensity, friction=target.objBaseFriction, bounce=target.objBaseBounce, shape=target.objBaseShape, filter=playerCollisionFilter }
 					)
 				end
 			else
@@ -145,7 +145,7 @@ UI.pickItem = function(event)
 			end
 			UI.focus = newObj;
 			local Pause = require("pause_overlay");
-			group = Pause.bringMenutoFront(group);
+			materialGroup = Pause.bringMenutoFront(materialGroup);
 		else
 			print("not enough money!")
 			return true
@@ -161,11 +161,11 @@ UI.pickItem = function(event)
 			local playerCollisionFilter = { categoryBits = 2, maskBits = 3 }
 			if not newObj.bodyType then
 				if newObj.id < 1000 then
-					physics.addBody(newObj, "dynamic", { friction=newObj.friction, bounce=newObj.bounce, density=newObj.density, shape=newObj.shape, filter=playerCollisionFilter })
+					physics.addBody(newObj, "dynamic", { density=newObj.density, friction=newObj.friction, bounce=newObj.bounce, shape=newObj.shape, filter=playerCollisionFilter })
 				elseif newObj.id >= 1000 then
 					physics.addBody( newObj, "dynamic",
-						{ friction=newObj.friction, bounce=newObj.bounce, density=newObj.density, shape=newObj.objShape, filter=playerCollisionFilter },
-						{ friction=newObj.friction, bounce=newObj.bounce, density=newObj.density, shape=newObj.objBaseShape, filter=playerCollisionFilter }
+						{ density=newObj.objDensity, friction=newObj.objFriction, bounce=newObj.objBounce, shape=newObj.objShape, filter=playerCollisionFilter },
+						{ density=newObj.objBaseDensity, friction=newObj.objBaseFriction, bounce=newObj.objBaseBounce, shape=newObj.objBaseShape, filter=playerCollisionFilter }
 					)
 				end
 			else

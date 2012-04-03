@@ -18,17 +18,17 @@ Unit.cannon = {
 		x=8,
 		y=-30
 	},
-	objShape={	 -- obj (weapon) array of shape vertices
-		0,10,
+	objShape={	 	-- obj (weapon) array of shape vertices
+		0,10,			-- Top left point going clockwise
 		0,-10,
 		40,-10,
-		40,10
+		40,10			-- Bottom left
 	},
-	objBaseShape={
-		0,10,				-- Top left point going clockwise
+	objBaseShape={	-- obj (base) array of shape vertices
+		0,10,			-- Top left point going clockwise
 		40,10,
 		40,23,
-		0,23				-- Bottom left
+		0,23			-- Bottom left
 	},
 	scaleX=(1/3),
 	scaleY=(1/3),
@@ -41,9 +41,25 @@ Unit.cannon = {
 		explosive=1,
 		electric=1
 	},
-	bounce=0,
-	density=10,
-	friction=0.9,
+	objDensity=10,
+	objFriction=0.9,
+	objBounce=0,
+	objBaseDensity=10,
+	objBaseFriction=0.9,
+	objBaseBounce=0,
+	projectileProperties={
+		basic=1,
+		fire=1,
+		water=1,
+		explosive=1,
+		electric=1
+	},
+	projectileRadius = 5,
+	projectileForce = 10,
+	projectileDensity=10,
+	projectileFriction=0.2,
+	projectileBounce=0.05
+
 }
 
 -- Clone method:
@@ -79,9 +95,24 @@ Unit.clone = function(id)
 			explosive=(cloner.resist).explosive,
 			electric=(cloner.resist).electric
 		}
-		unitObjGroup.bounce=cloner.bounce
-		unitObjGroup.density=cloner.density
-		unitObjGroup.friction=cloner.friction
+		unitObjGroup.objDensity=cloner.objDensity
+		unitObjGroup.objFriction=cloner.objFriction
+		unitObjGroup.objBounce=cloner.objBounce
+		unitObjGroup.objBaseDensity=cloner.objBaseDensity
+		unitObjGroup.objBaseFriction=cloner.objBaseFriction
+		unitObjGroup.objBaseBounce=cloner.objBaseBounce
+		unitObjGroup.projectileProperties={
+			basic=(cloner.projectileProperties).basic,
+			fire=(cloner.projectileProperties).fire,
+			water=(cloner.projectileProperties).water,
+			explosive=(cloner.projectileProperties).explosive,
+			electric=(cloner.projectileProperties).electric
+		}
+		unitObjGroup.projectileRadius=cloner.projectileRadius
+		unitObjGroup.projectileForce=cloner.projectileForce
+		unitObjGroup.projectileDensity=cloner.projectileDensity
+		unitObjGroup.projectileFriction=cloner.projectileFriction
+		unitObjGroup.projectileBounce=cloner.projectileBounce
 		unitObjGroup:insert(obj)
 		unitObjGroup:insert(obj.img_base)
 		return unitObjGroup

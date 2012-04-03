@@ -34,9 +34,9 @@ Material.wood_plank = {
 		explosive=1,
 		electric=1
 	},
-	bounce=0,
 	density=0.8,
 	friction=0.9
+	bounce=0,
 }
 
 ------------------------------
@@ -67,9 +67,9 @@ Material.wood_box = {
 		explosive=1,
 		electric=1
 	},
-	bounce=0,
 	density=0.9,
 	friction=0.9
+	bounce=0,
 }
 
 ------------------------------
@@ -100,9 +100,9 @@ Material.granite_slab = {
 		explosive=1,
 		electric=0.5
 	},
-	bounce=0,
 	density=5.0,
 	friction=0.9
+	bounce=0,
 }
 
 ------------------------------
@@ -133,9 +133,9 @@ Material.glass_sheet = {
 		explosive=1,
 		electric=0.5
 	},
-	bounce=0,
 	density=2.0,
 	friction=0.8
+	bounce=0,
 }
 
 ------------------------------
@@ -165,9 +165,9 @@ Material.glass_tri = {
 		explosive=1,
 		electric=0.5
 	},
-	bounce=0,
 	density=2.0,
 	friction=0.8
+	bounce=0,
 }
 
 ------------------------------
@@ -198,9 +198,9 @@ Material.wood_plank_alien = {
 		explosive=1,
 		electric=2
 	},
-	bounce=0,
 	density=0.8,
 	friction=1
+	bounce=0,
 }
 
 ------------------------------
@@ -231,9 +231,9 @@ Material.wood_box_alien = {
 		explosive=1,
 		electric=2
 	},
-	bounce=0,
 	density=0.8,
 	friction=1
+	bounce=0,
 }
 
 ------------------------------
@@ -264,9 +264,9 @@ Material.aerogel = {
 		explosive=1,
 		electric=0.5
 	},
-	bounce=0,
 	density=0.1,
 	friction=1
+	bounce=0,
 }
 
 ------------------------------
@@ -297,9 +297,9 @@ Material.nanotube = {
 		explosive=1,
 		electric=0.5
 	},
-	bounce=0,
 	density=1.5,
 	friction=1
+	bounce=0,
 }
 
 
@@ -342,9 +342,9 @@ Material.clone = function(id)
 				explosive=(cloner.resist).explosive,
 				electric=(cloner.resist).electric
 			}
-			obj.bounce=cloner.bounce
 			obj.density=cloner.density
 			obj.friction=cloner.friction
+			obj.bounce=cloner.bounce
 		return obj
 end
 

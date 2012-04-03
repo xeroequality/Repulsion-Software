@@ -135,7 +135,8 @@ function scene:enterScene( event )
 		floorwidth = 11*W
 		local floor = display.newRect(floorleft,H-10,floorwidth,100)
 		floor:setFillColor(0)
-		physics.addBody(floor, "static", {friction=0.9, bounce=0.05} )
+		local floorCollisionFilter = { categoryBits = 1 }
+		physics.addBody(floor, "static", {friction=0.9, bounce=0.05, filter=floorCollisionFilter} )
 		group:insert(floor)
 		
 		local levelWallet = 5000; --The Amount of Money for This Level
@@ -191,9 +192,7 @@ function scene:enterScene( event )
 		--------------------------------------------
 		local focus = 0;
 		ItemUI.setFocus(focus);
-		
 		group = Pause.createOverlay(group);
-		
 
 		--------------------------------------------
 		--              ITEM SELECT               --
@@ -202,7 +201,8 @@ function scene:enterScene( event )
 		playerGroup = display.newGroup()
 		materialGroup = display.newGroup()
 		unitGroup = display.newGroup()
-		group:insert(materialGroup); group:insert(unitGroup);
+		group:insert(materialGroup);
+		group:insert(unitGroup);
 		
 		for i=1,#scrollView.items do
 			scrollView.items[i].view:addEventListener("touch",ItemUI.pickItem)
@@ -212,7 +212,7 @@ function scene:enterScene( event )
 		--             STATIC MENUS               --
 		--------------------------------------------
 		local static_menu = display.newGroup()
-
+		
 		local function restart_level(event)
 			if event.phase == "ended" and restartBtn.alpha > 0 then
 				restart()
@@ -401,18 +401,18 @@ end
 				--print('Parallax.incX' .. Parallax.incX)
 				projectile.x = clickedUnit.x
 				projectile.y = clickedUnit.y
-				projectile.weapon = 5;
+				-- projectile.weapon = 5;
 				unitGroup:insert(projectile)
 				print('unitGroup: ' .. unitGroup.numChildren)
 
 
 				-- apply physics to the projectile
 				local playerProjectileCollisionFilter = { categoryBits = 4, maskBits = 5 } 
-				physics.addBody( projectile, { density=3.0, friction=0.2, bounce=0.05, radius=5, filter=playerProjectileCollisionFilter} )
+				physics.addBody( projectile, { density=clickedUnit.projectileDensity, friction=clickedUnit.projectileFriction, bounce=clickedUnit.projectileBounce, radius=clickedUnit.projectileRadius, filter=playerProjectileCollisionFilter} )
 				projectile.isBullet = true
 
 				-- fire the projectile            
-				projectile:applyForce( (event.x - crosshair.x)*forceMultiplier, (event.y - (crosshair.y))*forceMultiplier, clickedUnit.x, clickedUnit.y )
+				projectile:applyForce( (event.x - crosshair.x)*clickedUnit.projectileForce, (event.y - (crosshair.y))*clickedUnit.projectileForce, clickedUnit.x, clickedUnit.y )
 				weaponSFX = audio.loadSound(clickedUnit.sfx)
 				weaponSFXed = audio.play(weaponSFX,{channel=2} )
 				-- make sure that the cannon is on top of the 

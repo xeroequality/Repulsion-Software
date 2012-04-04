@@ -102,7 +102,8 @@ end
 -- Called immediately after scene has moved onscreen:
 function scene:enterScene( event )
         local group = self.view
-		local W = display.contentWidth; local H = display.contentHeight;
+		local W = display.contentWidth
+		local H = display.contentHeight
         
         -----------------------------------------------------------------------------
         -- INSERT code here (e.g. start timers, load audio, start listeners, etc.)
@@ -208,7 +209,6 @@ function scene:enterScene( event )
 		for i=1,#scrollView.items do
 			scrollView.items[i].view:addEventListener("touch",ItemUI.pickItem)
 		end
-		
 		--------------------------------------------
 		--             STATIC MENUS               --
 		--------------------------------------------
@@ -363,7 +363,6 @@ end
 		fire = function( event )
 			local phase = event.phase
 			if "began" == phase then
-				print('clickedUnit.x: ' .. clickedUnit.x .. ' clickedUnit.y: ' .. clickedUnit.y)
 				display.getCurrentStage():setFocus( crosshair )
 				crosshair.isFocus = true
 				crosshairLine = nil
@@ -376,7 +375,7 @@ end
 					end		
 						
 					crosshairLine = display.newLine(crosshair.x,crosshair.y, event.x,event.y) -- draws the line from the crosshair
-					local cannonRotation = (180/math.pi)*math.atan((event.y-crosshair.y)/(event.x-crosshair.x)) -- rotates the cannon based on the trajectory line
+					local cannonRotation = (180/math.pi)*math.atan((event.y-crosshair.y)/(event.x-crosshair.x)) - clickedUnit.rotation -- rotates the cannon based on the trajectory line
 					if (event.x < crosshair.x) then
 						clickedUnit[1].rotation = cannonRotation + 180  -- since arctan goes from -pi/2 to pi/2, this is necessary to make the cannon point backwards
 					else
@@ -400,8 +399,8 @@ end
 
 				-- move the image
 				--print('Parallax.incX' .. Parallax.incX)
-				projectile.x = clickedUnit.x
-				projectile.y = clickedUnit.y
+				projectile.x = clickedUnit.x+20
+				projectile.y = clickedUnit.y+5
 				-- projectile.weapon = 5;
 				unitGroup:insert(projectile)
 				print('unitGroup: ' .. unitGroup.numChildren)

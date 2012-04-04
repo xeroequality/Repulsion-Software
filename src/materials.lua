@@ -4,7 +4,7 @@
 -- Material: Table storing the data of each material.
 -- SEE: matTest.lua for usage example(s).
 ----------------------------------------------------------
-Material = {}
+Material = {} -- All material IDs must be from 1 to 999
 
 ------------------------------
 -- Wood Plank
@@ -15,8 +15,6 @@ Material.wood_plank = {
 	img="../images/wood_plank.png",
 	img_dmg="../images/wood_plank.png",
 	img_ui="../images/ui_item_wooden_plank.png",
-	width=37,
-	height=7,
 	shape={
 		-18,-7*0.5,
 		18,-7*0.5,
@@ -48,8 +46,6 @@ Material.wood_box = {
 	img="../images/wood_box.png",
 	img_dmg="../images/wood_box.png",
 	img_ui="../images/ui_item_wooden_box.png",
-	width=37,
-	height=37,
 	shape={
 		-18,-18,
 		18,-18,
@@ -81,8 +77,6 @@ Material.granite_slab = {
 	img="../images/granite_slab.png",
 	img_dmg="../images/granite_slab.png",
 	img_ui="../images/ui_item_granite_slab.png",
-	width=37,
-	height=14,
 	shape={
 		-18,-7,
 		 18,-7,
@@ -114,8 +108,6 @@ Material.glass_sheet = {
 	img="../images/glass_sheet.png",
 	img_dmg="../images/glass_sheet.png",
 	img_ui="../images/ui_item_glass_sheet.png",
-	width=37,
-	height=6,
 	shape={
 		-18,-3,
 		 18,-3,
@@ -147,8 +139,6 @@ Material.glass_tri = {
 	img="../images/glass_triangle.png",
 	img_dmg="../images/glass_triangle.png",
 	img_ui="../images/ui_item_glass_triangle.png",
-	width=37,
-	height=37,
 	shape={
 		  0,-18,
 		 18, 18,
@@ -179,8 +169,6 @@ Material.wood_plank_alien = {
 	img="../images/wood_plank_alien.png",
 	img_dmg="../images/wood_plank_alien.png",
 	img_ui="../images/ui_item_wooden_plank_alien.png",
-	width=37,
-	height=6,
 	shape={
 		-18,-3,
 		 18,-3,
@@ -212,8 +200,6 @@ Material.wood_box_alien = {
 	img="../images/wood_box_alien.png",
 	img_dmg="../images/wood_box_alien.png",
 	img_ui="../images/ui_item_wooden_box_alien.png",
-	width=37,
-	height=37,
 	shape={
 		-18,-18,
 		18,-18,
@@ -245,8 +231,6 @@ Material.aerogel = {
 	img="../images/aerogel.png",
 	img_dmg="../images/aerogel.png",
 	img_ui="../images/ui_item_aerogel.png",
-	width=37,
-	height=37,
 	shape={
 		-18,-18,
 		18,-18,
@@ -278,8 +262,6 @@ Material.nanotube = {
 	img="../images/nanotube.png",
 	img_dmg="../images/nanotube.png",
 	img_ui="../images/ui_item_nanotube.png",
-	width=37,
-	height=14,
 	shape={
 		-18,-7,
 		 18,-7,

@@ -2,7 +2,7 @@
 -- Units.lua
 -- Contains all parameters of unit objects in game.
 ----------------------------------------------------------
-Unit = {}
+Unit = {} -- Unit IDs start at 1000
 
 Unit.cannon = {
 	id=1000,

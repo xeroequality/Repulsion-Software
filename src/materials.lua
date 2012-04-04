@@ -4,7 +4,7 @@
 -- Material: Table storing the data of each material.
 -- SEE: matTest.lua for usage example(s).
 ----------------------------------------------------------
-Material = {}
+Material = {} -- All material IDs must be from 1 to 999
 
 ------------------------------
 -- Wood Plank

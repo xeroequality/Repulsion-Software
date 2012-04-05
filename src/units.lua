@@ -81,6 +81,7 @@ Unit.cannon = {
 		-- creates the crosshair
 		local phase = event.phase
 		clickedUnit = event.target
+		print('clickedUnit.x: ' .. clickedUnit.x .. ' clickedUnit.y: ' .. clickedUnit.y)
 		if (phase == 'began') then
 			if not (clickedUnit.cballExists) then
 				if not (showCrosshair) then										-- helps ensure that only one crosshair appears
@@ -103,7 +104,6 @@ Unit.cannon = {
 		clickedUnit.cballExists=false
 		local phase = event.phase
 		if "began" == phase then
-			print('clickedUnit.x: ' .. clickedUnit.x .. ' clickedUnit.y: ' .. clickedUnit.y)
 			display.getCurrentStage():setFocus( crosshair )
 			crosshair.isFocus = true
 			crosshairLine = nil
@@ -116,7 +116,11 @@ Unit.cannon = {
 				end		
 					
 				crosshairLine = display.newLine(crosshair.x,crosshair.y, event.x,event.y) -- draws the line from the crosshair
-				local cannonRotation = (180/math.pi)*math.atan((event.y-crosshair.y)/(event.x-crosshair.x)) - clickedUnit.rotation -- rotates the cannon based on the trajectory line
+				local deltaYDivX = (event.y-crosshair.y)/(event.x-crosshair.x)
+				if (event.y-crosshair.y)-(event.x-crosshair.x) == 0 then
+					deltaYDivX = 0
+				end
+				local cannonRotation = (180/math.pi)*math.atan(deltaYDivX) - clickedUnit.rotation -- rotates the cannon based on the trajectory line
 				if (event.x < crosshair.x) then
 					clickedUnit[1].rotation = cannonRotation + 180  -- since arctan goes from -pi/2 to pi/2, this is necessary to make the cannon point backwards
 				else
@@ -137,6 +141,12 @@ Unit.cannon = {
 				clickedUnit.projectile = display.newImage(clickedUnit.img_projectile)
 				clickedUnit.projectile:scale(clickedUnit.scaleX,clickedUnit.scaleY)
 				clickedUnit.cballExists = true
+				for i=1,unitGroup.numChildren do
+					unitGroup[i]:removeEventListener('touch', unitGroup[i].createCrosshair)
+				end
+				for i=1,enemyUnitGroup.numChildren do
+					enemyUnitGroup[i]:removeEventListener('touch', enemyUnitGroup[i].createCrosshair)
+				end
 
 				-- move the image
 				--print('Parallax.incX' .. Parallax.incX)
@@ -180,6 +190,12 @@ Unit.cannon = {
 			clickedUnit.projectile:removeSelf()
 			clickedUnit.cballExists = false
 			print('ball deleted')
+			for i=1,unitGroup.numChildren do
+				unitGroup[i]:addEventListener('touch', unitGroup[i].createCrosshair)
+			end
+			for i=1,enemyUnitGroup.numChildren do
+				enemyUnitGroup[i]:addEventListener('touch', enemyUnitGroup[i].createCrosshair)
+			end
 		end
 	end,
 	 removeballBeyondFloor = function()

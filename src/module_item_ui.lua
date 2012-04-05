@@ -144,9 +144,6 @@ UI.pickItem = function(event)
 				newObj.angularVelocity = 0
 			end
 			UI.focus = newObj;
-			local Pause = require("pause_overlay")
-			materialGroup = Pause.bringMenutoFront(materialGroup)
-			unitGroup = Pause.bringMenutoFront(unitGroup)
 		else
 			print("not enough money!")
 			return true
@@ -258,6 +255,9 @@ UI.menuUI = function(event)
 		if overlay == false and overlay_activity == false then --Put Up the Overlay
 			overlay_activity = true;
 			overlay = true;
+			local Pause = require("pause_overlay")
+			materialGroup = Pause.bringMenutoFront(materialGroup)
+			unitGroup = Pause.bringMenutoFront(unitGroup)
 		end
 	end
 end

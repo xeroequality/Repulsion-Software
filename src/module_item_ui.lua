@@ -144,8 +144,9 @@ UI.pickItem = function(event)
 				newObj.angularVelocity = 0
 			end
 			UI.focus = newObj;
-			local Pause = require("pause_overlay");
-			materialGroup = Pause.bringMenutoFront(materialGroup);
+			local Pause = require("pause_overlay")
+			materialGroup = Pause.bringMenutoFront(materialGroup)
+			unitGroup = Pause.bringMenutoFront(unitGroup)
 		else
 			print("not enough money!")
 			return true
@@ -226,6 +227,9 @@ UI.playUI = function(event)
 	slideBtn:removeSelf()
 	--make it so that we cannot access it again?
 	--delete it!
+	-- for i=1,materialGroup.numChildren do
+		-- materialGroup[i]:removeEventListener("touch",UI.dragItem)
+	-- end
 	print('clicked play')
 	transitionStash.newTransition = transition.to(menu_button, {time=500, x=-10} )
 	scrollView.destroy()
@@ -239,7 +243,12 @@ UI.playUI = function(event)
 	for i=1,unitGroup.numChildren do
 		print('unitGroup: ' .. unitGroup[i].id)
 		unitGroup[i]:removeEventListener("touch",UI.dragItem)
-		unitGroup[i]:addEventListener('touch',createCrosshair)
+		unitGroup[i]:addEventListener('touch', unitGroup[i].createCrosshair)
+	end
+	for i=1,enemyUnitGroup.numChildren do
+		print('unitGroup: ' .. enemyUnitGroup[i].id)
+		enemyUnitGroup[i]:removeEventListener("touch",UI.dragItem)
+		enemyUnitGroup[i]:addEventListener('touch', enemyUnitGroup[i].createCrosshair)
 	end
 end
 

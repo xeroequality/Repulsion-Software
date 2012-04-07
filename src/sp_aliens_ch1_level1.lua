@@ -99,6 +99,7 @@ end
  
 -- Called immediately after scene has moved onscreen:
 function scene:enterScene( event )
+
         local group = self.view
 		local W = display.contentWidth
 		local H = display.contentHeight

@@ -86,6 +86,14 @@ UI.dragItem = function(event)
 				target:removeSelf()
 				return true
 			end
+			--Check If Object is in the Vicinity of the Rotate Button
+			rotate_button.alpha = 1;
+			if target.x >= (rotate_button.x-30) and target.x <= (rotate_button.x+30) then
+				if target.y >= (rotate_button.y-30) and target.y <= (rotate_button.y+30) then
+					target:rotate(1)
+					rotate_button.alpha = 0.25;
+				end
+			end
 		elseif phase == "ended" or phase == "cancelled" then
 			-- If it doesn't already have a bodyType, then add it to physics
 			-- If it does, set it's body type to dynamic
@@ -105,6 +113,7 @@ UI.dragItem = function(event)
 			display.getCurrentStage():setFocus(nil)
 			target.isFocus = false
 			--target:removeEventListener(dragItem)
+			rotate_button.alpha = 1;
 		end
 	end
 	end
@@ -267,6 +276,9 @@ UI.playUI = function(event)
 			enemyUnitGroup[i]:addEventListener('touch', enemyUnitGroup[i].createCrosshair)
 		end
 	end
+	--Convert Money Left Over to Score
+	Score.addtoScore(math.ceil(wallet*1.5));
+	wallet = 0;
 end
 
 UI.menuUI = function(event)
@@ -321,15 +333,20 @@ end
 
 UI.hit = function(event)
 	local threshold = 1;
-	if (event.other).weapon ~= nil then
+	if (event.other).power ~= nil then
 		if event.force >= threshold then
-			(event.target).currentHP = (event.target).currentHP - math.ceil((event.force*(event.other).weapon));
+			local damage = math.ceil((event.force*(event.other).power));
+			(event.target).currentHP = (event.target).currentHP - damage;
+			Score.addtoScore(damage);
 			print((event.target).currentHP)
 			local h = (event.target).currentHP; local m = (event.target).maxHP;
 			if h < 0 then h = 0; end
 			local p = math.ceil(4*(h/m));
 			(event.target).alpha = (p/4)
 			if (event.target).currentHP <= 0 then
+				if (event.target).cost ~= nil then
+					Score.addtoScore(math.ceil((event.target).cost * 1.5));
+				end
 				(event.target):removeSelf()
 			end
 		end

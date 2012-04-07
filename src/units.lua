@@ -74,6 +74,7 @@ Unit.cannon = {
 	projectileDensity=10,
 	projectileFriction=0.2,
 	projectileBounce=0.05,
+	power = 15, --Power of the Cannon Ball
 	
 	-- Cannon functions below
 
@@ -139,6 +140,7 @@ Unit.cannon = {
 
 				-- make a new image
 				clickedUnit.projectile = display.newImage(clickedUnit.img_projectile)
+				clickedUnit.projectile.power = 10;
 				clickedUnit.projectile:scale(clickedUnit.scaleX,clickedUnit.scaleY)
 				clickedUnit.cballExists = true
 				for i=1,unitGroup.numChildren do

@@ -10,7 +10,7 @@ save_and_load.save = function(slot,overlay_section)
 	if true then
 		if true and overlay_section == "Save" then
 			local index = 1;
-			local xvals = {}; local yvals = {}; local num = 0; local rotation = {}; local types = {}; local scX = {}; local scY = {};
+			local xvals = {}; local yvals = {}; local num = 0; local rotation = {}; local id = {}; local scX = {}; local scY = {};
 			--Get Total Cost
 			local total = 0;
 			--Materials
@@ -22,7 +22,7 @@ save_and_load.save = function(slot,overlay_section)
 					xvals[index] = child.x;
 					yvals[index] = child.y;
 					rotation[index] = child.rotation;
-					types[index] = child.id;
+					id[index] = child.id;
 					scX[index] = child.xScale;
 					scY[index] = child.yScale;
 					index = index + 1;
@@ -38,7 +38,7 @@ save_and_load.save = function(slot,overlay_section)
 					xvals[index] = child.x;
 					yvals[index] = child.y;
 					rotation[index] = child.rotation;
-					types[index] = child.id;
+					id[index] = child.id;
 					scX[index] = child.xScale;
 					scY[index] = child.yScale;
 					index = index + 1;
@@ -69,7 +69,8 @@ save_and_load.save = function(slot,overlay_section)
 			end
 			--Make the Array
 			local supers = "";
-			supers = 'local Material = require("materials")\n\n'
+			supers = 'local Materials = require("materials")\n\n'
+			supers = 'local Units = require("units")\n\n'
 			supers = supers.."PlayerBase = {}\n\n";
 			supers = supers.."PlayerBase.structure = {\n";
 			supers = supers.."numObjects="..num..",\n";
@@ -77,9 +78,9 @@ save_and_load.save = function(slot,overlay_section)
 			supers = supers.."baseY="..basY..",\n";
 			supers = supers.."totalCost="..total..",\n";
 			supers = supers.."id={\n";
-			for i = 1, #types do
-				supers = supers..types[i]
-				if i ~= #types then supers = supers..","; end
+			for i = 1, #id do
+				supers = supers..id[i]
+				if i ~= #id then supers = supers..","; end
 			end
 			supers = supers.."\n},\n";
 			supers = supers.."x_vals={\n";
@@ -165,21 +166,21 @@ save_and_load.load = function(slot,levelWallet)
 				local playerCollisionFilter = { categoryBits = 2, maskBits = 3 }
 				if player.id[i] < 1000 then
 					obj = Materials.clone(player.id[i])
-					obj.x = player.x_vals[i]+baseX;
-					obj.y = player.y_vals[i]+baseY;
+					obj.x = player.x_vals[i]+baseX
+					obj.y = player.y_vals[i]+baseY
 					obj.rotation = player.rotations[i]
 					obj.child = "Child";
 					materialGroup:insert(obj);
 					physics.addBody(obj, "dynamic", { friction=obj.friction, bounce=obj.bounce, density=obj.density, shape=obj.shape, filter=playerCollisionFilter })
 				elseif player.id[i] >= 1000 then
 					obj = Units.clone(player.id[i])
-					obj.x = player.x_vals[i]+baseX;
-					obj.y = player.y_vals[i]+baseY;
+					obj.x = player.x_vals[i]+baseX
+					obj.y = player.y_vals[i]+baseY
 					obj.rotation = player.rotations[i]
 					obj.child = "Child";
 					physics.addBody( obj, "dynamic",
-						{ friction=obj.friction, bounce=obj.bounce, density=obj.density, shape=obj.objShape, filter=playerCollisionFilter },
-						{ friction=obj.friction, bounce=obj.bounce, density=obj.density, shape=obj.objBaseShape, filter=playerCollisionFilter }
+							{ density=obj.objDensity, friction=obj.objFriction, bounce=obj.objBounce, shape=obj.objShape, filter=playerCollisionFilter },
+							{ density=obj.objBaseDensity, friction=obj.objBaseFriction, bounce=obj.objBaseBounce, shape=obj.objBaseShape, filter=playerCollisionFilter }
 					)
 					obj.child = "Child";
 					unitGroup:insert(obj)

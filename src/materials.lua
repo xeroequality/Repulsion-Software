@@ -4,7 +4,7 @@
 -- Material: Table storing the data of each material.
 -- SEE: matTest.lua for usage example(s).
 ----------------------------------------------------------
-Material = {}
+Material = {} -- All material IDs must be from 1 to 999
 
 ------------------------------
 -- Wood Plank
@@ -15,8 +15,6 @@ Material.wood_plank = {
 	img="../images/wood_plank.png",
 	img_dmg="../images/wood_plank.png",
 	img_ui="../images/ui_item_wooden_plank.png",
-	width=37,
-	height=7,
 	shape={
 		-18,-7*0.5,
 		18,-7*0.5,
@@ -34,9 +32,9 @@ Material.wood_plank = {
 		explosive=1,
 		electric=1
 	},
-	bounce=0,
 	density=0.8,
-	friction=0.9
+	friction=0.9,
+	bounce=0
 }
 
 ------------------------------
@@ -48,8 +46,6 @@ Material.wood_box = {
 	img="../images/wood_box.png",
 	img_dmg="../images/wood_box.png",
 	img_ui="../images/ui_item_wooden_box.png",
-	width=37,
-	height=37,
 	shape={
 		-18,-18,
 		18,-18,
@@ -67,9 +63,9 @@ Material.wood_box = {
 		explosive=1,
 		electric=1
 	},
-	bounce=0,
 	density=0.9,
-	friction=0.9
+	friction=0.9,
+	bounce=0
 }
 
 ------------------------------
@@ -81,8 +77,6 @@ Material.granite_slab = {
 	img="../images/granite_slab.png",
 	img_dmg="../images/granite_slab.png",
 	img_ui="../images/ui_item_granite_slab.png",
-	width=37,
-	height=14,
 	shape={
 		-18,-7,
 		 18,-7,
@@ -100,9 +94,9 @@ Material.granite_slab = {
 		explosive=1,
 		electric=0.5
 	},
-	bounce=0,
 	density=5.0,
-	friction=0.9
+	friction=0.9,
+	bounce=0
 }
 
 ------------------------------
@@ -114,8 +108,6 @@ Material.glass_sheet = {
 	img="../images/glass_sheet.png",
 	img_dmg="../images/glass_sheet.png",
 	img_ui="../images/ui_item_glass_sheet.png",
-	width=37,
-	height=6,
 	shape={
 		-18,-3,
 		 18,-3,
@@ -133,9 +125,9 @@ Material.glass_sheet = {
 		explosive=1,
 		electric=0.5
 	},
-	bounce=0,
 	density=2.0,
-	friction=0.8
+	friction=0.8,
+	bounce=0
 }
 
 ------------------------------
@@ -147,8 +139,6 @@ Material.glass_tri = {
 	img="../images/glass_triangle.png",
 	img_dmg="../images/glass_triangle.png",
 	img_ui="../images/ui_item_glass_triangle.png",
-	width=37,
-	height=37,
 	shape={
 		  0,-18,
 		 18, 18,
@@ -165,9 +155,9 @@ Material.glass_tri = {
 		explosive=1,
 		electric=0.5
 	},
-	bounce=0,
 	density=2.0,
-	friction=0.8
+	friction=0.8,
+	bounce=0
 }
 
 ------------------------------
@@ -179,8 +169,6 @@ Material.wood_plank_alien = {
 	img="../images/wood_plank_alien.png",
 	img_dmg="../images/wood_plank_alien.png",
 	img_ui="../images/ui_item_wooden_plank_alien.png",
-	width=37,
-	height=6,
 	shape={
 		-18,-3,
 		 18,-3,
@@ -198,9 +186,9 @@ Material.wood_plank_alien = {
 		explosive=1,
 		electric=2
 	},
-	bounce=0,
 	density=0.8,
-	friction=1
+	friction=1,
+	bounce=0
 }
 
 ------------------------------
@@ -212,8 +200,6 @@ Material.wood_box_alien = {
 	img="../images/wood_box_alien.png",
 	img_dmg="../images/wood_box_alien.png",
 	img_ui="../images/ui_item_wooden_box_alien.png",
-	width=37,
-	height=37,
 	shape={
 		-18,-18,
 		18,-18,
@@ -231,9 +217,9 @@ Material.wood_box_alien = {
 		explosive=1,
 		electric=2
 	},
-	bounce=0,
 	density=0.8,
-	friction=1
+	friction=1,
+	bounce=0
 }
 
 ------------------------------
@@ -245,8 +231,6 @@ Material.aerogel = {
 	img="../images/aerogel.png",
 	img_dmg="../images/aerogel.png",
 	img_ui="../images/ui_item_aerogel.png",
-	width=37,
-	height=37,
 	shape={
 		-18,-18,
 		18,-18,
@@ -264,9 +248,9 @@ Material.aerogel = {
 		explosive=1,
 		electric=0.5
 	},
-	bounce=0,
 	density=0.1,
-	friction=1
+	friction=1,
+	bounce=0
 }
 
 ------------------------------
@@ -278,8 +262,6 @@ Material.nanotube = {
 	img="../images/nanotube.png",
 	img_dmg="../images/nanotube.png",
 	img_ui="../images/ui_item_nanotube.png",
-	width=37,
-	height=14,
 	shape={
 		-18,-7,
 		 18,-7,
@@ -297,9 +279,9 @@ Material.nanotube = {
 		explosive=1,
 		electric=0.5
 	},
-	bounce=0,
 	density=1.5,
-	friction=1
+	friction=1,
+	bounce=0
 }
 
 
@@ -342,9 +324,9 @@ Material.clone = function(id)
 				explosive=(cloner.resist).explosive,
 				electric=(cloner.resist).electric
 			}
-			obj.bounce=cloner.bounce
 			obj.density=cloner.density
 			obj.friction=cloner.friction
+			obj.bounce=cloner.bounce
 		return obj
 end
 

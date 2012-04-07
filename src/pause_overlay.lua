@@ -78,7 +78,7 @@ pauseMenu.switchTo = function(event)
 				valueSFX = display.newText("Your Sound Effects",display.contentWidth *.50,display.contentHeight * 0.65,native.systemFont,16)  
 
 				local sliderListener2 = function( event )
-					id = "Sound Effects";
+					local id = "Sound Effects";
 					local sliderObj2 = event.target;
 					valueSFX.text=event.target.value;
 					print( "New value is: " .. event.target.value )
@@ -172,6 +172,7 @@ pauseMenu.displayPreview = function(slot)
 	for i = 1,player.numObjects do
 		if player.id[i] < 1000 then
 			local obj = Materials.clone(player.id[i])
+			materialGroup:insert(obj)
 			obj.rotation = player.rotations[i];
 			--Figure Out the Scale Based on Its Rotation
 			local r = obj.rotation
@@ -191,6 +192,7 @@ pauseMenu.displayPreview = function(slot)
 			obj:toFront()
 		else
 			local obj = Units.clone(player.id[i])
+			unitGroup:insert(obj)
 			obj.rotation = player.rotations[i];
 			--Figure Out the Scale Based on Its Rotation
 			local r = obj.rotation

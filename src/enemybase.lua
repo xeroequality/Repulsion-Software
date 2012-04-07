@@ -2,28 +2,35 @@
 -- enemybase.lua
 -- Contains table of values that represent the enemy's base.
 ----------------------------------------------------------
-local Material = require("materials")
+local Materials = require("materials")
+local Units = require("units")
 W = display.contentWidth
 H = display.contentHeight
 
 EnemyBase = {}
 
 EnemyBase.level1 = {
-	numObjects=17,
+	numObjects=12,
 	baseX=700,
-	baseY=291.62228393555,
-	totalCost=2350,
+	baseY=291.55010986328,
+	totalCost=1050,
 	id={
-		2,2,2,5,5,2,2,2,2,1,1,2,5,5,2,2,5
+		12,12,12,12,12,12,12,12,12,12,12,1000
 	},
 	x_vals={
-		36.520095825195,73.500701904297,110.08236694336,52.264709472656,90.83235168457,0,147.07106018066,11.66431427002,131.92050170898,43.546508789063,103.82730102539,76.031707763672,118.96987915039,34.672973632813,49.465393066406,106.09231567383,75.977630615234
+		40.811676025391,93.949356079102,0,18.840675354004,25.541206359863,130.65599060059,108.56956481934,98.622192382813,30.026031494141,88.765144348145,60.192047119141,46.481758117676
 	},
 	y_vals={
-		-0.037445068359375,-0.014495849609375,0,-36.429992675781,-36.396118164063,-0.072174072265625,-0.05572509765625,-36.556732177734,-36.470901489258,-58.310424804688,-58.191467285156,-80.073638916016,-80.006622314453,-80.220077514648,-116.56265258789,-116.4342956543,-152.88818359375
+		0,0,0,-36.476013183594,-72.941116333008,-0.083984375,-36.562728881836,-73.012908935547,-109.37561035156,-109.33094787598,-145.71148681641,-41.450012207031
+	},
+	scaleX={
+		0.16666667163372,0.16666667163372,0.16666667163372,0.16666667163372,0.16666667163372,0.16666667163372,0.16666667163372,0.16666667163372,0.16666667163372,0.16666667163372,0.16666667163372,0.33333334326744
+	},
+	scaleY={
+		0.16666667163372,0.16666667163372,0.16666667163372,0.16666667163372,0.16666667163372,0.16666667163372,0.16666667163372,0.16666667163372,0.16666667163372,0.16666667163372,0.16666667163372,0.33333334326744
 	},
 	rotations={
-		0.03193973377347,0.013448665849864,-0.013245727866888,360.01559448242,-0.010653432458639,-179.99993896484,-0.044720381498337,0.3080041706562,-0.50056475400925,0.29169163107872,0.038624338805676,0.088991388678551,0.37070873379707,0.23231199383736,0.28136557340622,0.049281530082226,0.10789451003075
+		1.1420570444898e-005,4.9528630370332e-006,6.5361702581868e-005,0.083202138543129,0.20260541141033,-0.044959980994463,-0.36029851436615,-0.78644549846649,0.20348159968853,-0.78654247522354,0.23928312957287,-0.0098605118691921
 	}
 }
 
@@ -92,18 +99,35 @@ EnemyBase.level4 = {
 
 EnemyBase.loadBase = function(level)
 	local physics = require("physics")
-	local enemyGroup = display.newGroup()
+	enemyGroup = display.newGroup()
+	enemyMaterialGroup = display.newGroup()
+	enemyUnitGroup = display.newGroup()
+	
 	for i=1,level.numObjects do
 		local obj = {}
-		obj.id = level.id[i]
-		obj = Material.clone(obj.id)
-		obj.x = level.baseX + level.x_vals[i];
-		obj.y = level.baseY + level.y_vals[i];
-		obj.rotation = level.rotations[i]
-		obj:addEventListener("postCollision",hit);
 		local enemyCollisionFilter = { categoryBits = 4, maskBits = 5 }
-		physics.addBody(obj, {density=obj.density, friction=obj.friction, bounce=obj.bounce, shape=obj.shape, filter=enemyCollisionFilter })
-		enemyGroup:insert(obj)
+		if level.id[i] < 1000 then
+			obj = Materials.clone(level.id[i])
+			enemyMaterialGroup:insert(obj)
+			obj.x = level.baseX + level.x_vals[i]
+			obj.y = level.baseY + level.y_vals[i]
+			obj.rotation = level.rotations[i]
+			obj:addEventListener("postCollision",hit);
+			physics.addBody(obj, "dynamic", { friction=obj.friction, bounce=obj.bounce, density=obj.density, shape=obj.shape, filter=enemyCollisionFilter })
+			enemyGroup:insert(enemyMaterialGroup)
+		elseif level.id[i] >= 1000 then
+			obj = Units.clone(level.id[i])
+			enemyUnitGroup:insert(obj)
+			obj.x = level.baseX + level.x_vals[i];
+			obj.y = level.baseY + level.y_vals[i];
+			obj.rotation = level.rotations[i]
+			obj:addEventListener("postCollision",hit);
+			physics.addBody( obj, "dynamic",
+				{ density=obj.objDensity, friction=obj.objFriction, bounce=obj.objBounce, shape=obj.objShape, filter=enemyCollisionFilter },
+				{ density=obj.objBaseDensity, friction=obj.objBaseFriction, bounce=obj.objBaseBounce, shape=obj.objBaseShape, filter=enemyCollisionFilter }
+			)
+			enemyGroup:insert(enemyUnitGroup)
+		end
 	end
 	return enemyGroup
 end

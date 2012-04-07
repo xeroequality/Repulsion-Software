@@ -82,11 +82,11 @@ UI.dragItem = function(event)
 			local playerCollisionFilter = { categoryBits = 2, maskBits = 3 }
 			if not target.bodyType then
 				if target.id < 1000 then
-					physics.addBody(target, "dynamic", {friction=target.friction, bounce=target.bounce, density=target.density, shape=target.shape, filter=playerCollisionFilter })
+					physics.addBody(target, "dynamic", { density=target.density, friction=target.friction, bounce=target.bounce, shape=target.shape, filter=playerCollisionFilter })
 				elseif target.id >= 1000 then
 					physics.addBody( target, "dynamic",
-						{ friction=target.friction, bounce=target.bounce, density=target.density,  shape=target.objShape, filter=playerCollisionFilter },
-						{ friction=target.friction, bounce=target.bounce, density=target.density, shape=target.objBaseShape, filter=playerCollisionFilter }
+						{ density=target.objDensity, friction=target.objFriction, bounce=target.objBounce, shape=target.objShape, filter=playerCollisionFilter },
+						{ density=target.objBaseDensity, friction=target.objBaseFriction, bounce=target.objBaseBounce, shape=target.objBaseShape, filter=playerCollisionFilter }
 					)
 				end
 			else
@@ -162,11 +162,11 @@ UI.pickItem = function(event)
 			local playerCollisionFilter = { categoryBits = 2, maskBits = 3 }
 			if not newObj.bodyType then
 				if newObj.id < 1000 then
-					physics.addBody(newObj, "dynamic", { friction=newObj.friction, bounce=newObj.bounce, density=newObj.density, shape=newObj.shape, filter=playerCollisionFilter })
+					physics.addBody(newObj, "dynamic", { density=newObj.density, friction=newObj.friction, bounce=newObj.bounce, shape=newObj.shape, filter=playerCollisionFilter })
 				elseif newObj.id >= 1000 then
 					physics.addBody( newObj, "dynamic",
-						{ friction=newObj.friction, bounce=newObj.bounce, density=newObj.density, shape=newObj.objShape, filter=playerCollisionFilter },
-						{ friction=newObj.friction, bounce=newObj.bounce, density=newObj.density, shape=newObj.objBaseShape, filter=playerCollisionFilter }
+						{ density=newObj.objDensity, friction=newObj.objFriction, bounce=newObj.objBounce, shape=newObj.objShape, filter=playerCollisionFilter },
+						{ density=newObj.objBaseDensity, friction=newObj.objBaseFriction, bounce=newObj.objBaseBounce, shape=newObj.objBaseShape, filter=playerCollisionFilter }
 					)
 				end
 			else
@@ -227,6 +227,9 @@ UI.playUI = function(event)
 	slideBtn:removeSelf()
 	--make it so that we cannot access it again?
 	--delete it!
+	-- for i=1,materialGroup.numChildren do
+		-- materialGroup[i]:removeEventListener("touch",UI.dragItem)
+	-- end
 	print('clicked play')
 	transitionStash.newTransition = transition.to(menu_button, {time=500, x=-10} )
 	scrollView.destroy()
@@ -240,7 +243,12 @@ UI.playUI = function(event)
 	for i=1,unitGroup.numChildren do
 		print('unitGroup: ' .. unitGroup[i].id)
 		unitGroup[i]:removeEventListener("touch",UI.dragItem)
-		unitGroup[i]:addEventListener('touch',createCrosshair)
+		unitGroup[i]:addEventListener('touch', unitGroup[i].createCrosshair)
+	end
+	for i=1,enemyUnitGroup.numChildren do
+		print('unitGroup: ' .. enemyUnitGroup[i].id)
+		enemyUnitGroup[i]:removeEventListener("touch",UI.dragItem)
+		enemyUnitGroup[i]:addEventListener('touch', enemyUnitGroup[i].createCrosshair)
 	end
 end
 
@@ -250,6 +258,9 @@ UI.menuUI = function(event)
 		if overlay == false and overlay_activity == false then --Put Up the Overlay
 			overlay_activity = true;
 			overlay = true;
+			local Pause = require("pause_overlay")
+			materialGroup = Pause.bringMenutoFront(materialGroup)
+			unitGroup = Pause.bringMenutoFront(unitGroup)
 		end
 	end
 end

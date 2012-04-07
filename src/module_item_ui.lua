@@ -146,6 +146,9 @@ UI.pickItem = function(event)
 				newObj:setLinearVelocity(0,0)
 				newObj.angularVelocity = 0
 			end
+			local Pause = require("pause_overlay")
+			materialGroup = Pause.bringMenutoFront(materialGroup);
+			unitGroup = Pause.bringMenutoFront(unitGroup)
 			UI.focus = newObj;
 		else
 			print("not enough money!")

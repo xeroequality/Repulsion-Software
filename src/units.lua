@@ -230,6 +230,7 @@ Unit.clone = function(id)
 		obj.img_base = display.newImage(cloner.img_base)
 		obj.img_dmg=cloner.img_dmg
 		obj.img_base_dmg=cloner.img_base_dmg
+		obj.id = id
 		unitObjGroup.img_projectile=cloner.img_projectile
 		unitObjGroup.sfx=cloner.sfx
 		obj.rotation=cloner.rotation

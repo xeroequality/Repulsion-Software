@@ -394,6 +394,7 @@ pauseMenu.createOverlay = function(group)
 				end
 				slots[k].alpha = 0;
 				slots[k].movy = "Yes";
+				slots[k].static = "Yes";
 				slots[k].slot = k;
 			else
 				slots[k] = display.newImage("../images/btn_nosave.png");
@@ -406,6 +407,7 @@ pauseMenu.createOverlay = function(group)
 				end
 				slots[k].alpha = 0;
 				slots[k].movy = "Yes";
+				slots[k].static = "Yes";
 				slots[k].slot = (k-10);
 			end
 		end
@@ -432,6 +434,10 @@ pauseMenu.createOverlay = function(group)
 		overlayshade.movy = "Yes"; overlayrect.movy = "Yes"; saveBtn.movy = "Yes"; loadBtn.movy = "Yes"; backMainBtn.movy = "Yes";
 		pauseText.movy = "Yes"; backBtn.movy = "Yes"; restartBtn.movy = "Yes"; exitBtn.movy = "Yes"; overwriteBtn.movy = "Yes"
 		loadCBtn.movy = "Yes"; menuText.movy = "Yes"; settingsBtn.movy = "Yes";
+		
+		overlayshade.static = "Yes"; overlayrect.static = "Yes"; saveBtn.static = "Yes"; loadBtn.static = "Yes"; backMainBtn.static = "Yes";
+		pauseText.static = "Yes"; backBtn.static = "Yes"; restartBtn.static = "Yes"; exitBtn.static = "Yes"; overwriteBtn.static = "Yes"
+		loadCBtn.static = "Yes"; menuText.static = "Yes"; settingsBtn.static = "Yes";
 		
 		group:insert(overlayshade)
 		group:insert(overlayrect)

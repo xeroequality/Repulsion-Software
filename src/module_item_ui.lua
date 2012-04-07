@@ -111,14 +111,17 @@ UI.pickItem = function(event)
 	local target = event.target
 	local Materials = require("materials");
 	local Units = require("units")
+	local Pause = require("pause_overlay");
 	if phase == "began" then
 		if wallet >= target.cost then
 			if target.id < 1000 then
 				newObj = Materials.clone(target.id)
 				materialGroup:insert(newObj)
+				materialGroup = Pause.bringMenutoFront(materialGroup);
 			elseif target.id >= 1000 then
 				newObj = Units.clone(target.id)
 				unitGroup:insert(newObj)
+				unitGroup = Pause.bringMenutoFront(unitGroup);
 			else
 				print("null target")
 				return true
@@ -144,8 +147,6 @@ UI.pickItem = function(event)
 				newObj.angularVelocity = 0
 			end
 			UI.focus = newObj;
-			local Pause = require("pause_overlay");
-			group = Pause.bringMenutoFront(group);
 		else
 			print("not enough money!")
 			return true
@@ -254,10 +255,20 @@ UI.menuUI = function(event)
 end
 
 UI.rotateUI = function(event)
-	if event.phase == "ended" then
-		UI.focus.rotation = math.floor((UI.focus).rotation)
-		UI.focus.rotation = UI.focus.rotation + 90;
-		if UI.focus.width ~= UI.focus.height then UI.focus.y = UI.focus.y - (UI.focus.height/(UI.focus.width/UI.focus.height)); end
+	if UI.focus.id < 1000 then --Rotate Only Materials
+		if event.phase == "began" then
+			physics.pause(); --Pause the Physics
+			--Make the Rotation an Integer
+			UI.focus.rotation = math.floor((UI.focus).rotation);
+			--Move the Material Up a Bit
+			if UI.focus.width ~= UI.focus.height then UI.focus.y = UI.focus.y - ((UI.focus.height/(UI.focus.width/UI.focus.height))*1.5); end
+		end
+		--Rotate the Thingy
+		UI.focus.rotation = UI.focus.rotation+10;
+		--Once It's Over...
+		if event.phase == "ended" and UI.focus.id < 1000 then --Rotate Only Materials
+			physics.start() --Restart the Function
+		end
 	end
 end
 	

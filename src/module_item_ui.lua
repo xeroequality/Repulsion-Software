@@ -53,7 +53,17 @@ end
 UI.dragItem = function(event)
 	local phase = event.phase
 	local target = event.target
-	if scrollView.isOpen and overlay == false and overlay_activity == false then						-- need an and if touch.y is less than 150 so that it doesnt work when the scrollview is above the static button area
+	local bool = true;
+	if scrollView == nil then
+		bool = true;
+	else
+		if scrollView.isOpen then
+			bool = true
+		else
+			bool = false
+		end
+	end
+	if bool == true and overlay == false and overlay_activity == false then						-- need an and if touch.y is less than 150 so that it doesnt work when the scrollview is above the static button area
 	if phase == "began" then
 		display.getCurrentStage():setFocus(target)
 		target.isFocus = true

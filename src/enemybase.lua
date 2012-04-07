@@ -112,7 +112,7 @@ EnemyBase.loadBase = function(level)
 			obj.x = level.baseX + level.x_vals[i]
 			obj.y = level.baseY + level.y_vals[i]
 			obj.rotation = level.rotations[i]
-			obj:addEventListener("postCollision",hit);
+			obj:addEventListener("postCollision",UI.hit);
 			physics.addBody(obj, "dynamic", { friction=obj.friction, bounce=obj.bounce, density=obj.density, shape=obj.shape, filter=enemyCollisionFilter })
 			enemyGroup:insert(enemyMaterialGroup)
 		elseif level.id[i] >= 1000 then
@@ -121,7 +121,7 @@ EnemyBase.loadBase = function(level)
 			obj.x = level.baseX + level.x_vals[i];
 			obj.y = level.baseY + level.y_vals[i];
 			obj.rotation = level.rotations[i]
-			obj:addEventListener("postCollision",hit);
+			obj:addEventListener("postCollision",UI.hit);
 			physics.addBody( obj, "dynamic",
 				{ density=obj.objDensity, friction=obj.objFriction, bounce=obj.objBounce, shape=obj.objShape, filter=enemyCollisionFilter },
 				{ density=obj.objBaseDensity, friction=obj.objBaseFriction, bounce=obj.objBaseBounce, shape=obj.objBaseShape, filter=enemyCollisionFilter }

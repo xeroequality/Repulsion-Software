@@ -283,4 +283,27 @@ UI.createMenuUI = function()
 	menu_button:addEventListener("touch",UI.menuUI);
 end
 
+---------------------------------
+-------    COLLISION    ---------
+---------------------------------
+
+--Collision
+
+UI.hit = function(event)
+	local threshold = 1;
+	if (event.other).weapon ~= nil then
+		if event.force >= threshold then
+			(event.target).currentHP = (event.target).currentHP - math.ceil((event.force*(event.other).weapon));
+			print((event.target).currentHP)
+			local h = (event.target).currentHP; local m = (event.target).maxHP;
+			if h < 0 then h = 0; end
+			local p = math.ceil(4*(h/m));
+			(event.target).alpha = (p/4)
+			if (event.target).currentHP <= 0 then
+				(event.target):removeSelf()
+			end
+		end
+	end
+end
+
 return UI;

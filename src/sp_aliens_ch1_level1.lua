@@ -11,6 +11,7 @@ local IO	     		= require( "save_and_load" )
 local Pause				= require( "pause_overlay" )
 local MenuSettings 		= require( "settings" )
 local ItemUI		    = require( "module_item_ui" )
+	  Score				= require( "scoring" )
 local scene 	 		= storyboard.newScene()
 
 widget.setTheme("theme_ios")	
@@ -290,7 +291,15 @@ function scene:enterScene( event )
 		end
 		Runtime:addEventListener("enterFrame",updateMONEY)
 		
+		local SCORE = display.newText("Score: 0",0,0,native.systemFont,12);
+		SCORE.x = display.contentWidth/2+60; SCORE.y = 30;
+		SCORE.movy = "Yes";
 		
+		updateSCORE = function(event)
+			local s = Score.getScore();
+			SCORE.text = "Score: "..s;
+		end
+		Runtime:addEventListener("enterFrame",updateSCORE);
 		
 		-- In future levels, the ONLY thing that needs to change is the first line:
 		local objGroup = Enemy.loadBase(Enemy.level1)
@@ -309,6 +318,7 @@ function scene:enterScene( event )
 		group:insert(rotate_button)
 		group:insert(menu_button)
 		group:insert(MONEY)
+		group:insert(SCORE)
 		group:insert(objGroup)
 		-- group:insert(projectile)
 		
@@ -329,6 +339,7 @@ function scene:exitScene( event )
 	Runtime:removeEventListener('enterFrame',removeballbeyondfloor)
 	Runtime:removeEventListener('enterFrame',startRotation)
 	Runtime:removeEventListener("enterFrame",updateMONEY)
+	Runtime:removeEventListener("enterFrame",updateSCORE);
 	Runtime:removeEventListener("enterFrame",showHP)
 	
 	local num = group.numChildren;
@@ -367,6 +378,7 @@ function scene:exitScene( event )
 	-- playerGroup = nil
 	materialGroup = nil
 	unitGroup = nil
+	Score = nil;
 	
 	--if play_button then play_button:removeSelf(); play_button = nil; end
 	--if rotate_button then rotate_button:removeSelf(); rotate_button = nil; end

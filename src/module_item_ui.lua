@@ -267,6 +267,9 @@ UI.playUI = function(event)
 			enemyUnitGroup[i]:addEventListener('touch', enemyUnitGroup[i].createCrosshair)
 		end
 	end
+	--Convert Money Left Over to Score
+	Score.addtoScore(math.ceil(wallet*1.5));
+	wallet = 0;
 end
 
 UI.menuUI = function(event)
@@ -321,15 +324,20 @@ end
 
 UI.hit = function(event)
 	local threshold = 1;
-	if (event.other).weapon ~= nil then
+	if (event.other).power ~= nil then
 		if event.force >= threshold then
-			(event.target).currentHP = (event.target).currentHP - math.ceil((event.force*(event.other).weapon));
+			local damage = math.ceil((event.force*(event.other).power));
+			(event.target).currentHP = (event.target).currentHP - damage;
+			Score.addtoScore(damage);
 			print((event.target).currentHP)
 			local h = (event.target).currentHP; local m = (event.target).maxHP;
 			if h < 0 then h = 0; end
 			local p = math.ceil(4*(h/m));
 			(event.target).alpha = (p/4)
 			if (event.target).currentHP <= 0 then
+				if (event.target).cost ~= nil then
+					Score.addtoScore(math.ceil((event.target).cost * 1.5));
+				end
 				(event.target):removeSelf()
 			end
 		end

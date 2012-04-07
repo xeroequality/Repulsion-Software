@@ -141,12 +141,16 @@ Unit.cannon = {
 				clickedUnit.projectile = display.newImage(clickedUnit.img_projectile)
 				clickedUnit.projectile:scale(clickedUnit.scaleX,clickedUnit.scaleY)
 				clickedUnit.cballExists = true
-				--[[for i=1,unitGroup.numChildren do
-					unitGroup[i]:removeEventListener('touch', unitGroup[i].createCrosshair)
+				for i=1,unitGroup.numChildren do
+					if unitGroup[i].createCrosshair ~= nil then
+						unitGroup[i]:removeEventListener('touch', unitGroup[i].createCrosshair)
+					end
 				end
 				for i=1,enemyUnitGroup.numChildren do
-					enemyUnitGroup[i]:removeEventListener('touch', enemyUnitGroup[i].createCrosshair)
-				end--]]
+					if enemyUnitGroup[i].createCrosshair ~= nil then
+						enemyUnitGroup[i]:removeEventListener('touch', enemyUnitGroup[i].createCrosshair)
+					end
+				end
 
 				-- move the image
 				--print('Parallax.incX' .. Parallax.incX)
@@ -191,10 +195,14 @@ Unit.cannon = {
 			clickedUnit.cballExists = false
 			print('ball deleted')
 			for i=1,unitGroup.numChildren do
-				unitGroup[i]:addEventListener('touch', unitGroup[i].createCrosshair)
+				if unitGroup[i].createCrosshair ~= nil then
+					unitGroup[i]:addEventListener('touch', unitGroup[i].createCrosshair)
+				end
 			end
 			for i=1,enemyUnitGroup.numChildren do
-				enemyUnitGroup[i]:addEventListener('touch', enemyUnitGroup[i].createCrosshair)
+				if enemyUnitGroup[i].createCrosshair ~= nil then
+					enemyUnitGroup[i]:addEventListener('touch', enemyUnitGroup[i].createCrosshair)
+				end
 			end
 		end
 	end,
@@ -231,6 +239,8 @@ Unit.clone = function(id)
 		obj.img_dmg=cloner.img_dmg
 		obj.img_base_dmg=cloner.img_base_dmg
 		obj.id = id
+		local t = obj.img_base
+		t.id = id
 		unitObjGroup.img_projectile=cloner.img_projectile
 		unitObjGroup.sfx=cloner.sfx
 		obj.rotation=cloner.rotation

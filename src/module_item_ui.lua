@@ -254,14 +254,18 @@ UI.playUI = function(event)
 	rotate_button = nil;
 	showCrosshair = false 										-- helps ensure that only one crosshair appears
 	for i=1,unitGroup.numChildren do
-		print('unitGroup: ' .. unitGroup[i].id)
+		--print('unitGroup: ' .. unitGroup[i].id)
 		unitGroup[i]:removeEventListener("touch",UI.dragItem)
-		unitGroup[i]:addEventListener('touch', unitGroup[i].createCrosshair)
+		if unitGroup[i].createCrosshair ~= nil then
+			unitGroup[i]:addEventListener('touch', unitGroup[i].createCrosshair)
+		end
 	end
 	for i=1,enemyUnitGroup.numChildren do
-		print('unitGroup: ' .. enemyUnitGroup[i].id)
+		--print('unitGroup: ' .. enemyUnitGroup[i].id)
 		enemyUnitGroup[i]:removeEventListener("touch",UI.dragItem)
-		enemyUnitGroup[i]:addEventListener('touch', enemyUnitGroup[i].createCrosshair)
+		if enemyUnitGroup[i].createCrosshair ~= nil then
+			enemyUnitGroup[i]:addEventListener('touch', enemyUnitGroup[i].createCrosshair)
+		end
 	end
 end
 

@@ -12,6 +12,7 @@ local Pause				= require( "pause_overlay" )
 local MenuSettings 		= require( "settings" )
 local ItemUI		    = require( "module_item_ui" )
 	  Score				= require( "scoring" )
+      Achievements		= require( "achievements" )
 local scene 	 		= storyboard.newScene()
 
 widget.setTheme("theme_ios")	

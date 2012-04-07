@@ -262,6 +262,8 @@ function scene:enterScene( event )
 		overwriteBtn:addEventListener("touch",save);
 		loadCBtn:addEventListener("touch",load);
 		
+		
+		
 		--Focus HP
 		local HPText = display.newText("",0,0,native.systemFont,32);
 		HPText:scale(0.5,0.5)
@@ -275,7 +277,8 @@ function scene:enterScene( event )
 			end
 		end
 		Runtime:addEventListener("enterFrame",showHP);
-
+		
+        ----COLLISION function in module_item.ui.lua file now-------------
 		
 		local MONEY = display.newText("You Have $"..wallet,0,0,native.systemFont,12);
 		MONEY.x = display.contentWidth/2+60; MONEY.y = 15;
@@ -287,23 +290,7 @@ function scene:enterScene( event )
 		end
 		Runtime:addEventListener("enterFrame",updateMONEY)
 		
-		--Collision
-		local threshold = 1;
-		hit = function(event)
-			if (event.other).weapon ~= nil then
-				if event.force >= threshold then
-					(event.target).currentHP = (event.target).currentHP - math.ceil((event.force*(event.other).weapon));
-					print((event.target).currentHP)
-					local h = (event.target).currentHP; local m = (event.target).maxHP;
-					if h < 0 then h = 0; end
-					local p = math.ceil(4*(h/m));
-					(event.target).alpha = (p/4)
-					if (event.target).currentHP <= 0 then
-						(event.target):removeSelf()
-					end
-				end
-			end
-		end
+		
 		
 		-- In future levels, the ONLY thing that needs to change is the first line:
 		local objGroup = Enemy.loadBase(Enemy.level1)

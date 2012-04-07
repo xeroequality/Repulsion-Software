@@ -141,12 +141,12 @@ Unit.cannon = {
 				clickedUnit.projectile = display.newImage(clickedUnit.img_projectile)
 				clickedUnit.projectile:scale(clickedUnit.scaleX,clickedUnit.scaleY)
 				clickedUnit.cballExists = true
-				for i=1,unitGroup.numChildren do
+				--[[for i=1,unitGroup.numChildren do
 					unitGroup[i]:removeEventListener('touch', unitGroup[i].createCrosshair)
 				end
 				for i=1,enemyUnitGroup.numChildren do
 					enemyUnitGroup[i]:removeEventListener('touch', enemyUnitGroup[i].createCrosshair)
-				end
+				end--]]
 
 				-- move the image
 				--print('Parallax.incX' .. Parallax.incX)

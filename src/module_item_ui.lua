@@ -86,6 +86,14 @@ UI.dragItem = function(event)
 				target:removeSelf()
 				return true
 			end
+			--Check If Object is in the Vicinity of the Rotate Button
+			rotate_button.alpha = 1;
+			if target.x >= (rotate_button.x-30) and target.x <= (rotate_button.x+30) then
+				if target.y >= (rotate_button.y-30) and target.y <= (rotate_button.y+30) then
+					target:rotate(1)
+					rotate_button.alpha = 0.25;
+				end
+			end
 		elseif phase == "ended" or phase == "cancelled" then
 			-- If it doesn't already have a bodyType, then add it to physics
 			-- If it does, set it's body type to dynamic
@@ -105,6 +113,7 @@ UI.dragItem = function(event)
 			display.getCurrentStage():setFocus(nil)
 			target.isFocus = false
 			--target:removeEventListener(dragItem)
+			rotate_button.alpha = 1;
 		end
 	end
 	end

@@ -249,9 +249,9 @@ UI.playUI = function(event)
 	slideBtn:removeSelf()
 	--make it so that we cannot access it again?
 	--delete it!
-	-- for i=1,materialGroup.numChildren do
-		-- materialGroup[i]:removeEventListener("touch",UI.dragItem)
-	-- end
+	for i=1,materialGroup.numChildren do
+		materialGroup[i]:removeEventListener("touch",UI.dragItem)
+	end
 	print('clicked play')
 	transitionStash.newTransition = transition.to(menu_button, {time=500, x=-10} )
 	scrollView.destroy()
@@ -263,14 +263,14 @@ UI.playUI = function(event)
 	rotate_button = nil;
 	showCrosshair = false 										-- helps ensure that only one crosshair appears
 	for i=1,unitGroup.numChildren do
-		--print('unitGroup: ' .. unitGroup[i].id)
+		print('unitGroup: ' .. unitGroup[i].id)
 		unitGroup[i]:removeEventListener("touch",UI.dragItem)
 		if unitGroup[i].createCrosshair ~= nil then
 			unitGroup[i]:addEventListener('touch', unitGroup[i].createCrosshair)
 		end
 	end
 	for i=1,enemyUnitGroup.numChildren do
-		--print('unitGroup: ' .. enemyUnitGroup[i].id)
+		print('unitGroup: ' .. enemyUnitGroup[i].id)
 		enemyUnitGroup[i]:removeEventListener("touch",UI.dragItem)
 		if enemyUnitGroup[i].createCrosshair ~= nil then
 			enemyUnitGroup[i]:addEventListener('touch', enemyUnitGroup[i].createCrosshair)

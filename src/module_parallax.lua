@@ -35,8 +35,16 @@ local Parallax = {
 		left = 0,
 		bottom = 0,
 		speed = 0
-	}
+
+	},
+	myScene = nil;
 }
+
+local currentView = {
+			x = 0,
+			y = 0		
+		}
+
 local function levelScene( params )
 
 		Parallax.group = params.group or nil
@@ -77,6 +85,7 @@ local function levelScene( params )
 			repeated = Parallax.repeated,
 			group = Parallax.group
 		} )
+		Parallax.myScene = myScene;
 		local fg = Parallax.foreground
 		local mg = Parallax.midground
 		local bg = Parallax.background
@@ -112,15 +121,19 @@ local function levelScene( params )
 		} )
 
 		------------------------------------------------
-		-- Functions
+		-- Move & Shift Functions
 		-----------------------------------------------
 
 		--Shift the Scene
-		local incX = 0;					-- Amount X is incrimented
-		local currentX, currentY = 0; 	-- Bottom Right = (0,0)
-		local trans = nil				-- Screen post-touch move
+		incX = 0;					-- Amount X is incrimented
+		currentX = 0;
+		currentY = 0; 				-- Bottom Right = (0,0)
+		trans = nil					-- Screen post-touch move
 		
 		local shiftScene = function(event)
+			-- Pause Physics and any Collisions
+			physics.pause();
+			
 			-- Record movement of Screen by user
 			if event.phase == "began" then
 				incX = event.x;
@@ -128,44 +141,77 @@ local function levelScene( params )
 					transition.cancel(trans)
 					trans = nil
 				end
-			end
+
+			else
 			
-			-- Set Input Conditions for Screen Movement
-			if ((event.x - incX ~= 0) and (event.x - incX < 50) and  (event.x - incX > -50)) then
-			-- Check if new screen location is within bounds
-				newX = currentX - (event.x - incX);
-				if newX >= 0 and newX <= Parallax.width then
-					currentX = newX;
-					-- Move all children by incX
-					for i=1,params.group.numChildren do
-						local child = params.group[i];
-						if child.movy == nil then
+				-- Set Input Conditions for Screen Movement
+				if ((event.x - incX ~= 0) and (event.x - incX < 50) and  (event.x - incX > -50)) then
+				-- Check if new screen location is within bounds
+					newX = currentX - (event.x - incX);
+					if newX >= 0 and newX <= Parallax.width then
+						currentX = newX;
+						-- Move all children by incX
+						for i=1,params.group.numChildren do
+							local child = params.group[i];
+
 							child.x = child.x + (event.x-incX)
 						end
-					end
 
-					-- Move Parallax
-					myScene.xPrev = incX;
-					myScene:move(event.x - myScene.xPrev, 0)
-					myScene.xPrev = event.x
-				end					
+
+						-- Move Parallax
+						myScene.xPrev = incX;
+						myScene:move(event.x - myScene.xPrev, 0)
+						myScene.xPrev = event.x
+
+					end					
+				end
 			end
 			-- Set new incX
 			incX = event.x
-			--print(currentX)
-			--[[
-			if event.phase == "ended" or "cancelled" then
-				if currentX <= Parallax.width/2 then
-					trans = transition.to(myScene, {x})
-				else
-					trans = transition.to(myScene, {x})
-				end
-			end
-			]]
+
+
+
+
+
+
+
+
+
+
+			
+			-- Update the CurrentView
+			currentView.x = currentX;
+			currentView.y = currentY;
+			
+			physics.start();
 		end
 
-		myScene:addEventListener("touch", shiftScene)
+		local simulatedTouchEvent = nil;
+		local move_abs = function(abs_x, abs_y, phase)
+			-- Simulate Touch Start
+			simulatedTouchEvent = {
+				name = "touch",
+				target = "myScene",
+				x = -abs_x,
+				y = -abs_y,
+				xStart = -currentX,
+				yStart = -currentY,
+				phase = phase
+			}
+			
+			if (phase == "began") then
+				simulatedTouchEvent.x = -currentX;
+				simulatedTouchEvent.y = -currentY;
+			end
+			
+			Parallax.myScene:dispatchEvent(simulatedTouchEvent);
+		end
+		
+		Parallax.move_abs = move_abs;
+		Parallax.myScene:addEventListener("touch", shiftScene)
 end
-Parallax.levelScene = levelScene
 
+
+Parallax.levelScene = levelScene
+Parallax.currentView = currentView
 return Parallax

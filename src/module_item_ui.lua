@@ -136,11 +136,11 @@ UI.pickItem = function(event)
 			if target.id < 1000 then
 				newObj = Materials.clone(target.id)
 				materialGroup:insert(newObj)
-				materialGroup = Pause.bringMenutoFront(materialGroup);
+				Pause.bringMenutoFront(materialGroup);
 			elseif target.id >= 1000 then
 				newObj = Units.clone(target.id)
 				unitGroup:insert(newObj)
-				unitGroup = Pause.bringMenutoFront(unitGroup);
+				Pause.bringMenutoFront(unitGroup);
 			else
 				print("null target")
 				return true
@@ -166,8 +166,8 @@ UI.pickItem = function(event)
 				newObj.angularVelocity = 0
 			end
 			local Pause = require("pause_overlay")
-			materialGroup = Pause.bringMenutoFront(materialGroup);
-			unitGroup = Pause.bringMenutoFront(unitGroup)
+			Pause.bringMenutoFront(materialGroup);
+			Pause.bringMenutoFront(unitGroup)
 			UI.focus = newObj;
 		else
 			print("not enough money!")
@@ -288,8 +288,8 @@ UI.menuUI = function(event)
 			overlay_activity = true;
 			overlay = true;
 			local Pause = require("pause_overlay")
-			materialGroup = Pause.bringMenutoFront(materialGroup)
-			unitGroup = Pause.bringMenutoFront(unitGroup)
+			Pause.bringMenutoFront(materialGroup)
+			Pause.bringMenutoFront(unitGroup)
 		end
 	end
 end
@@ -346,6 +346,10 @@ UI.hit = function(event)
 			if (event.target).currentHP <= 0 then
 				if (event.target).cost ~= nil then
 					Score.addtoScore(math.ceil((event.target).cost * 1.5));
+					if (event.target).id >= 1000 then
+						--Give Bonus Points for Destroying an Enemy Unit
+						Score.addtoScore(2500)
+					end
 				end
 				(event.target):removeSelf()
 			end

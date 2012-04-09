@@ -471,6 +471,7 @@ pauseMenu.createOverlay = function(group)
 end
 
 pauseMenu.bringMenutoFront = function(group)
+	--[[
 	group:insert(overlayshade)
 	group:insert(overlayrect)
 	group:insert(backBtn)
@@ -487,7 +488,23 @@ pauseMenu.bringMenutoFront = function(group)
 	for k = 1, 20 do
 		group:insert(slots[k]);
 	end
-	return group;
+	return group;--]]
+	overlayshade:toFront()
+	overlayrect:toFront()
+	backBtn:toFront()
+	pauseText:toFront()
+	restartBtn:toFront()
+	exitBtn:toFront()
+	loadBtn:toFront()
+	saveBtn:toFront()
+	backMainBtn:toFront()
+	overwriteBtn:toFront()
+	settingsBtn:toFront()
+	loadCBtn:toFront()
+	menuText:toFront()
+	for k = 1, 20 do
+		slots[k]:toFront();
+	end
 end
 
 pauseMenu.nilEverything = function()

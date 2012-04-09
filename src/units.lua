@@ -220,7 +220,6 @@ Unit.cannon = {
 			else
 				-- Move View Back to User's Base				
 				for i = Parallax.currentView.x, 0, -1 do
-					print(Parallax.currentView.x);
 					Parallax.move_abs(Parallax.currentView.x + ((i - Parallax.currentView.x) * 0.01), 0, "moved");
 				end
 				

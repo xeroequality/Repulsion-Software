@@ -3,6 +3,8 @@
 -- Contains all parameters of unit objects in game.
 ----------------------------------------------------------
 local physics = require("physics")
+local Parallax			= require( "module_parallax" )
+
 
 
 local Flr = {
@@ -209,17 +211,30 @@ Unit.cannon = {
 		end
 	end,
 	 removeballBeyondFloor = function()
-		 if( clickedUnit.projectile) then
-			if( clickedUnit.projectile.x < Flr.lft or clickedUnit.projectile.x > Flr.lft + Flr.wdth) then
+	
+		-- Is ball entity there and still in-bounds?
+			if(clickedUnit.projectile.x ~= nil or clickedUnit.projectile.y ~= nil) and (not (clickedUnit.projectile.x < Flr.lft or clickedUnit.projectile.x > Flr.lft + Flr.wdth)) then	
+				-- Follow the Projectile while moving
+				Parallax.move_abs(math.round(Parallax.currentView.x + ((clickedUnit.projectile.x - Parallax.currentView.x) * 0.1)), math.round(Parallax.currentView.y + ((clickedUnit.projectile.y - Parallax.currentView.y) * 0.1)), "moved");
+
+			else
+				-- Move View Back to User's Base				
+				for i = Parallax.currentView.x, 0, -0.1 do
+					print(Parallax.currentView.x);
+					Parallax.move_abs(Parallax.currentView.x + ((i - Parallax.currentView.x) * 0.01), 0, "moved");
+				end
+				
+				-- End Touch Simulation and Remove Handler
+				Parallax.move_abs(math.round(Parallax.currentView.x), math.round(Parallax.currentView.y), "ended");
+				
+				-- Remove Simulation Handle				
 				Runtime:removeEventListener('enterFrame', clickedUnit.removeballBeyondFloor)
-				print('deleting the ball...2')
-				clickedUnit.deleteBall()
-			end      
-		end
+				print('Ball went out of bounds. Deleting...')
+				clickedUnit.deleteBall()				
+			end
 	end,
 	removeballOnCollision = function()
 		clickedUnit.projectile:removeEventListener('collision', clickedUnit.removeballOnCollision)  -- makes it so it only activates on the first collision
-		Runtime:removeEventListener('enterFrame', clickedUnit.removeballBeyondFloor)
 		print('deleting the ball')
 		timerStash.newTimer = timer.performWithDelay(5000, clickedUnit.deleteBall, 1)
 	end

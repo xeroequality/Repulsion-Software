@@ -136,11 +136,11 @@ UI.pickItem = function(event)
 			if target.id < 1000 then
 				newObj = Materials.clone(target.id)
 				materialGroup:insert(newObj)
-				materialGroup = Pause.bringMenutoFront(materialGroup);
+				-- materialGroup = Pause.bringMenutoFront(materialGroup);
 			elseif target.id >= 1000 then
 				newObj = Units.clone(target.id)
 				unitGroup:insert(newObj)
-				unitGroup = Pause.bringMenutoFront(unitGroup);
+				-- unitGroup = Pause.bringMenutoFront(unitGroup);
 			else
 				print("null target")
 				return true
@@ -165,9 +165,9 @@ UI.pickItem = function(event)
 				newObj:setLinearVelocity(0,0)
 				newObj.angularVelocity = 0
 			end
-			local Pause = require("pause_overlay")
-			materialGroup = Pause.bringMenutoFront(materialGroup);
-			unitGroup = Pause.bringMenutoFront(unitGroup)
+			-- local Pause = require("pause_overlay")
+			-- materialGroup = Pause.bringMenutoFront(materialGroup);
+			-- unitGroup = Pause.bringMenutoFront(unitGroup)
 			UI.focus = newObj;
 		else
 			print("not enough money!")
@@ -249,9 +249,9 @@ UI.playUI = function(event)
 	slideBtn:removeSelf()
 	--make it so that we cannot access it again?
 	--delete it!
-	-- for i=1,materialGroup.numChildren do
-		-- materialGroup[i]:removeEventListener("touch",UI.dragItem)
-	-- end
+	for i=1,materialGroup.numChildren do
+		materialGroup[i]:removeEventListener("touch",UI.dragItem)
+	end
 	print('clicked play')
 	transitionStash.newTransition = transition.to(menu_button, {time=500, x=-10} )
 	scrollView.destroy()
@@ -263,14 +263,14 @@ UI.playUI = function(event)
 	rotate_button = nil;
 	showCrosshair = false 										-- helps ensure that only one crosshair appears
 	for i=1,unitGroup.numChildren do
-		--print('unitGroup: ' .. unitGroup[i].id)
+		print('unitGroup: ' .. unitGroup[i].id)
 		unitGroup[i]:removeEventListener("touch",UI.dragItem)
 		if unitGroup[i].createCrosshair ~= nil then
 			unitGroup[i]:addEventListener('touch', unitGroup[i].createCrosshair)
 		end
 	end
 	for i=1,enemyUnitGroup.numChildren do
-		--print('unitGroup: ' .. enemyUnitGroup[i].id)
+		print('unitGroup: ' .. enemyUnitGroup[i].id)
 		enemyUnitGroup[i]:removeEventListener("touch",UI.dragItem)
 		if enemyUnitGroup[i].createCrosshair ~= nil then
 			enemyUnitGroup[i]:addEventListener('touch', enemyUnitGroup[i].createCrosshair)
@@ -287,9 +287,9 @@ UI.menuUI = function(event)
 		if overlay == false and overlay_activity == false then --Put Up the Overlay
 			overlay_activity = true;
 			overlay = true;
-			local Pause = require("pause_overlay")
-			materialGroup = Pause.bringMenutoFront(materialGroup)
-			unitGroup = Pause.bringMenutoFront(unitGroup)
+			-- local Pause = require("pause_overlay")
+			-- materialGroup = Pause.bringMenutoFront(materialGroup)
+			-- unitGroup = Pause.bringMenutoFront(unitGroup)
 		end
 	end
 end

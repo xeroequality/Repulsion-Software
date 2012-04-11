@@ -1,0 +1,35 @@
+Format:
+Startr
+Type
+X
+Y
+Rotate
+Endr
+
+Start
+Wood Plank
+0
+-37
+90
+End
+
+Start
+Wood Plank
+74
+-37
+90
+End
+
+Start
+Wood Box
+37
+-111
+0
+End
+
+Start
+Wood Box
+37
+-185
+0
+End

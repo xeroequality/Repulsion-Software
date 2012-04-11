@@ -1,0 +1,13 @@
+-- KatAstrophy! only supports 'landscapeRight' at the moment
+
+settings = {
+
+	orientation = {
+		default = "landscapeRight",
+		supported = { "landscapeRight", }
+	},
+
+	androidPermissions = {
+		"android.permission.INTERNET",
+	},
+}

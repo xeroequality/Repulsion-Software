@@ -3,6 +3,7 @@ local levels = require( "levelinfo" )
 local widget = require( "widget" )
 local scene = storyboard.newScene()
 
+
 local monitorMem = function()
 
     collectgarbage()
@@ -38,6 +39,9 @@ end
 
 function scene:enterScene( event )
         local group = self.view
+
+	
+		
 		
 		local W = display.contentWidth
 		local H = display.contentHeight
@@ -58,6 +62,8 @@ function scene:enterScene( event )
 			wallet = nil						-- Level Info: Wallet
 		}
 		
+		--chooseOptions(overlayVars.chapter);
+		
 		openOverlay = function(event)
 			if not overlayVars.isOpen then
 				print("opening overlay")
@@ -70,18 +76,23 @@ function scene:enterScene( event )
 				group:insert(overlayVars.overlay)
 				-- Determine which information to show based on button pressed
 				local buttonPressed = event.target.level
-				local levelInfo
-				if buttonPressed == 1 then
-					levelInfo = levels.level1
-				elseif buttonPressed == 2 then
-					levelInfo = levels.level2
-				elseif buttonPressed == 3 then
-					levelInfo = levels.level3
-				elseif buttonPressed == 4 then
-					levelInfo = levels.level4
-				elseif buttonPressed == 5 then
-					levelInfo = levels.level5
-				end
+				
+				local levelInfo = levels[overlayVars.chapter][buttonPressed]
+				--print(levels[1][1].title);
+				
+				--[[local levelInfo = "levels.ch".. overlayVars.chapter .."level"..buttonPressed--]]
+					--[[if buttonPressed == 1 then
+						levelInfo = levels.ch1level1
+					elseif buttonPressed == 2 then
+						levelInfo = levels.ch1level2
+					elseif buttonPressed == 3 then
+						levelInfo = levels.ch1level3
+					elseif buttonPressed == 4 then
+						levelInfo = levels.ch1level4
+					elseif buttonPressed == 5 then
+						levelInfo = levels.ch1level5
+					end--]]
+					
 				-- Function to add objects to overlay
 				local function buildOverlay(event)
 					print("overlay opened")
@@ -97,13 +108,15 @@ function scene:enterScene( event )
 					overlayVars.closeBtn.view.y=overlayVars.overlay.y-overlayVars.overlay.height/2+25
 					-- Play Level Button
 					overlayVars.playBtn = widget.newButton{
-						id="sp_aliens_ch1_level"..buttonPressed,
+						--id="sp_aliens_ch1_level"..buttonPressed,
+						id="sp_aliens_ch"..overlayVars.chapter.."_level"..buttonPressed,
 						default="../images/background_GO.png",
 						over="../images/background_GOWhite.png",
 						width=140,
 						height=87,
 						onRelease=onBtnRelease
 					}
+					
 					overlayVars.playBtn.view.x=overlayVars.overlay.x+overlayVars.overlay.width/4+offset
 					overlayVars.playBtn.view.y=overlayVars.overlay.y+overlayVars.overlay.height/4+offset
 					-- Title

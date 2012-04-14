@@ -452,6 +452,10 @@ function scene:exitScene( event )
 		
 	if (scrollView ~= nil) then scrollView.destroy(); scrollView = nil end
 	if (rotate_button ~= nil) then rotate_button:removeSelf(); rotate_button = nil end
+	if (menu_button ~= nil) then menu_button:removeSelf(); menu_button = nil end
+	if (play_button ~= nil) then play_button:removeSelf(); play_button = nil end
+	if (slideBtn ~= nil) then slideBtn:removeSelf(); slideBtn = nil end
+	
 	print("ExitScene Finished")
 end
  

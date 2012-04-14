@@ -35,13 +35,6 @@ local function restart(event)
 	return true	-- indicates successful touch
 
 end
-local function exitNOW(event)
-	local label = "menu_sp_aliens_levelselect"
-	print("released button " .. label)
-	storyboard.gotoScene( label, "fade", 200)
-	return true	-- indicates successful touch
-
-end
  
 -- Called when the scene's view does not exist:
 function scene:createScene( event )
@@ -117,7 +110,6 @@ function scene:enterScene( event )
         local music_bg = audio.loadStream("../sound/Bounty 30.ogg")
         audio.fadeOut(prev_music, { time=5000 })
         --o_play = audio.play(music_bg, {channel=3,fadein=5000 } )
-		local slideBtn
 		--------------------
 		-- Material Objects
 		--------------------
@@ -213,7 +205,7 @@ function scene:enterScene( event )
 		--------------------------------------------
 		--             STATIC MENUS               --
 		--------------------------------------------
-		local static_menu = display.newGroup()
+		--local static_menu = display.newGroup()
 		
 		local function restart_level(event)
 			if event.phase == "ended" and restartBtn.alpha > 0 then
@@ -222,8 +214,10 @@ function scene:enterScene( event )
 		end
 		local function exit_level(event)
 			if event.phase == "ended" and exitBtn.alpha > 0 then
-				scrollView.destroy()
-				exitNOW()
+				-- Notify consle we're leaving, then leave...
+				print("Exiting Level...")
+				storyboard.gotoScene("loading_exitLevel", "fade", 500)
+				return true	-- indicates successful touch
 			end
 		end
 		
@@ -455,6 +449,10 @@ function scene:exitScene( event )
 	 transitionStash = nil
 	 transitionStash = {}
 		
+		
+	if (scrollView ~= nil) then scrollView.destroy(); scrollView = nil end
+	if (rotate_button ~= nil) then rotate_button:removeSelf(); rotate_button = nil end
+	print("ExitScene Finished")
 end
  
  
@@ -465,18 +463,7 @@ function scene:destroyScene( event )
         -----------------------------------------------------------------------------
         --      INSERT code here (e.g. remove listeners, widgets, save state, etc.)
         -----------------------------------------------------------------------------
-		if slideBtn then
-			slideBtn:removeSelf()
-			slideBtn = nil
-		end
-		if scrollView then
-			scrollView.destroy();
-			scrollView = nil
-		end
-		if rotate_button then
-			rotate_button:removeSelf();
-			rotate_button = nil;
-		end
+
         
 end
  

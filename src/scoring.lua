@@ -17,6 +17,7 @@ end
 --Add (or Subtract) from the Score
 score.addtoScore = function(s)
 	score.CurrentScore = score.CurrentScore + s;
+	Achievements.update("totalScore",s);
 end
 
 return score;

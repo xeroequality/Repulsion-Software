@@ -18,16 +18,19 @@ pauseMenu.switchTo = function(event)
 				backMainBtn.alpha = 1;
 				loadCBtn.alpha = 1;
 				menuText.alpha = 0;
+				local total = 0;
 				for k = 1, 10 do
 					local path = system.pathForFile( "", system.ResourceDirectory )
 					local path = system.pathForFile( "", system.ResourceDirectory )
 					local f = io.open( path.."slot"..k..".lua", "r" )
 					if f ~= nil then
 						slots[k].alpha = 1;
+						total = total + 1;
 					else
 						slots[k+10].alpha = 1;
 					end
 				end
+				Achievements.replace("slotsUsed",total);
 				overlay_section = "Load";
 				showInfo = false;
 			end
@@ -43,16 +46,19 @@ pauseMenu.switchTo = function(event)
 				backMainBtn.alpha = 1;
 				overwriteBtn.alpha = 1;
 				menuText.alpha = 0;
+				local total = 0;
 				for k = 1, 10 do
 					local path = system.pathForFile( "", system.ResourceDirectory )
 					local path = system.pathForFile( "", system.ResourceDirectory )
 					local f = io.open( path.."slot"..k..".lua", "r" )
 					if f ~= nil then
 						slots[k].alpha = 1;
+						total = total + 1;
 					else
 						slots[k+10].alpha = 1;
 					end
 				end
+				Achievements.replace("slotsUsed",total);
 				overlay_section = "Save";
 				showInfo = false;
 			end

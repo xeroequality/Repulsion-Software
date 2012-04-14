@@ -127,6 +127,9 @@ save_and_load.save = function(slot,overlay_section)
 			successTime = maxSuccessTime;
 			successText:setTextColor(0,255,0);
 			timer.performWithDelay(3000,deleteText,1);
+			
+			--Update Achievements with Saved Structures
+			Achievements.update("savedStructures",1);
 		end
 	end
 end
@@ -194,6 +197,9 @@ save_and_load.load = function(slot,levelWallet)
 			successTime = maxSuccessTime;
 			successText:setTextColor(0,255,0);
 			timer.performWithDelay(3000,deleteText,1);
+			
+			--Update Achievements with Loaded Structures
+			Achievements.update("loadedStructures",1);
 		else
 			local successText = display.newText("",50,10,native.systemFont,20);
 			local function deleteText()

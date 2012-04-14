@@ -137,16 +137,25 @@ UI.pickItem = function(event)
 				newObj = Materials.clone(target.id)
 				materialGroup:insert(newObj)
 				Pause.bringMenutoFront(materialGroup);
+				--Update Achievements with Weapons Bought
+				Achievements.update("weaponsBought",1);
 			elseif target.id >= 1000 then
 				newObj = Units.clone(target.id)
 				unitGroup:insert(newObj)
 				Pause.bringMenutoFront(unitGroup);
+				--Update Achievements with Materials Bought
+				Achievements.update("materialsBought",1);
 			else
 				print("null target")
 				return true
 			end
 			
+			--Update Achievements with Total Objects Bought
+			Achievements.update("objectsBought",1);
+			
 			wallet = wallet - newObj.cost
+			--Update Achievements in Total Spent
+			Achievements.update("totalSpent",newObj.cost);
 			newObj.x = event.x
 			newObj.y = event.y
 			newObj.id = target.id
@@ -278,6 +287,13 @@ UI.playUI = function(event)
 	end
 	--Convert Money Left Over to Score
 	Score.addtoScore(math.ceil(wallet*1.5));
+	--Figure Percentage
+	local pert = (wallet/levelWallet)*100;
+	if pert > Achievements.getValue("maxPercentageofMoneyKept") then
+		Achievements.replace("maxPercentageofMoneyKept",pert);
+	end
+	
+	print("Achievements Score: "..Achievemets.getValue("totalScore"));
 	wallet = 0;
 end
 
@@ -349,10 +365,18 @@ UI.hit = function(event)
 					if (event.target).id >= 1000 then
 						--Give Bonus Points for Destroying an Enemy Unit
 						Score.addtoScore(2500)
+						--Add Destroyed Weapons to Achievements
+						Achievements.update("weaponsDestroyed",1);
+					else
+						--Add Destroyed Materials to Achievements
+						Achievements.update("materialsDestroyed",1);
 					end
+					--Add Destroyed Objects to Achievements
+					Achievements.update("destroyedObjects",1);
 				end
 				(event.target):removeSelf()
 			end
+			print(Achievements.getValue("totalScore"));
 		end
 	end
 end

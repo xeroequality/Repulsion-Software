@@ -141,7 +141,7 @@ function scene:enterScene( event )
 		physics.addBody(floor, "static", {friction=0.9, bounce=0.05, filter=floorCollisionFilter} )
 		group:insert(floor)
 		
-		local levelWallet = 5000; --The Amount of Money for This Level
+		levelWallet = 5000; --The Amount of Money for This Level
 		wallet = levelWallet; --The Current Amount of Money
 		
 		--------------------------------------------
@@ -324,6 +324,9 @@ function scene:enterScene( event )
 		-- group:insert(projectile)
 		
 		group = Pause.bringMenutoFront(group);
+		
+		--Runtime for Achievement Checking
+		Runtime:addEventListener("enterFrame",Achievements.checkAchievements);
 
 end
 
@@ -342,6 +345,7 @@ function scene:exitScene( event )
 	Runtime:removeEventListener("enterFrame",updateMONEY)
 	Runtime:removeEventListener("enterFrame",updateSCORE);
 	Runtime:removeEventListener("enterFrame",showHP)
+	Runtime:removeEventListener("enterFrame",Achievements.checkAchievements);
 	
 	local num = group.numChildren;
 	while num >= 1 do
@@ -375,6 +379,7 @@ function scene:exitScene( event )
 	background = nil
 	focus = nil
 	wallet = nil
+	levelWallet = nil
 	updateMONEY = nil
 	-- playerGroup = nil
 	materialGroup = nil

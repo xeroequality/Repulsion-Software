@@ -2,6 +2,8 @@
 
 --Format:
 --{Achievement ID, Title, Description, Completed?, Variable, Boolean, Value}
+local img;
+local trophyText;
 Trophies = {
 	totalScore = 0, ---Cumulative Score
 	maxScore = 0, --Highest Score Ever Gotten
@@ -25,7 +27,7 @@ Trophies = {
 	achievementsGained = 0, --Number of Achievements Received
 	parScoreReached = 0, --Number of Levels Where the Par Score was Reached
 	slotsUsed = 0, --Number of Save Slots that are Occupied
-	numOfAchievements = 15, --Update This Number When You Add an Achievements
+	numOfAchievements = 16, --Update This Number When You Add an Achievements
 	currentlyAchieving = false, --Is the Thing Showing the Achievements?
 	
 	--Bool Can be > < = ~= >= <=
@@ -45,7 +47,8 @@ Trophies = {
 		[12] = {ID = 012, Title = "Dominator", Description = "Destroy Over 500 Enemy Materials", Completed = false, Arg = {"destroyedObjects"}, Bool = {">="}, Value = {500}},
 		[13] = {ID = 013, Title = "Cheapskate", Description = "Keep 95% of Your Funds After Build Phase", Completed = false, Arg = {"maxPercentageofMoneyKept"}, Bool = {">="}, Value = {95}},
 		[14] = {ID = 014, Title = "A Winner is You!", Description = "Win 25 Battles", Completed = false, Arg = {"wins"}, Bool = {">="}, Value = {25}},
-		[15] = {ID = 015, Title = "An Achievement Achievement?", Description = "Achieve 7 Achievements", Completed = false, Arg = {"achievementsGained"}, Bool = {">="}, Value = {7}}
+		[15] = {ID = 015, Title = "An Achievement Achievement?", Description = "Achieve 7 Achievements", Completed = false, Arg = {"achievementsGained"}, Bool = {">="}, Value = {7}},
+		[16] = {ID = 016, Title = "One Hit Wonder", Description = "Win a Battle in One Turn", Completed = false, Arg = {"shortestNumofTurns"}, Bool = {"="}, Value = {1}}
 	}
 }
 
@@ -158,10 +161,11 @@ Trophies.checkAchievements = function()
 				
 				--Make the Image
 				img = display.newImage("../images/achievement_template.png");
-				trophyText = display.newText(k[i]["Title"].."\n"..k[i]["Description"].."\nAchievement #: "..k[i]["ID"].."\n"..Trophies.getValue("achievementsGained").."/"..Trophies.getValue("numOfAchievements").." Achievements Completed",30,10,native.systemFont,14);
-				
+				trophyText = display.newText(k[i]["Title"].."\n"..k[i]["Description"].."\nAchievement #: "..k[i]["ID"].."\n"..Trophies.getValue("achievementsGained").."/"..Trophies.getValue("numOfAchievements").." Completed",30,10,150,90,native.systemFont,12);
+
+				img:toFront(); trophyText:toFront();
 				img.x = display.contentWidth-100; img.y = 50;
-				trophyText.x = img.x+30; trophyText.y = 50;
+				trophyText.x = img.x+30; trophyText.y = 55;
 				
 				timerStash.newTimer = timer.performWithDelay(4000,Trophies.destroyImage,1)
 				Trophies["currentlyAchieving"] = true;

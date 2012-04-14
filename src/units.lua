@@ -21,11 +21,12 @@ end
 	
 Unit.cannon = {
 	id=1000,
+	type='projectile',
 	img="../images/cannon_sm.png",
 	img_base="../images/cannon_base_sm.png",
 	img_dmg="../images/cannon_sm.png",
 	img_base_dmg="../images/cannon_base_sm.png",
-	img_projectile="../images/cannonball.png",
+	img_weapon="../images/cannonball.png",
 	img_ui="../images/ui_item_cannon.png",
 	sfx="../sound/Single_cannon_shot.wav",
 	rotation=0,
@@ -62,183 +63,184 @@ Unit.cannon = {
 	objBaseDensity=10,
 	objBaseFriction=0.9,
 	objBaseBounce=0,
-	projectileProperties={
+	weaponProperties={
 		basic=1,
 		fire=1,
 		water=1,
 		explosive=1,
 		electric=1
 	},
-	projectile = display.newImage(""),
-	cballExists=false,
-	projectileRadius = 5,
-	projectileForce = 10,
-	projectileDensity=10,
-	projectileFriction=0.2,
-	projectileBounce=0.05,
-	power = 15, --Power of the Cannon Ball
-	
+	weapon = display.newImage(""),
+	weaponExists=false,
+	weaponRadius = 5,
+	weaponForce = 10,
+	weaponDensity=10,
+	weaponFriction=0.2,
+	weaponBounce=0.05
+}
 	-- Cannon functions below
 
+Unit.weaponSystems = function(event)
+	local clickedUnit = event.target
+	print('unit type: ' .. clickedUnit.type)
 	createCrosshair = function(event) -- creates crosshair when a touch event begins
 		-- creates the crosshair
 		local phase = event.phase
-		clickedUnit = event.target
 		print('clickedUnit.x: ' .. clickedUnit.x .. ' clickedUnit.y: ' .. clickedUnit.y)
 		if (phase == 'began') then
-			if not (clickedUnit.cballExists) then
-				if not (showCrosshair) then										-- helps ensure that only one crosshair appears
-					crosshair = display.newImage( "../images/crosshair.png" )				-- prints crosshair	
-					crosshair.x = display.contentWidth - 300
-					crosshair.y = display.contentHeight - 200
-					showCrosshair = transition.to( crosshair, { alpha=1, xScale=0.5, yScale=0.5, time=200 } )
-					transitionStash.newTransition = showCrosshair;
-					startRotation = function()
-						crosshair.rotation = crosshair.rotation + 4
+			if not (clickedUnit.weaponExists) then
+					if (clickedUnit.type == 'projectile') then
+						if not (showCrosshair) then										-- helps ensure that only one crosshair appears
+							crosshair = display.newImage( "../images/crosshair.png" )				-- prints crosshair	
+							crosshair.x = display.contentWidth - 300
+							crosshair.y = display.contentHeight - 200
+							showCrosshair = transition.to( crosshair, { alpha=1, xScale=0.5, yScale=0.5, time=200 } )
+							transitionStash.newTransition = showCrosshair;
+							startRotation = function()
+							crosshair.rotation = crosshair.rotation + 4
+						end
+						Runtime:addEventListener( "enterFrame", startRotation )
+						crosshair:addEventListener('touch',fire)
 					end
-					Runtime:addEventListener( "enterFrame", startRotation )
-				crosshair:addEventListener('touch',Unit.cannon.fire)
+					-- elseif (clickedUnit.type == 'projectile') then 				-- use this format to call the different weapon type functions
 				end
 			end
 		end
-	end,
+	end
 
 	fire = function( event )
-		clickedUnit.cballExists=false
+		clickedUnit.weaponExists=false
 		local phase = event.phase
-		if "began" == phase then
-			display.getCurrentStage():setFocus( crosshair )
-			crosshair.isFocus = true
-			crosshairLine = nil
-			--cannonLine = nil
-		elseif crosshair.isFocus then
-			if "moved" == phase then
-				
-				if ( crosshairLine ) then
-					crosshairLine.parent:remove( crosshairLine ) -- erase previous line, if any
-				end		
+		if (clickedUnit.type == 'projectile') then
+			if "began" == phase then
+				display.getCurrentStage():setFocus( crosshair )
+				crosshair.isFocus = true
+				crosshairLine = nil
+				--cannonLine = nil
+			elseif crosshair.isFocus then
+				if "moved" == phase then
 					
-				crosshairLine = display.newLine(crosshair.x,crosshair.y, event.x,event.y) -- draws the line from the crosshair
-				local deltaYDivX = (event.y-crosshair.y)/(event.x-crosshair.x)
-				if (event.y-crosshair.y)-(event.x-crosshair.x) == 0 then
-					deltaYDivX = 0
-				end
-				local cannonRotation = (180/math.pi)*math.atan(deltaYDivX) - clickedUnit.rotation -- rotates the cannon based on the trajectory line
-				if (event.x < crosshair.x) then
-					clickedUnit[1].rotation = cannonRotation + 180  -- since arctan goes from -pi/2 to pi/2, this is necessary to make the cannon point backwards
-				else
-					clickedUnit[1].rotation = cannonRotation
-				end
-				crosshairLine:setColor( 0, 255, 0, 200 )
-				crosshairLine.width = 8
-				
-			elseif "ended" == phase or "cancelled" == phase then 						-- have this happen after collision is detected.
-				display.getCurrentStage():setFocus( nil )
-				crosshair.isFocus = false
+					if ( crosshairLine ) then
+						crosshairLine.parent:remove( crosshairLine ) -- erase previous line, if any
+					end		
+						
+					crosshairLine = display.newLine(crosshair.x,crosshair.y, event.x,event.y) -- draws the line from the crosshair
+					local deltaYDivX = (event.y-crosshair.y)/(event.x-crosshair.x)
+					if (event.y-crosshair.y)-(event.x-crosshair.x) == 0 then
+						deltaYDivX = 0
+					end
+					local cannonRotation = (180/math.pi)*math.atan(deltaYDivX) - clickedUnit.rotation -- rotates the cannon based on the trajectory line
+					if (event.x < crosshair.x) then
+						clickedUnit[1].rotation = cannonRotation + 180  -- since arctan goes from -pi/2 to pi/2, this is necessary to make the cannon point backwards
+					else
+						clickedUnit[1].rotation = cannonRotation
+					end
+					crosshairLine:setColor( 0, 255, 0, 200 )
+					crosshairLine.width = 8
 					
-				local stopRotation = function()
-					Runtime:removeEventListener( "enterFrame", startRotation )
-				end
-
-				-- make a new image
-				clickedUnit.projectile = display.newImage(clickedUnit.img_projectile)
-				clickedUnit.projectile.power = 10;
-				clickedUnit.projectile:scale(clickedUnit.scaleX,clickedUnit.scaleY)
-				clickedUnit.cballExists = true
-				for i=1,unitGroup.numChildren do
-					if unitGroup[i].createCrosshair ~= nil then
-						unitGroup[i]:removeEventListener('touch', unitGroup[i].createCrosshair)
+				elseif "ended" == phase or "cancelled" == phase then 						-- have this happen after collision is detected.
+					display.getCurrentStage():setFocus( nil )
+					crosshair.isFocus = false
+						
+					local stopRotation = function()
+						Runtime:removeEventListener( "enterFrame", startRotation )
 					end
-				end
-				for i=1,enemyUnitGroup.numChildren do
-					if enemyUnitGroup[i].createCrosshair ~= nil then
-						enemyUnitGroup[i]:removeEventListener('touch', enemyUnitGroup[i].createCrosshair)
+
+					-- make a new image
+					clickedUnit.weapon = display.newImage(clickedUnit.img_weapon)
+					clickedUnit.weapon:scale(clickedUnit.scaleX,clickedUnit.scaleY)
+					clickedUnit.weaponExists = true
+					for i=1,unitGroup.numChildren do
+						-- if unitGroup[i].createCrosshair ~= nil then
+							unitGroup[i]:removeEventListener('touch', Unit.weaponSystems)
+						-- end
 					end
+					for i=1,enemyUnitGroup.numChildren do
+						-- if enemyUnitGroup[i].createCrosshair ~= nil then
+							enemyUnitGroup[i]:removeEventListener('touch', Unit.weaponSystems)
+						-- end
+					end
+					-- clickedUnit:removeEventListener('touch', createCrosshair)
+					-- move the image
+					--print('Parallax.incX' .. Parallax.incX)
+					clickedUnit.weapon.x = clickedUnit.x
+					clickedUnit.weapon.y = clickedUnit.y
+					unitGroup:insert(clickedUnit.weapon)
+					print('unitGroup: ' .. unitGroup.numChildren)
+
+
+					-- apply physics to the weapon
+					if clickedUnit.x < 500 then
+						print('player unit')
+						local playerweaponCollisionFilter = { categoryBits = 4, maskBits = 5 } 
+						physics.addBody( clickedUnit.weapon, { density=clickedUnit.weaponDensity, friction=clickedUnit.weaponFriction, bounce=clickedUnit.weaponBounce, radius=clickedUnit.weaponRadius, filter=playerweaponCollisionFilter} )
+					else
+						print('enemy unit')
+						local enemyweaponCollisionFilter = { categoryBits = 2, maskBits = 3 } 
+						physics.addBody( clickedUnit.weapon, { density=clickedUnit.weaponDensity, friction=clickedUnit.weaponFriction, bounce=clickedUnit.weaponBounce, radius=clickedUnit.weaponRadius, filter=enemyweaponCollisionFilter} )
+					end
+					clickedUnit.weapon.isBullet = true
+
+					-- fire the weapon            
+					clickedUnit.weapon:applyForce( (event.x - crosshair.x)*Unit.cannon.weaponForce, (event.y - (crosshair.y))*Unit.cannon.weaponForce, clickedUnit.x, clickedUnit.y )
+					weaponSFX = audio.loadSound(clickedUnit.sfx)
+					weaponSFXed = audio.play( weaponSFX,{channel=2} )
+					-- make sure that the cannon is on top of the 
+					transitionStash.newTransition = transition.to( crosshair, { alpha=0, xScale=1.0, yScale=1.0, time=0, onComplete=stopRotation} )
+					showCrosshair = false									-- helps ensure that only one crosshair appears
+					
+					if ( crosshairLine ) then	
+						crosshairLine.parent:remove( crosshairLine ) -- erase previous line, if any
+					end
+					
+					Runtime:addEventListener('enterFrame', removeWeaponBeyondFloor)
+					clickedUnit.weapon:addEventListener('collision', removeWeaponOnCollision)
 				end
-
-				-- move the image
-				--print('Parallax.incX' .. Parallax.incX)
-				clickedUnit.projectile.x = clickedUnit.x
-				clickedUnit.projectile.y = clickedUnit.y
-				unitGroup:insert(clickedUnit.projectile)
-				print('unitGroup: ' .. unitGroup.numChildren)
-
-
-				-- apply physics to the projectile
-				if clickedUnit.x < 500 then
-					print('player unit')
-					local playerProjectileCollisionFilter = { categoryBits = 4, maskBits = 5 } 
-					physics.addBody( clickedUnit.projectile, { density=clickedUnit.projectileDensity, friction=clickedUnit.projectileFriction, bounce=clickedUnit.projectileBounce, radius=clickedUnit.projectileRadius, filter=playerProjectileCollisionFilter} )
-				else
-					print('enemy unit')
-					local enemyProjectileCollisionFilter = { categoryBits = 2, maskBits = 3 } 
-					physics.addBody( clickedUnit.projectile, { density=clickedUnit.projectileDensity, friction=clickedUnit.projectileFriction, bounce=clickedUnit.projectileBounce, radius=clickedUnit.projectileRadius, filter=enemyProjectileCollisionFilter} )
-				end
-				clickedUnit.projectile.isBullet = true
-
-				-- fire the projectile            
-				clickedUnit.projectile:applyForce( (event.x - crosshair.x)*Unit.cannon.projectileForce, (event.y - (crosshair.y))*Unit.cannon.projectileForce, clickedUnit.x, clickedUnit.y )
-				weaponSFX = audio.loadSound(clickedUnit.sfx)
-				weaponSFXed = audio.play( weaponSFX,{channel=2} )
-				-- make sure that the cannon is on top of the 
-				transitionStash.newTransition = transition.to( crosshair, { alpha=0, xScale=1.0, yScale=1.0, time=0, onComplete=stopRotation} )
-				showCrosshair = false									-- helps ensure that only one crosshair appears
-				
-				if ( crosshairLine ) then	
-					crosshairLine.parent:remove( crosshairLine ) -- erase previous line, if any
-				end
-				
-				Runtime:addEventListener('enterFrame', clickedUnit.removeballBeyondFloor)
-				clickedUnit.projectile:addEventListener('collision', clickedUnit.removeballOnCollision)
 			end
 		end
-	end,
-	 deleteBall = function()
-		if (clickedUnit.cballExists) then
-			clickedUnit.projectile:removeSelf()
-			clickedUnit.cballExists = false
+	end
+	 deleteWeapon = function()
+		if (clickedUnit.weaponExists) then
 			print('ball deleted')
 			for i=1,unitGroup.numChildren do
-				if unitGroup[i].createCrosshair ~= nil then
-					unitGroup[i]:addEventListener('touch', unitGroup[i].createCrosshair)
-				end
+					unitGroup[i]:addEventListener('touch', Unit.weaponSystems)
 			end
 			for i=1,enemyUnitGroup.numChildren do
-				if enemyUnitGroup[i].createCrosshair ~= nil then
-					enemyUnitGroup[i]:addEventListener('touch', enemyUnitGroup[i].createCrosshair)
-				end
+					enemyUnitGroup[i]:addEventListener('touch', Unit.weaponSystems)
 			end
+			clickedUnit.weapon:removeSelf()
+			clickedUnit.weaponExists = false
 		end
-	end,
-	 removeballBeyondFloor = function()
-	
+	end
+	 removeWeaponBeyondFloor = function()
 		-- Is ball entity there and still in-bounds?
-			if(clickedUnit.projectile.x ~= nil or clickedUnit.projectile.y ~= nil) and (not (clickedUnit.projectile.x < Flr.lft or clickedUnit.projectile.x > Flr.lft + Flr.wdth)) then	
-				-- Follow the Projectile while moving
-				Parallax.move_abs(math.round(Parallax.currentView.x + ((clickedUnit.projectile.x - Parallax.currentView.x) * 0.1)), math.round(Parallax.currentView.y + ((clickedUnit.projectile.y - Parallax.currentView.y) * 0.1)), "moved");
+			if(clickedUnit.weapon.x ~= nil or clickedUnit.weapon.y ~= nil) then	
+				-- Follow the weapon while moving
+				Parallax.move_abs(math.round(Parallax.currentView.x + ((clickedUnit.weapon.x - Parallax.currentView.x) * 0.1)), math.round(Parallax.currentView.y + ((clickedUnit.weapon.y - Parallax.currentView.y) * 0.1)), "moved");
 
 			else
-				-- Move View Back to User's Base				
-				for i = Parallax.currentView.x, 0, -1 do
-					Parallax.move_abs(Parallax.currentView.x + ((i - Parallax.currentView.x) * 0.01), 0, "moved");
-				end
+				-- -- Move View Back to User's Base				
+				-- for i = Parallax.currentView.x, clickedUnit.x, -1 do
+					-- Parallax.move_abs(Parallax.currentView.x + ((i - Parallax.currentView.x) * 0.01), clickedUnit.x, "moved");
+				-- end
 				
 				-- End Touch Simulation and Remove Handler
 				Parallax.move_abs(math.round(Parallax.currentView.x), math.round(Parallax.currentView.y), "ended");
 				
 				-- Remove Simulation Handle				
-				Runtime:removeEventListener('enterFrame', clickedUnit.removeballBeyondFloor)
-				print('Ball went out of bounds. Deleting...')
-				clickedUnit.deleteBall()				
+				Runtime:removeEventListener('enterFrame', removeWeaponBeyondFloor)
+				if (clickedUnit.weaponExists) then
+					clickedUnit.deleteWeapon()
+				end
 			end
-	end,
-	removeballOnCollision = function()
-		clickedUnit.projectile:removeEventListener('collision', clickedUnit.removeballOnCollision)  -- makes it so it only activates on the first collision
+	end	removeWeaponOnCollision = function()
+		clickedUnit.weapon:removeEventListener('collision', removeWeaponOnCollision)  -- makes it so it only activates on the first collision
 		print('deleting the ball')
-		timerStash.newTimer = timer.performWithDelay(5000, clickedUnit.deleteBall, 1)
+		timerStash.newTimer = timer.performWithDelay(5000, deleteWeapon, 1)
 	end
-
-}
+	print('inside weaponSystems')
+	createCrosshair(event) -- starts the chain reaction for the weapon systems
+end
 
 -- Clone method:
 -- Pass in an id that matches the unit's id,
@@ -251,13 +253,14 @@ Unit.clone = function(id)
 	end
 		obj=display.newImage(cloner.img)
 		unitObjGroup.id=cloner.id
+		unitObjGroup.type=cloner.type
 		obj.img_base = display.newImage(cloner.img_base)
 		obj.img_dmg=cloner.img_dmg
 		obj.img_base_dmg=cloner.img_base_dmg
-		obj.id = id
-		local t = obj.img_base
-		t.id = id
-		unitObjGroup.img_projectile=cloner.img_projectile
+		-- obj.id = id
+		-- local t = obj.img_base
+		-- t.id = id
+		unitObjGroup.img_weapon=cloner.img_weapon
 		unitObjGroup.sfx=cloner.sfx
 		obj.rotation=cloner.rotation
 		obj:translate(cloner.translate.x,cloner.translate.y)
@@ -282,26 +285,27 @@ Unit.clone = function(id)
 		unitObjGroup.objBaseDensity=cloner.objBaseDensity
 		unitObjGroup.objBaseFriction=cloner.objBaseFriction
 		unitObjGroup.objBaseBounce=cloner.objBaseBounce
-		unitObjGroup.projectileProperties={
-			basic=(cloner.projectileProperties).basic,
-			fire=(cloner.projectileProperties).fire,
-			water=(cloner.projectileProperties).water,
-			explosive=(cloner.projectileProperties).explosive,
-			electric=(cloner.projectileProperties).electric
+		unitObjGroup.weaponProperties={
+			basic=(cloner.weaponProperties).basic,
+			fire=(cloner.weaponProperties).fire,
+			water=(cloner.weaponProperties).water,
+			explosive=(cloner.weaponProperties).explosive,
+			electric=(cloner.weaponProperties).electric
 		}
-		unitObjGroup.cballExists=cloner.cballExists
-		unitObjGroup.projectileRadius=cloner.projectileRadius
-		unitObjGroup.projectileForce=cloner.projectileForce
-		unitObjGroup.projectileDensity=cloner.projectileDensity
-		unitObjGroup.projectileFriction=cloner.projectileFriction
-		unitObjGroup.projectileBounce=cloner.projectileBounce
+		unitObjGroup.weaponExists=cloner.weaponExists
+		unitObjGroup.weaponRadius=cloner.weaponRadius
+		unitObjGroup.weaponForce=cloner.weaponForce
+		unitObjGroup.weaponDensity=cloner.weaponDensity
+		unitObjGroup.weaponFriction=cloner.weaponFriction
+		unitObjGroup.weaponBounce=cloner.weaponBounce
 		unitObjGroup:insert(obj)
 		unitObjGroup:insert(obj.img_base)
 		unitObjGroup.createCrosshair=cloner.createCrosshair
 		unitObjGroup.fire=cloner.fire
-		unitObjGroup.deleteBall=cloner.deleteBall
-		unitObjGroup.removeballBeyondFloor=cloner.removeballBeyondFloor
-		unitObjGroup.removeballOnCollision=cloner.removeballOnCollision
+		unitObjGroup.deleteWeapon=cloner.deleteWeapon
+		unitObjGroup.removeWeaponBeyondFloor=cloner.removeWeaponBeyondFloor
+		unitObjGroup.removeWeaponOnCollision=cloner.removeWeaponOnCollision
+		
 		return unitObjGroup
 end
 

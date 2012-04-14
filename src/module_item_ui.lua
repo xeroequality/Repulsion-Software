@@ -1,3 +1,4 @@
+local Units = require("units")
 --Item ScrollView UI
 
 UI = {
@@ -129,20 +130,19 @@ UI.pickItem = function(event)
 	local phase = event.phase
 	local target = event.target
 	local Materials = require("materials");
-	local Units = require("units")
-	local Pause = require("pause_overlay");
+	-- local Pause = require("pause_overlay");
 	if phase == "began" then
 		if wallet >= target.cost then
 			if target.id < 1000 then
 				newObj = Materials.clone(target.id)
 				materialGroup:insert(newObj)
-				Pause.bringMenutoFront(materialGroup);
+				-- Pause.bringMenutoFront(materialGroup);
 				--Update Achievements with Weapons Bought
 				Achievements.update("materialsBought",1);
 			elseif target.id >= 1000 then
 				newObj = Units.clone(target.id)
 				unitGroup:insert(newObj)
-				Pause.bringMenutoFront(unitGroup);
+				-- Pause.bringMenutoFront(unitGroup);
 				--Update Achievements with Materials Bought
 				Achievements.update("weaponsBought",1);
 			else
@@ -174,9 +174,9 @@ UI.pickItem = function(event)
 				newObj:setLinearVelocity(0,0)
 				newObj.angularVelocity = 0
 			end
-			local Pause = require("pause_overlay")
-			Pause.bringMenutoFront(materialGroup);
-			Pause.bringMenutoFront(unitGroup)
+			-- local Pause = require("pause_overlay")
+			-- Pause.bringMenutoFront(materialGroup);
+			-- Pause.bringMenutoFront(unitGroup)
 			UI.focus = newObj;
 		else
 			print("not enough money!")
@@ -270,20 +270,15 @@ UI.playUI = function(event)
 	scrollView = nil
 	play_button = nil
 	rotate_button = nil;
-	showCrosshair = false 										-- helps ensure that only one crosshair appears
 	for i=1,unitGroup.numChildren do
 		print('unitGroup: ' .. unitGroup[i].id)
 		unitGroup[i]:removeEventListener("touch",UI.dragItem)
-		if unitGroup[i].createCrosshair ~= nil then
-			unitGroup[i]:addEventListener('touch', unitGroup[i].createCrosshair)
-		end
+		unitGroup[i]:addEventListener('touch', Units.weaponSystems)
 	end
 	for i=1,enemyUnitGroup.numChildren do
 		print('unitGroup: ' .. enemyUnitGroup[i].id)
 		enemyUnitGroup[i]:removeEventListener("touch",UI.dragItem)
-		if enemyUnitGroup[i].createCrosshair ~= nil then
-			enemyUnitGroup[i]:addEventListener('touch', enemyUnitGroup[i].createCrosshair)
-		end
+		enemyUnitGroup[i]:addEventListener('touch', Units.weaponSystems)
 	end
 	--Convert Money Left Over to Score
 	Score.addtoScore(math.ceil(wallet*1.5));
@@ -303,9 +298,9 @@ UI.menuUI = function(event)
 		if overlay == false and overlay_activity == false then --Put Up the Overlay
 			overlay_activity = true;
 			overlay = true;
-			local Pause = require("pause_overlay")
-			Pause.bringMenutoFront(materialGroup)
-			Pause.bringMenutoFront(unitGroup)
+			-- local Pause = require("pause_overlay")
+			-- Pause.bringMenutoFront(materialGroup)
+			-- Pause.bringMenutoFront(unitGroup)
 		end
 	end
 end

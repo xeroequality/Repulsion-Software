@@ -50,7 +50,7 @@ save_and_load.save = function(slot,overlay_section)
 			--Get the BaseX
 			local basX = 0;
 			local mini = xvals[1];
-			for i = 2, #xvals do
+			for i =2, #xvals do
 				if xvals[i] < mini then mini = xvals[i] end
 			end
 			basX = mini;
@@ -140,7 +140,7 @@ save_and_load.load = function(slot,levelWallet)
 		local Materials = require( "materials" )
 		local Units = require("units")
 		if player.totalCost <= levelWallet then
-			local wallet = levelWallet - player.totalCost;
+			wallet = levelWallet - player.totalCost;
 			--Destroy All Children Objects Before Loading
 			local num = materialGroup.numChildren;
 			while num >= 1 do

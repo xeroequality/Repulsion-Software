@@ -138,13 +138,13 @@ UI.pickItem = function(event)
 				materialGroup:insert(newObj)
 				Pause.bringMenutoFront(materialGroup);
 				--Update Achievements with Weapons Bought
-				Achievements.update("weaponsBought",1);
+				Achievements.update("materialsBought",1);
 			elseif target.id >= 1000 then
 				newObj = Units.clone(target.id)
 				unitGroup:insert(newObj)
 				Pause.bringMenutoFront(unitGroup);
 				--Update Achievements with Materials Bought
-				Achievements.update("materialsBought",1);
+				Achievements.update("weaponsBought",1);
 			else
 				print("null target")
 				return true
@@ -293,7 +293,7 @@ UI.playUI = function(event)
 		Achievements.replace("maxPercentageofMoneyKept",pert);
 	end
 	
-	print("Achievements Score: "..Achievemets.getValue("totalScore"));
+	print("Percentage: "..pert);
 	wallet = 0;
 end
 

@@ -141,7 +141,7 @@ function scene:enterScene( event )
 		physics.addBody(floor, "static", {friction=0.9, bounce=0.05, filter=floorCollisionFilter} )
 		group:insert(floor)
 		
-		levelWallet = 5000; --The Amount of Money for This Level
+		levelWallet = 50000; --The Amount of Money for This Level
 		wallet = levelWallet; --The Current Amount of Money
 		
 		--------------------------------------------

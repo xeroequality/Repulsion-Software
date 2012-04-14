@@ -25,7 +25,8 @@ Trophies = {
 	achievementsGained = 0, --Number of Achievements Received
 	parScoreReached = 0, --Number of Levels Where the Par Score was Reached
 	slotsUsed = 0, --Number of Save Slots that are Occupied
-	numOfAchievements = 4, --Update This Number When You Add an Achievements
+	numOfAchievements = 15, --Update This Number When You Add an Achievements
+	currentlyAchieving = false, --Is the Thing Showing the Achievements?
 	
 	--Bool Can be > < = ~= >= <=
 	
@@ -33,7 +34,18 @@ Trophies = {
 		[1] = {ID = 001, Title = "Saving Grace", Description = "Save a Structure to a File", Completed = false, Arg = {"savedStructures"}, Bool = {">"}, Value = {0}},
 		[2] = {ID = 002, Title = "A Load Off my Back", Description = "Load a Saved Structure", Completed = false, Arg = {"loadedStructures"}, Bool = {">"}, Value = {0}},
 		[3] = {ID = 003, Title = "One Down", Description = "Win a Level in Single Player", Completed = false, Arg = {"levelsCompleted"}, Bool = {">"}, Value = {0}},
-		[4] = {ID = 004, Title = "Self-Storage", Description = "Use All Ten Save Slots", Completed = false, Arg = {"slotsUsed"}, Bool = {"="}, Value = {10}}
+		[4] = {ID = 004, Title = "Self-Storage", Description = "Use All Ten Save Slots", Completed = false, Arg = {"slotsUsed"}, Bool = {"="}, Value = {10}},
+		[5] = {ID = 005, Title = "It's Over 9000!", Description = "Get Over 9000 Points in Total Score", Completed = false, Arg = {"totalScore"}, Bool = {">"}, Value = {9000}},
+		[6] = {ID = 006, Title = "Shopaholic", Description = "Buy Over 100 Objects", Completed = false, Arg = {"objectsBought"}, Bool = {">="}, Value = {100}},
+		[7] = {ID = 007, Title = "Weapons Surplus", Description = "Buy 10 Weapons", Completed = false, Arg = {"weaponsBought"}, Bool = {">="}, Value = {10}},
+		[8] = {ID = 008, Title = "Construction Site", Description = "Buy 10 Materials", Completed = false, Arg = {"materialsBought"}, Bool = {">="}, Value = {10}},
+		[9] = {ID = 009, Title = "Spending Maniac", Description = "Spend Over $200000", Completed = false, Arg = {"totalSpent"}, Bool = {">="}, Value = {200000}},
+		[10] = {ID = 010, Title = "Pacifist", Description = "Destroy 100 Enemy Weapons", Completed = false, Arg = {"weaponsDestroyed"}, Bool = {">="}, Value = {100}},
+		[11] = {ID = 011, Title = "Demolitions", Description = "Destroy 200 Enemy Materials", Completed = false, Arg = {"materialsDestroyed"}, Bool = {">="}, Value = {200}},
+		[12] = {ID = 012, Title = "Dominator", Description = "Destroy Over 500 Enemy Materials", Completed = false, Arg = {"destroyedObjects"}, Bool = {">="}, Value = {500}},
+		[13] = {ID = 013, Title = "Cheapskate", Description = "Keep 95% of Your Funds After Build Phase", Completed = false, Arg = {"maxPercentageofMoneyKept"}, Bool = {">="}, Value = {95}},
+		[14] = {ID = 014, Title = "A Winner is You!", Description = "Win 25 Battles", Completed = false, Arg = {"wins"}, Bool = {">="}, Value = {25}},
+		[15] = {ID = 015, Title = "An Achievement Achievement?", Description = "Achieve 7 Achievements", Completed = false, Arg = {"achievementsGained"}, Bool = {">="}, Value = {7}}
 	}
 }
 
@@ -120,7 +132,7 @@ Trophies.checkAchievements = function()
 			end
 			
 			--If This Achievement is Achieved
-			if success then
+			if success and Trophies["currentlyAchieving"] == false then
 				Trophies.Ach[i]["Completed"] = true;
 				Trophies.update("achievementsGained",1);
 				
@@ -152,6 +164,7 @@ Trophies.checkAchievements = function()
 				trophyText.x = img.x+30; trophyText.y = 50;
 				
 				timerStash.newTimer = timer.performWithDelay(4000,Trophies.destroyImage,1)
+				Trophies["currentlyAchieving"] = true;
 			end
 		end
 	end
@@ -164,6 +177,7 @@ Trophies.destroyImage = function()
 	trophyText:removeSelf();
 	img = nil;
 	trophyText = nil;
+	Trophies["currentlyAchieving"] = false;
 end
 
 return Trophies;

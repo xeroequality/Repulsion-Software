@@ -2,7 +2,8 @@
 -- Units.lua
 -- Contains all parameters of unit objects in game.
 ----------------------------------------------------------
-local physics = require("physics")
+local sprite			= require("sprite")
+local physics 			= require("physics")
 local Parallax			= require( "module_parallax" )
 
 
@@ -21,6 +22,370 @@ end
 	
 Unit.cannon = {
 	id=1000,
+	type='projectile',
+	img="../images/cannon_sm.png",
+	img_base="../images/cannon_base_sm.png",
+	img_dmg="../images/cannon_sm.png",
+	img_base_dmg="../images/cannon_base_sm.png",
+	img_weapon="../images/projectile_cannonball.png",
+	img_ui="../images/ui_item_cannon.png",
+	sfx="../sound/single_cannon_shot.wav",
+	rotation=0,
+	translate={
+		x=8,
+		y=-30
+	},
+	objShape={	 	-- obj (weapon) array of shape vertices
+		0,10,			-- Top left point going clockwise
+		0,-10,
+		40,-10,
+		40,10			-- Bottom left
+	},
+	objBaseShape={	-- obj (base) array of shape vertices
+		0,10,			-- Top left point going clockwise
+		40,10,
+		40,23,
+		0,23			-- Bottom left
+	},
+	scaleX=(1/3),
+	scaleY=(1/3),
+	maxHP=100,
+	cost=500,
+	resist={
+		basic=1,
+		fire=1,
+		water=1,
+		explosive=1,
+		electric=1
+	},
+	objDensity=10,
+	objFriction=0.9,
+	objBounce=0,
+	objBaseDensity=10,
+	objBaseFriction=0.9,
+	objBaseBounce=0,
+	weapon = display.newImage(""),
+	weaponScaleX=(1/3),
+	weaponScaleY=(1/3),
+	weaponExists=false,
+	weaponProperties={
+		basic=1,
+		fire=1,
+		water=1,
+		explosive=1,
+		electric=1
+	},	weaponRadius = 5,
+	weaponForce = 10,
+	weaponDensity=10,
+	weaponFriction=0.2,
+	weaponBounce=0.05
+}
+
+Unit.crazyCat = {
+	id=1001,
+	type='projectile',
+	img="../images/cannon_sm.png",
+	img_base="../images/cannon_base_sm.png",
+	img_dmg="../images/cannon_sm.png",
+	img_base_dmg="../images/cannon_base_sm.png",
+	img_weapon="../images/cannonball.png",
+	img_ui="../images/ui_item_cannon.png",
+	sfx="../sound/skyrocket-01.wav",
+	rotation=0,
+	translate={
+		x=8,
+		y=-30
+	},
+	objShape={	 	-- obj (weapon) array of shape vertices
+		0,10,			-- Top left point going clockwise
+		0,-10,
+		40,-10,
+		40,10			-- Bottom left
+	},
+	objBaseShape={	-- obj (base) array of shape vertices
+		0,10,			-- Top left point going clockwise
+		40,10,
+		40,23,
+		0,23			-- Bottom left
+	},
+	scaleX=(1/3),
+	scaleY=(1/3),
+	maxHP=100,
+	cost=500,
+	resist={
+		basic=1,
+		fire=1,
+		water=1,
+		explosive=1,
+		electric=1
+	},
+	objDensity=10,
+	objFriction=0.9,
+	objBounce=0,
+	objBaseDensity=10,
+	objBaseFriction=0.9,
+	objBaseBounce=0,
+	weaponProperties={
+		basic=1,
+		fire=1,
+		water=1,
+		explosive=1,
+		electric=1
+	},
+	weapon = display.newImage(""),
+	weaponExists=false,
+	weaponRadius = 5,
+	weaponForce = 10,
+	weaponDensity=10,
+	weaponFriction=0.2,
+	weaponBounce=0.05
+}
+
+Unit.c4 = {
+	id=1002,
+	type='projectile',
+	img="../images/cannon_sm.png",
+	img_base="../images/cannon_base_sm.png",
+	img_dmg="../images/cannon_sm.png",
+	img_base_dmg="../images/cannon_base_sm.png",
+	img_weapon="../images/cannonball.png",
+	img_ui="../images/ui_item_cannon.png",
+	sfx="../sound/Car_exploding.wav",
+	rotation=0,
+	translate={
+		x=8,
+		y=-30
+	},
+	objShape={	 	-- obj (weapon) array of shape vertices
+		0,10,			-- Top left point going clockwise
+		0,-10,
+		40,-10,
+		40,10			-- Bottom left
+	},
+	objBaseShape={	-- obj (base) array of shape vertices
+		0,10,			-- Top left point going clockwise
+		40,10,
+		40,23,
+		0,23			-- Bottom left
+	},
+	scaleX=(1/3),
+	scaleY=(1/3),
+	maxHP=100,
+	cost=500,
+	resist={
+		basic=1,
+		fire=1,
+		water=1,
+		explosive=1,
+		electric=1
+	},
+	objDensity=10,
+	objFriction=0.9,
+	objBounce=0,
+	objBaseDensity=10,
+	objBaseFriction=0.9,
+	objBaseBounce=0,
+	weaponProperties={
+		basic=1,
+		fire=1,
+		water=1,
+		explosive=1,
+		electric=1
+	},
+	weapon = display.newImage(""),
+	weaponExists=false,
+	weaponRadius = 5,
+	weaponForce = 10,
+	weaponDensity=10,
+	weaponFriction=0.2,
+	weaponBounce=0.05
+}
+
+Unit.fiftyCal = {
+	id=1005,
+	type='projectile',
+	img="../images/cannon_sm.png",
+	img_base="../images/cannon_base_sm.png",
+	img_dmg="../images/cannon_sm.png",
+	img_base_dmg="../images/cannon_base_sm.png",
+	img_weapon="../images/cannonball.png",
+	img_ui="../images/ui_item_cannon.png",
+	sfx="../sound/50_cal.wav",
+	rotation=0,
+	translate={
+		x=8,
+		y=-30
+	},
+	objShape={	 	-- obj (weapon) array of shape vertices
+		0,10,			-- Top left point going clockwise
+		0,-10,
+		40,-10,
+		40,10			-- Bottom left
+	},
+	objBaseShape={	-- obj (base) array of shape vertices
+		0,10,			-- Top left point going clockwise
+		40,10,
+		40,23,
+		0,23			-- Bottom left
+	},
+	scaleX=(1/3),
+	scaleY=(1/3),
+	maxHP=100,
+	cost=500,
+	resist={
+		basic=1,
+		fire=1,
+		water=1,
+		explosive=1,
+		electric=1
+	},
+	objDensity=10,
+	objFriction=0.9,
+	objBounce=0,
+	objBaseDensity=10,
+	objBaseFriction=0.9,
+	objBaseBounce=0,
+	weaponProperties={
+		basic=1,
+		fire=1,
+		water=1,
+		explosive=1,
+		electric=1
+	},
+	weapon = display.newImage(""),
+	weaponExists=false,
+	weaponRadius = 5,
+	weaponForce = 10,
+	weaponDensity=10,
+	weaponFriction=0.2,
+	weaponBounce=0.05
+}
+
+
+--FIRE
+Unit.hairFireBall = {
+	id=1003,
+	type='projectile',
+	img="../images/cannon_sm.png",
+	img_base="../images/cannon_base_sm.png",
+	img_dmg="../images/cannon_sm.png",
+	img_base_dmg="../images/cannon_base_sm.png",
+	img_weapon="../images/cannonball.png",
+	img_ui="../images/ui_item_cannon.png",
+	sfx="../sound/fire-01.wav",
+	rotation=0,
+	translate={
+		x=8,
+		y=-30
+	},
+	objShape={	 	-- obj (weapon) array of shape vertices
+		0,10,			-- Top left point going clockwise
+		0,-10,
+		40,-10,
+		40,10			-- Bottom left
+	},
+	objBaseShape={	-- obj (base) array of shape vertices
+		0,10,			-- Top left point going clockwise
+		40,10,
+		40,23,
+		0,23			-- Bottom left
+	},
+	scaleX=(1/3),
+	scaleY=(1/3),
+	maxHP=100,
+	cost=500,
+	resist={
+		basic=1,
+		fire=1,
+		water=1,
+		explosive=1,
+		electric=1
+	},
+	objDensity=10,
+	objFriction=0.9,
+	objBounce=0,
+	objBaseDensity=10,
+	objBaseFriction=0.9,
+	objBaseBounce=0,
+	weaponProperties={
+		basic=1,
+		fire=1,
+		water=1,
+		explosive=1,
+		electric=1
+	},
+	weapon = display.newImage(""),
+	weaponExists=false,
+	weaponRadius = 5,
+	weaponForce = 10,
+	weaponDensity=10,
+	weaponFriction=0.2,
+	weaponBounce=0.05
+}
+
+Unit.napalmStrike = {
+	id=1004,
+	type='projectile',
+	img="../images/cannon_sm.png",
+	img_base="../images/cannon_base_sm.png",
+	img_dmg="../images/cannon_sm.png",
+	img_base_dmg="../images/cannon_base_sm.png",
+	img_weapon="../images/cannonball.png",
+	img_ui="../images/ui_item_cannon.png",
+	sfx="../sound/bomb-04.wav",
+	rotation=0,
+	translate={
+		x=8,
+		y=-30
+	},
+	objShape={	 	-- obj (weapon) array of shape vertices
+		0,10,			-- Top left point going clockwise
+		0,-10,
+		40,-10,
+		40,10			-- Bottom left
+	},
+	objBaseShape={	-- obj (base) array of shape vertices
+		0,10,			-- Top left point going clockwise
+		40,10,
+		40,23,
+		0,23			-- Bottom left
+	},
+	scaleX=(1/3),
+	scaleY=(1/3),
+	maxHP=100,
+	cost=500,
+	resist={
+		basic=1,
+		fire=1,
+		water=1,
+		explosive=1,
+		electric=1
+	},
+	objDensity=10,
+	objFriction=0.9,
+	objBounce=0,
+	objBaseDensity=10,
+	objBaseFriction=0.9,
+	objBaseBounce=0,
+	weaponProperties={
+		basic=1,
+		fire=1,
+		water=1,
+		explosive=1,
+		electric=1
+	},
+	weapon = display.newImage(""),
+	weaponExists=false,
+	weaponRadius = 5,
+	weaponForce = 10,
+	weaponDensity=10,
+	weaponFriction=0.2,
+	weaponBounce=0.05
+}
+
+--ACID
+Unit.acidicYarnBall = {
+	id=1006,
 	type='projectile',
 	img="../images/cannon_sm.png",
 	img_base="../images/cannon_base_sm.png",
@@ -78,7 +443,555 @@ Unit.cannon = {
 	weaponFriction=0.2,
 	weaponBounce=0.05
 }
-	-- Cannon functions below
+
+Unit.kittyLitter = {
+	id=1007,
+	type='projectile',
+	img="../images/cannon_sm.png",
+	img_base="../images/cannon_base_sm.png",
+	img_dmg="../images/cannon_sm.png",
+	img_base_dmg="../images/cannon_base_sm.png",
+	img_weapon="../images/cannonball.png",
+	img_ui="../images/ui_item_cannon.png",
+	sfx="../sound/Single_cannon_shot.wav",
+	rotation=0,
+	translate={
+		x=8,
+		y=-30
+	},
+	objShape={	 	-- obj (weapon) array of shape vertices
+		0,10,			-- Top left point going clockwise
+		0,-10,
+		40,-10,
+		40,10			-- Bottom left
+	},
+	objBaseShape={	-- obj (base) array of shape vertices
+		0,10,			-- Top left point going clockwise
+		40,10,
+		40,23,
+		0,23			-- Bottom left
+	},
+	scaleX=(1/3),
+	scaleY=(1/3),
+	maxHP=100,
+	cost=500,
+	resist={
+		basic=1,
+		fire=1,
+		water=1,
+		explosive=1,
+		electric=1
+	},
+	objDensity=10,
+	objFriction=0.9,
+	objBounce=0,
+	objBaseDensity=10,
+	objBaseFriction=0.9,
+	objBaseBounce=0,
+	weaponProperties={
+		basic=1,
+		fire=1,
+		water=1,
+		explosive=1,
+		electric=1
+	},
+	weapon = display.newImage(""),
+	weaponExists=false,
+	weaponRadius = 5,
+	weaponForce = 10,
+	weaponDensity=10,
+	weaponFriction=0.2,
+	weaponBounce=0.05
+}
+
+--ELECTRIC
+Unit.staticKitty = {
+	id=1008,
+	type='projectile',
+	img="../images/cannon_sm.png",
+	img_base="../images/cannon_base_sm.png",
+	img_dmg="../images/cannon_sm.png",
+	img_base_dmg="../images/cannon_base_sm.png",
+	img_weapon="../images/cannonball.png",
+	img_ui="../images/ui_item_cannon.png",
+	sfx="../sound/Single_cannon_shot.wav",
+	rotation=0,
+	translate={
+		x=8,
+		y=-30
+	},
+	objShape={	 	-- obj (weapon) array of shape vertices
+		0,10,			-- Top left point going clockwise
+		0,-10,
+		40,-10,
+		40,10			-- Bottom left
+	},
+	objBaseShape={	-- obj (base) array of shape vertices
+		0,10,			-- Top left point going clockwise
+		40,10,
+		40,23,
+		0,23			-- Bottom left
+	},
+	scaleX=(1/3),
+	scaleY=(1/3),
+	maxHP=100,
+	cost=500,
+	resist={
+		basic=1,
+		fire=1,
+		water=1,
+		explosive=1,
+		electric=1
+	},
+	objDensity=10,
+	objFriction=0.9,
+	objBounce=0,
+	objBaseDensity=10,
+	objBaseFriction=0.9,
+	objBaseBounce=0,
+	weaponProperties={
+		basic=1,
+		fire=1,
+		water=1,
+		explosive=1,
+		electric=1
+	},
+	weapon = display.newImage(""),
+	weaponExists=false,
+	weaponRadius = 5,
+	weaponForce = 10,
+	weaponDensity=10,
+	weaponFriction=0.2,
+	weaponBounce=0.05
+}
+
+--------------------------------------------------------------------------------------------------
+--										ALIEN WEAPONS											--
+--------------------------------------------------------------------------------------------------
+
+--BASIC/EXPLOSIVE
+Unit.energyBall = {
+	id=1009,
+	type='energy',
+	img="../images/weapon_alien_energyBall.png",
+	img_base="../images/weapon_alien_base.png",
+	img_dmg="../images/weapon_alien_energyBall.png",
+	img_base_dmg="../images/weapon_alien_base.png",
+	img_weapon="../images/projectile_energyBall.png",
+	img_ui="../images/ui_item_cannon.png",
+	sfx="../sound/single_cannon_shot.wav",
+	rotation=0,
+	translate={
+		x=8,
+		y=-30
+	},
+	objShape={	 	-- obj (weapon) array of shape vertices
+		0,10,			-- Top left point going clockwise
+		0,-10,
+		40,-10,
+		40,10			-- Bottom left
+	},
+	objBaseShape={	-- obj (base) array of shape vertices
+		0,10,			-- Top left point going clockwise
+		40,10,
+		40,23,
+		0,23			-- Bottom left
+	},
+	scaleX=(1/3),
+	scaleY=(1/3),
+	maxHP=100,
+	cost=500,
+	resist={
+		basic=1,
+		fire=1,
+		water=1,
+		explosive=1,
+		electric=1
+	},
+	objDensity=10,
+	objFriction=0.9,
+	objBounce=0,
+	objBaseDensity=10,
+	objBaseFriction=0.9,
+	objBaseBounce=0,
+	weaponProperties={
+		basic=1,
+		fire=1,
+		water=1,
+		explosive=1,
+		electric=1
+	},
+	weapon = display.newImage(""),
+	weaponExists=false,
+	weaponRadius = 5,
+	weaponForce = 10,
+	weaponDensity=10,
+	weaponFriction=0.2,
+	weaponBounce=0.05
+}
+
+Unit.repulsionBall = {
+	id=1010,
+	type='energy',
+	img="../images/weapon_alien_repulsionBall.png",
+	img_base="../images/weapon_alien_base.png",
+	img_dmg="../images/weapon_alien_repulsionBall.png",
+	img_base_dmg="../images/weapon_alien_base.png",
+	img_weapon="../images/projectile_repulsionBall.png",
+	img_ui="../images/ui_item_cannon.png",
+	sfx="../sound/single_cannon_shot.wav",
+	rotation=0,
+	translate={
+		x=8,
+		y=-30
+	},
+	objShape={	 	-- obj (weapon) array of shape vertices
+		0,10,			-- Top left point going clockwise
+		0,-10,
+		40,-10,
+		40,10			-- Bottom left
+	},
+	objBaseShape={	-- obj (base) array of shape vertices
+		0,10,			-- Top left point going clockwise
+		40,10,
+		40,23,
+		0,23			-- Bottom left
+	},
+	scaleX=(1/3),
+	scaleY=(1/3),
+	maxHP=100,
+	cost=500,
+	resist={
+		basic=1,
+		fire=1,
+		water=1,
+		explosive=1,
+		electric=1
+	},
+	objDensity=10,
+	objFriction=0.9,
+	objBounce=0,
+	objBaseDensity=10,
+	objBaseFriction=0.9,
+	objBaseBounce=0,
+	weaponProperties={
+		basic=1,
+		fire=1,
+		water=1,
+		explosive=1,
+		electric=1
+	},
+	weapon = display.newImage(""),
+	weaponExists=false,
+	weaponRadius = 5,
+	weaponForce = 10,
+	weaponDensity=10,
+	weaponFriction=0.2,
+	weaponBounce=0.05
+}
+
+Unit.darkMatter = {
+	id=1011,
+	type='projectile',
+	img="../images/cannon_sm.png",
+	img_base="../images/cannon_base_sm.png",
+	img_dmg="../images/cannon_sm.png",
+	img_base_dmg="../images/cannon_base_sm.png",
+	img_weapon="../images/cannonball.png",
+	img_ui="../images/ui_item_cannon.png",
+	sfx="../sound/Single_cannon_shot.wav",
+	rotation=0,
+	translate={
+		x=8,
+		y=-30
+	},
+	objShape={	 	-- obj (weapon) array of shape vertices
+		0,10,			-- Top left point going clockwise
+		0,-10,
+		40,-10,
+		40,10			-- Bottom left
+	},
+	objBaseShape={	-- obj (base) array of shape vertices
+		0,10,			-- Top left point going clockwise
+		40,10,
+		40,23,
+		0,23			-- Bottom left
+	},
+	scaleX=(1/3),
+	scaleY=(1/3),
+	maxHP=100,
+	cost=500,
+	resist={
+		basic=1,
+		fire=1,
+		water=1,
+		explosive=1,
+		electric=1
+	},
+	objDensity=10,
+	objFriction=0.9,
+	objBounce=0,
+	objBaseDensity=10,
+	objBaseFriction=0.9,
+	objBaseBounce=0,
+	weaponProperties={
+		basic=1,
+		fire=1,
+		water=1,
+		explosive=1,
+		electric=1
+	},
+	weapon = display.newImage(""),
+	weaponExists=false,
+	weaponRadius = 5,
+	weaponForce = 10,
+	weaponDensity=10,
+	weaponFriction=0.2,
+	weaponBounce=0.05
+}
+
+--FIRE
+Unit.laser = {
+	id=1012,
+	type='projectile',
+	img="../images/cannon_sm.png",
+	img_base="../images/cannon_base_sm.png",
+	img_dmg="../images/cannon_sm.png",
+	img_base_dmg="../images/cannon_base_sm.png",
+	img_weapon="../images/cannonball.png",
+	img_ui="../images/ui_item_cannon.png",
+	sfx="../sound/laser-01.wav",
+	rotation=0,
+	translate={
+		x=8,
+		y=-30
+	},
+	objShape={	 	-- obj (weapon) array of shape vertices
+		0,10,			-- Top left point going clockwise
+		0,-10,
+		40,-10,
+		40,10			-- Bottom left
+	},
+	objBaseShape={	-- obj (base) array of shape vertices
+		0,10,			-- Top left point going clockwise
+		40,10,
+		40,23,
+		0,23			-- Bottom left
+	},
+	scaleX=(1/3),
+	scaleY=(1/3),
+	maxHP=100,
+	cost=500,
+	resist={
+		basic=1,
+		fire=1,
+		water=1,
+		explosive=1,
+		electric=1
+	},
+	objDensity=10,
+	objFriction=0.9,
+	objBounce=0,
+	objBaseDensity=10,
+	objBaseFriction=0.9,
+	objBaseBounce=0,
+	weaponProperties={
+		basic=1,
+		fire=1,
+		water=1,
+		explosive=1,
+		electric=1
+	},
+	weapon = display.newImage(""),
+	weaponExists=false,
+	weaponRadius = 5,
+	weaponForce = 10,
+	weaponDensity=10,
+	weaponFriction=0.2,
+	weaponBounce=0.05
+}
+
+Unit.pyrokinesis = {
+	id=1013,
+	type='projectile',
+	img="../images/cannon_sm.png",
+	img_base="../images/cannon_base_sm.png",
+	img_dmg="../images/cannon_sm.png",
+	img_base_dmg="../images/cannon_base_sm.png",
+	img_weapon="../images/cannonball.png",
+	img_ui="../images/ui_item_cannon.png",
+	sfx="../sound/laser-02.wav",
+	rotation=0,
+	translate={
+		x=8,
+		y=-30
+	},
+	objShape={	 	-- obj (weapon) array of shape vertices
+		0,10,			-- Top left point going clockwise
+		0,-10,
+		40,-10,
+		40,10			-- Bottom left
+	},
+	objBaseShape={	-- obj (base) array of shape vertices
+		0,10,			-- Top left point going clockwise
+		40,10,
+		40,23,
+		0,23			-- Bottom left
+	},
+	scaleX=(1/3),
+	scaleY=(1/3),
+	maxHP=100,
+	cost=500,
+	resist={
+		basic=1,
+		fire=1,
+		water=1,
+		explosive=1,
+		electric=1
+	},
+	objDensity=10,
+	objFriction=0.9,
+	objBounce=0,
+	objBaseDensity=10,
+	objBaseFriction=0.9,
+	objBaseBounce=0,
+	weaponProperties={
+		basic=1,
+		fire=1,
+		water=1,
+		explosive=1,
+		electric=1
+	},
+	weapon = display.newImage(""),
+	weaponExists=false,
+	weaponRadius = 5,
+	weaponForce = 10,
+	weaponDensity=10,
+	weaponFriction=0.2,
+	weaponBounce=0.05
+}
+
+--CORROSIVE
+Unit.acid = {
+	id=1014,
+	type='projectile',
+	img="../images/cannon_sm.png",
+	img_base="../images/cannon_base_sm.png",
+	img_dmg="../images/cannon_sm.png",
+	img_base_dmg="../images/cannon_base_sm.png",
+	img_weapon="../images/cannonball.png",
+	img_ui="../images/ui_item_cannon.png",
+	sfx="../sound/Single_cannon_shot.wav",
+	rotation=0,
+	translate={
+		x=8,
+		y=-30
+	},
+	objShape={	 	-- obj (weapon) array of shape vertices
+		0,10,			-- Top left point going clockwise
+		0,-10,
+		40,-10,
+		40,10			-- Bottom left
+	},
+	objBaseShape={	-- obj (base) array of shape vertices
+		0,10,			-- Top left point going clockwise
+		40,10,
+		40,23,
+		0,23			-- Bottom left
+	},
+	scaleX=(1/3),
+	scaleY=(1/3),
+	maxHP=100,
+	cost=500,
+	resist={
+		basic=1,
+		fire=1,
+		water=1,
+		explosive=1,
+		electric=1
+	},
+	objDensity=10,
+	objFriction=0.9,
+	objBounce=0,
+	objBaseDensity=10,
+	objBaseFriction=0.9,
+	objBaseBounce=0,
+	weaponProperties={
+		basic=1,
+		fire=1,
+		water=1,
+		explosive=1,
+		electric=1
+	},
+	weapon = display.newImage(""),
+	weaponExists=false,
+	weaponRadius = 5,
+	weaponForce = 10,
+	weaponDensity=10,
+	weaponFriction=0.2,
+	weaponBounce=0.05
+}
+
+--ELECTRIC
+Unit.tesla = {
+	id=1015,
+	type='projectile',
+	img="../images/cannon_sm.png",
+	img_base="../images/cannon_base_sm.png",
+	img_dmg="../images/cannon_sm.png",
+	img_base_dmg="../images/cannon_base_sm.png",
+	img_weapon="../images/cannonball.png",
+	img_ui="../images/ui_item_cannon.png",
+	sfx="../sound/Single_cannon_shot.wav",
+	rotation=0,
+	translate={
+		x=8,
+		y=-30
+	},
+	objShape={	 	-- obj (weapon) array of shape vertices
+		0,10,			-- Top left point going clockwise
+		0,-10,
+		40,-10,
+		40,10			-- Bottom left
+	},
+	objBaseShape={	-- obj (base) array of shape vertices
+		0,10,			-- Top left point going clockwise
+		40,10,
+		40,23,
+		0,23			-- Bottom left
+	},
+	scaleX=(1/3),
+	scaleY=(1/3),
+	maxHP=100,
+	cost=500,
+	resist={
+		basic=1,
+		fire=1,
+		water=1,
+		explosive=1,
+		electric=1
+	},
+	objDensity=10,
+	objFriction=0.9,
+	objBounce=0,
+	objBaseDensity=10,
+	objBaseFriction=0.9,
+	objBaseBounce=0,
+	weaponProperties={
+		basic=1,
+		fire=1,
+		water=1,
+		explosive=1,
+		electric=1
+	},
+	weapon = display.newImage(""),
+	weaponExists=false,
+	weaponRadius = 5,
+	weaponForce = 10,
+	weaponDensity=10,
+	weaponFriction=0.2,
+	weaponBounce=0.05
+}
 
 Unit.weaponSystems = function(event)
 	local clickedUnit = event.target
@@ -89,7 +1002,7 @@ Unit.weaponSystems = function(event)
 		print('clickedUnit.x: ' .. clickedUnit.x .. ' clickedUnit.y: ' .. clickedUnit.y)
 		if (phase == 'began') then
 			if not (clickedUnit.weaponExists) then
-					if (clickedUnit.type == 'projectile') then
+					if (clickedUnit.type == 'projectile' or clickedUnit.type == 'energy') then
 						if not (showCrosshair) then										-- helps ensure that only one crosshair appears
 							crosshair = display.newImage( "../images/crosshair.png" )				-- prints crosshair	
 							crosshair.x = display.contentWidth - 300
@@ -111,7 +1024,7 @@ Unit.weaponSystems = function(event)
 	fire = function( event )
 		clickedUnit.weaponExists=false
 		local phase = event.phase
-		if (clickedUnit.type == 'projectile') then
+		if (clickedUnit.type == 'projectile' or clickedUnit.type == 'energy') then
 			if "began" == phase then
 				display.getCurrentStage():setFocus( crosshair )
 				crosshair.isFocus = true
@@ -147,8 +1060,16 @@ Unit.weaponSystems = function(event)
 					end
 
 					-- make a new image
-					clickedUnit.weapon = display.newImage(clickedUnit.img_weapon)
-					clickedUnit.weapon:scale(clickedUnit.scaleX,clickedUnit.scaleY)
+					--clickedUnit.weapon = display.newImage(clickedUnit.img_weapon)
+					clickedUnit.weapon = sprite.newSpriteSheet(clickedUnit.img_weapon, 19, 19)
+					local weaponSpriteSet = sprite.newSpriteSet(clickedUnit.weapon,1,3)
+
+					sprite.add(weaponSpriteSet,"clickedUnit.weapon",1,3,300,0)
+
+					weaponSpriteInstance = sprite.newSprite(weaponSpriteSet)
+					weaponSpriteInstance:prepare("clickedUnit.weapon")
+					weaponSpriteInstance:play()
+					weaponSpriteInstance:scale(clickedUnit.scaleX,clickedUnit.scaleY)
 					clickedUnit.weaponExists = true
 					for i=1,unitGroup.numChildren do
 						-- if unitGroup[i].createCrosshair ~= nil then
@@ -163,9 +1084,9 @@ Unit.weaponSystems = function(event)
 					-- clickedUnit:removeEventListener('touch', createCrosshair)
 					-- move the image
 					--print('Parallax.incX' .. Parallax.incX)
-					clickedUnit.weapon.x = clickedUnit.x
-					clickedUnit.weapon.y = clickedUnit.y
-					unitGroup:insert(clickedUnit.weapon)
+					weaponSpriteInstance.x = clickedUnit.x
+					weaponSpriteInstance.y = clickedUnit.y
+					unitGroup:insert(weaponSpriteInstance)
 					print('unitGroup: ' .. unitGroup.numChildren)
 
 
@@ -173,16 +1094,16 @@ Unit.weaponSystems = function(event)
 					if clickedUnit.x < 500 then
 						print('player unit')
 						local playerweaponCollisionFilter = { categoryBits = 4, maskBits = 5 } 
-						physics.addBody( clickedUnit.weapon, { density=clickedUnit.weaponDensity, friction=clickedUnit.weaponFriction, bounce=clickedUnit.weaponBounce, radius=clickedUnit.weaponRadius, filter=playerweaponCollisionFilter} )
+						physics.addBody( weaponSpriteInstance, { density=clickedUnit.weaponDensity, friction=clickedUnit.weaponFriction, bounce=clickedUnit.weaponBounce, radius=clickedUnit.weaponRadius, filter=playerweaponCollisionFilter} )
 					else
 						print('enemy unit')
 						local enemyweaponCollisionFilter = { categoryBits = 2, maskBits = 3 } 
-						physics.addBody( clickedUnit.weapon, { density=clickedUnit.weaponDensity, friction=clickedUnit.weaponFriction, bounce=clickedUnit.weaponBounce, radius=clickedUnit.weaponRadius, filter=enemyweaponCollisionFilter} )
+						physics.addBody( weaponSpriteInstance, { density=clickedUnit.weaponDensity, friction=clickedUnit.weaponFriction, bounce=clickedUnit.weaponBounce, radius=clickedUnit.weaponRadius, filter=enemyweaponCollisionFilter} )
 					end
-					clickedUnit.weapon.isBullet = true
+					weaponSpriteInstance.isBullet = true
 
 					-- fire the weapon            
-					clickedUnit.weapon:applyForce( (event.x - crosshair.x)*Unit.cannon.weaponForce, (event.y - (crosshair.y))*Unit.cannon.weaponForce, clickedUnit.x, clickedUnit.y )
+					weaponSpriteInstance:applyForce( (event.x - crosshair.x)*Unit.cannon.weaponForce, (event.y - (crosshair.y))*Unit.cannon.weaponForce, clickedUnit.x, clickedUnit.y )
 					weaponSFX = audio.loadSound(clickedUnit.sfx)
 					weaponSFXed = audio.play( weaponSFX,{channel=2} )
 					-- make sure that the cannon is on top of the 
@@ -194,7 +1115,7 @@ Unit.weaponSystems = function(event)
 					end
 					
 					Runtime:addEventListener('enterFrame', removeWeaponBeyondFloor)
-					clickedUnit.weapon:addEventListener('collision', removeWeaponOnCollision)
+					weaponSpriteInstance:addEventListener('collision', removeWeaponOnCollision)
 				end
 			end
 		end
@@ -208,15 +1129,15 @@ Unit.weaponSystems = function(event)
 			for i=1,enemyUnitGroup.numChildren do
 					enemyUnitGroup[i]:addEventListener('touch', Unit.weaponSystems)
 			end
-			clickedUnit.weapon:removeSelf()
+			weaponSpriteInstance:removeSelf()
 			clickedUnit.weaponExists = false
 		end
 	end
 	 removeWeaponBeyondFloor = function()
 		-- Is ball entity there and still in-bounds?
-			if(clickedUnit.weapon.x ~= nil or clickedUnit.weapon.y ~= nil) then	
+			if(weaponSpriteInstance.x ~= nil or weaponSpriteInstance.y ~= nil) then	
 				-- Follow the weapon while moving
-				Parallax.move_abs(math.round(Parallax.currentView.x + ((clickedUnit.weapon.x - Parallax.currentView.x) * 0.1)), math.round(Parallax.currentView.y + ((clickedUnit.weapon.y - Parallax.currentView.y) * 0.1)), "moved");
+				Parallax.move_abs(math.round(Parallax.currentView.x + ((weaponSpriteInstance.x - Parallax.currentView.x) * 0.1)), math.round(Parallax.currentView.y + ((weaponSpriteInstance.y - Parallax.currentView.y) * 0.1)), "moved");
 
 			else
 				-- -- Move View Back to User's Base				
@@ -234,8 +1155,11 @@ Unit.weaponSystems = function(event)
 				end
 			end
 	end	removeWeaponOnCollision = function()
-		clickedUnit.weapon:removeEventListener('collision', removeWeaponOnCollision)  -- makes it so it only activates on the first collision
+		weaponSpriteInstance:removeEventListener('collision', removeWeaponOnCollision)  -- makes it so it only activates on the first collision
 		print('deleting the ball')
+		if clickedUnit.type == 'projectile' then
+			weaponSpriteInstance:pause()
+		end
 		timerStash.newTimer = timer.performWithDelay(5000, deleteWeapon, 1)
 	end
 	print('inside weaponSystems')
@@ -250,8 +1174,12 @@ Unit.clone = function(id)
 	unitObjGroup = display.newGroup()
 	if id == 1000 then
 		cloner = Unit.cannon
+	elseif id == 1009 then
+		cloner = Unit.energyBall
+	elseif id == 1010 then
+		cloner = Unit.repulsionBall
 	end
-		obj=display.newImage(cloner.img)
+		local obj=display.newImage(cloner.img)
 		unitObjGroup.id=cloner.id
 		unitObjGroup.type=cloner.type
 		obj.img_base = display.newImage(cloner.img_base)
@@ -285,6 +1213,9 @@ Unit.clone = function(id)
 		unitObjGroup.objBaseDensity=cloner.objBaseDensity
 		unitObjGroup.objBaseFriction=cloner.objBaseFriction
 		unitObjGroup.objBaseBounce=cloner.objBaseBounce
+		unitObjGroup.weaponExists=cloner.weaponExists
+		unitObjGroup.weaponScaleX=cloner.weaponScaleX
+		unitObjGroup.weaponScaleY=cloner.weaponScaleY
 		unitObjGroup.weaponProperties={
 			basic=(cloner.weaponProperties).basic,
 			fire=(cloner.weaponProperties).fire,
@@ -292,7 +1223,6 @@ Unit.clone = function(id)
 			explosive=(cloner.weaponProperties).explosive,
 			electric=(cloner.weaponProperties).electric
 		}
-		unitObjGroup.weaponExists=cloner.weaponExists
 		unitObjGroup.weaponRadius=cloner.weaponRadius
 		unitObjGroup.weaponForce=cloner.weaponForce
 		unitObjGroup.weaponDensity=cloner.weaponDensity

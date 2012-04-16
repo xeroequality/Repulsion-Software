@@ -28,11 +28,19 @@ timerStash = {};
 -- BEGINNING OF YOUR IMPLEMENTATION
 ---------------------------------------------------------------------------------
 
+local function restart(event)
+	local label = "sp_aliens_ch1_level1"
+	print("released button " .. label)
+	storyboard.gotoScene( label, "fade", 200)
+	return true	-- indicates successful touch
+
+end
+ 
 -- Called when the scene's view does not exist:
 function scene:createScene( event )
         local group = self.view
 		physics.start()
-		physics.setDrawMode("hybrid")
+		-- physics.setDrawMode("hybrid")
 
 		-- -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
 		-- Setup Parameters for Parallax View
@@ -109,7 +117,9 @@ function scene:enterScene( event )
 		local levelObjs = { -- Use this to choose what is items are available in this level
 			Materials.wood_plank_alien,
 			Materials.wood_box_alien,
-			Units.cannon
+			Units.cannon,
+			Units.energyBall,
+			Units.repulsionBall
 		}
 		print ('levelObjs: ' .. #levelObjs)
 
@@ -199,14 +209,11 @@ function scene:enterScene( event )
 		--------------------------------------------
 		--local static_menu = display.newGroup()
 		
-	
-				local function restart_level(event)
-					if event.phase == "ended" and restartBtn.alpha > 0 then
-						storyboard.labelFile = "sp_aliens_ch1_level1"
-						storyboard.gotoScene ( "levelrestarter", "fade", 200 )
-					end
-				end
-	
+		local function restart_level(event)
+			if event.phase == "ended" and restartBtn.alpha > 0 then
+				restart()
+			end
+		end
 		local function exit_level(event)
 			if event.phase == "ended" and exitBtn.alpha > 0 then
 				-- Notify consle we're leaving, then leave...

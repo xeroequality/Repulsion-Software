@@ -5,6 +5,7 @@
 local img;
 local trophyText;
 Trophies = {
+	off = false, --Set to True if you Don't Want Achievements On
 	totalScore = 0, ---Cumulative Score
 	maxScore = 0, --Highest Score Ever Gotten
 	totalSpent = 0, --Total Amount of Money Spent
@@ -69,111 +70,116 @@ Trophies.getValue = function(u)
 end
 
 Trophies.checkAchievements = function()
-	local k = Trophies.Ach;
-	
-	--Check All Non-Completed Achievements
-	for i = 1,Trophies["numOfAchievements"] do
-	
-		if k[i]["Completed"] == false then
-		
-			--Check the Variables
-			local var = k[i]["Arg"]; --The Variable Name
-			local bool = k[i]["Bool"]; --The Boolean Value
-			local val = k[i]["Value"]; --The Value
-			
-			--Check the Conditions
-			local success = true;
-			for p = 1,#var do
-				--Greater Than Case
-				if bool[p] == ">" then
-					if Trophies[var[p]] > val[p] then
-					else
-						success = false;
-					end
-				end
-				
-				--Less Than Case
-				if bool[p] == "<" then
-					if Trophies[var[p]] < val[p] then
-					else
-						success = false;
-					end
-				end
-				
-				--Equal to Case
-				if bool[p] == "=" then
-					if Trophies[var[p]] == val[p] then
-					else
-						success = false;
-					end
-				end
-				
-				--Not Equal to Case
-				if bool[p] == "~=" or bool[p] == "!=" then
-					if Trophies[var[p]] ~= val[p] then
-					else
-						success = false;
-					end
-				end
-				
-				--Greater Than or Equal to Case
-				if bool[p] == ">=" then
-					if Trophies[var[p]] >= val[p] then
-					else
-						success = false;
-					end
-				end
-				
-				--Less Than or Equal to Case
-				if bool[p] == "<=" then
-					if Trophies[var[p]] <= val[p] then
-					else
-						success = false;
-					end
-				end
-				
-			end
-			
-			--If This Achievement is Achieved
-			if success and Trophies["currentlyAchieving"] == false then
-				Trophies.Ach[i]["Completed"] = true;
-				Trophies.update("achievementsGained",1);
-				
-				--Show the Success
-				print("Achieved: "..k[i]["Title"]);
-				print("Total Achievements: "..Trophies.getValue("achievementsGained"));
-				
-				--Print All Achievements
-				print("");
-				for u = 1,Trophies.getValue("numOfAchievements") do
-					local j = Trophies.Ach[u]["Completed"];
-					if j then
-						j = "True";
-					else
-						j = "False";
-					end
-					print(k[u]["Title"].." -- Completed: "..j);
-				end
-				
-				--Play that Glorious Sound
-				local trophy = audio.loadSound("../sound/Trophy.wav")
-				local congrats = audio.play(trophy,{channel=2})
-				
-				--Make the Image
-				img = display.newImage("../images/achievement_template.png");
-				trophyText = display.newText(k[i]["Title"].."\n"..k[i]["Description"].."\nAchievement #: "..k[i]["ID"].."\n"..Trophies.getValue("achievementsGained").."/"..Trophies.getValue("numOfAchievements").." Completed",30,10,150,90,native.systemFont,12);
 
-				img:toFront(); trophyText:toFront();
-				img.x = display.contentWidth-100; img.y = 50;
-				trophyText.x = img.x+30; trophyText.y = 55;
+	if Trophies["off"] == false then
+	
+		local k = Trophies.Ach;
+		
+		--Check All Non-Completed Achievements
+		for i = 1,Trophies["numOfAchievements"] do
+		
+			if k[i]["Completed"] == false then
+			
+				--Check the Variables
+				local var = k[i]["Arg"]; --The Variable Name
+				local bool = k[i]["Bool"]; --The Boolean Value
+				local val = k[i]["Value"]; --The Value
 				
-				timerStash.newTimer = timer.performWithDelay(4000,Trophies.destroyImage,1)
-				Trophies["currentlyAchieving"] = true;
+				--Check the Conditions
+				local success = true;
+				for p = 1,#var do
+					--Greater Than Case
+					if bool[p] == ">" then
+						if Trophies[var[p]] > val[p] then
+						else
+							success = false;
+						end
+					end
+					
+					--Less Than Case
+					if bool[p] == "<" then
+						if Trophies[var[p]] < val[p] then
+						else
+							success = false;
+						end
+					end
+					
+					--Equal to Case
+					if bool[p] == "=" then
+						if Trophies[var[p]] == val[p] then
+						else
+							success = false;
+						end
+					end
+					
+					--Not Equal to Case
+					if bool[p] == "~=" or bool[p] == "!=" then
+						if Trophies[var[p]] ~= val[p] then
+						else
+							success = false;
+						end
+					end
+					
+					--Greater Than or Equal to Case
+					if bool[p] == ">=" then
+						if Trophies[var[p]] >= val[p] then
+						else
+							success = false;
+						end
+					end
+					
+					--Less Than or Equal to Case
+					if bool[p] == "<=" then
+						if Trophies[var[p]] <= val[p] then
+						else
+							success = false;
+						end
+					end
+					
+				end
+				
+				--If This Achievement is Achieved
+				if success and Trophies["currentlyAchieving"] == false then
+					Trophies.Ach[i]["Completed"] = true;
+					Trophies.update("achievementsGained",1);
+					
+					--Show the Success
+					print("Achieved: "..k[i]["Title"]);
+					print("Total Achievements: "..Trophies.getValue("achievementsGained"));
+					
+					--Print All Achievements
+					print("");
+					for u = 1,Trophies.getValue("numOfAchievements") do
+						local j = Trophies.Ach[u]["Completed"];
+						if j then
+							j = "True";
+						else
+							j = "False";
+						end
+						print(k[u]["Title"].." -- Completed: "..j);
+					end
+					
+					--Play that Glorious Sound
+					local trophy = audio.loadSound("../sound/Trophy.wav")
+					local congrats = audio.play(trophy,{channel=2})
+					
+					--Make the Image
+					img = display.newImage("../images/achievement_template.png");
+					trophyText = display.newText(k[i]["Title"].."\n"..k[i]["Description"].."\nAchievement #: "..k[i]["ID"].."\n"..Trophies.getValue("achievementsGained").."/"..Trophies.getValue("numOfAchievements").." Completed",30,10,150,90,native.systemFont,12);
+
+					img:toFront(); trophyText:toFront();
+					img.x = display.contentWidth-100; img.y = 50;
+					trophyText.x = img.x+30; trophyText.y = 55;
+					
+					timerStash.newTimer = timer.performWithDelay(4000,Trophies.destroyImage,1)
+					Trophies["currentlyAchieving"] = true;
+				end
 			end
 		end
+		
+		--print("Achievements Gained: "..Trophies.getValue("achievementsGained"));
+		
 	end
-	
-	--print("Achievements Gained: "..Trophies.getValue("achievementsGained"));
 end
 
 Trophies.destroyImage = function()

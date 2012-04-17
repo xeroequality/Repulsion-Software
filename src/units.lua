@@ -582,20 +582,20 @@ Unit.energyBall = {
 	sfx="../sound/single_cannon_shot.wav",
 	rotation=0,
 	translate={
-		x=8,
-		y=-30
+		x=40,
+		y=80
 	},
 	objShape={	 	-- obj (weapon) array of shape vertices
-		0,10,			-- Top left point going clockwise
-		0,-10,
-		40,-10,
-		40,10			-- Bottom left
+		20,0,			-- Top left point going clockwise
+		20,50,
+		80,50,
+		80,0			-- Bottom left
 	},
 	objBaseShape={	-- obj (base) array of shape vertices
-		0,10,			-- Top left point going clockwise
-		40,10,
-		40,23,
-		0,23			-- Bottom left
+		0,50,			-- Top left point going clockwise
+		50,50,
+		50,60,
+		0,60			-- Bottom left
 	},
 	scaleX=(1/3),
 	scaleY=(1/3),
@@ -642,20 +642,20 @@ Unit.repulsionBall = {
 	sfx="../sound/single_cannon_shot.wav",
 	rotation=0,
 	translate={
-		x=8,
-		y=-30
+		x=40,
+		y=80
 	},
 	objShape={	 	-- obj (weapon) array of shape vertices
-		0,10,			-- Top left point going clockwise
-		0,-10,
-		40,-10,
-		40,10			-- Bottom left
+		20,0,			-- Top left point going clockwise
+		20,50,
+		80,50,
+		80,0			-- Bottom left
 	},
 	objBaseShape={	-- obj (base) array of shape vertices
-		0,10,			-- Top left point going clockwise
-		40,10,
-		40,23,
-		0,23			-- Bottom left
+		0,50,			-- Top left point going clockwise
+		50,50,
+		50,60,
+		0,60			-- Bottom left
 	},
 	scaleX=(1/3),
 	scaleY=(1/3),
@@ -1044,9 +1044,9 @@ Unit.weaponSystems = function(event)
 					end
 					local cannonRotation = (180/math.pi)*math.atan(deltaYDivX) - clickedUnit.rotation -- rotates the cannon based on the trajectory line
 					if (event.x < crosshair.x) then
-						clickedUnit[1].rotation = cannonRotation + 180  -- since arctan goes from -pi/2 to pi/2, this is necessary to make the cannon point backwards
+						clickedUnit[2].rotation = cannonRotation + 180  -- since arctan goes from -pi/2 to pi/2, this is necessary to make the cannon point backwards
 					else
-						clickedUnit[1].rotation = cannonRotation
+						clickedUnit[2].rotation = cannonRotation
 					end
 					crosshairLine:setColor( 0, 255, 0, 200 )
 					crosshairLine.width = 8
@@ -1064,7 +1064,7 @@ Unit.weaponSystems = function(event)
 					clickedUnit.weapon = sprite.newSpriteSheet(clickedUnit.img_weapon, 19, 19)
 					local weaponSpriteSet = sprite.newSpriteSet(clickedUnit.weapon,1,3)
 
-					sprite.add(weaponSpriteSet,"clickedUnit.weapon",1,3,300,0)
+					sprite.add(weaponSpriteSet,"clickedUnit.weapon",1,3,500,0)
 
 					weaponSpriteInstance = sprite.newSprite(weaponSpriteSet)
 					weaponSpriteInstance:prepare("clickedUnit.weapon")
@@ -1191,6 +1191,8 @@ Unit.clone = function(id)
 		unitObjGroup.img_weapon=cloner.img_weapon
 		unitObjGroup.sfx=cloner.sfx
 		obj.rotation=cloner.rotation
+		unitObjGroup.transX=cloner.translate.x
+		unitObjGroup.transY=cloner.translate.y
 		obj:translate(cloner.translate.x,cloner.translate.y)
 		unitObjGroup.objShape=cloner.objShape
 		unitObjGroup.objBaseShape=cloner.objBaseShape
@@ -1228,8 +1230,8 @@ Unit.clone = function(id)
 		unitObjGroup.weaponDensity=cloner.weaponDensity
 		unitObjGroup.weaponFriction=cloner.weaponFriction
 		unitObjGroup.weaponBounce=cloner.weaponBounce
-		unitObjGroup:insert(obj)
 		unitObjGroup:insert(obj.img_base)
+		unitObjGroup:insert(obj)
 		unitObjGroup.createCrosshair=cloner.createCrosshair
 		unitObjGroup.fire=cloner.fire
 		unitObjGroup.deleteWeapon=cloner.deleteWeapon

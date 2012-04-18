@@ -270,6 +270,7 @@ UI.playUI = function(event)
 	scrollView = nil
 	play_button = nil
 	rotate_button = nil;
+	whichPlayer = 0 				-- initializes tracking who's turn it is.
 	for i=1,unitGroup.numChildren do
 		print('unitGroup: ' .. unitGroup[i].id)
 		unitGroup[i]:removeEventListener("touch",UI.dragItem)

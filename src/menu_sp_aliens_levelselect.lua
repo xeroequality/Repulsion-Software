@@ -270,6 +270,61 @@ function scene:enterScene( event )
 		--Add the Runtime Listeners
 		Runtime:addEventListener("enterFrame",moveSpace)
 		
+		--Chapter Select
+		local chapterText = display.newText("Chapter 1",display.contentWidth/2,display.contentHeight-30,native.systemFont,26);
+	
+		
+		--Chapter Previous Button
+		prevChapter = display.newImage("../images/arrow_left_gray.png"); --The Previous Chapter Button (Left Arrow)
+		prevChapter.x = 40; prevChapter.y = display.contentHeight/2;
+		nextChapter = display.newImage("../images/arrow_right.png"); --The Next Chapter Button (Right Arrow)
+		nextChapter.x = display.contentWidth-40; nextChapter.y = display.contentHeight/2;
+		
+		gotoNextChapter = function(event) --Next Chapter Function
+			print(event.phase);
+			if event.phase == "began" and overlayVars.chapter < 7 then
+				overlayVars.chapter = overlayVars.chapter + 1;
+				chapterText.text = "Chapter "..overlayVars.chapter
+				if overlayVars.chapter == 2 then
+					prevChapter:removeSelf();
+					prevChapter = display.newImage("../images/arrow_left.png"); --The Previous Chapter Button (Left Arrow)
+					prevChapter.x = 40; prevChapter.y = display.contentHeight/2;
+					prevChapter:addEventListener("touch",gotoPreviousChapter);
+					group:insert(prevChapter);
+				end
+				if overlayVars.chapter == 7 then
+					nextChapter:removeSelf();
+					nextChapter = display.newImage("../images/arrow_right_gray.png"); --The Next Chapter Button (Right Arrow)
+					nextChapter.x = display.contentWidth-40; nextChapter.y = display.contentHeight/2;
+					nextChapter:addEventListener("touch",gotoNextChapter);
+					group:insert(nextChapter);
+				end
+			end
+		end
+		gotoPreviousChapter = function(event) --Previous Chapter Function
+			if event.phase == "began" and overlayVars.chapter > 1 then
+				overlayVars.chapter = overlayVars.chapter - 1;
+				chapterText.text = "Chapter "..overlayVars.chapter
+				if overlayVars.chapter == 6 then
+					nextChapter:removeSelf();
+					nextChapter = display.newImage("../images/arrow_right.png"); --The Next Chapter Button (Right Arrow)
+					nextChapter.x = display.contentWidth-40; nextChapter.y = display.contentHeight/2;
+					nextChapter:addEventListener("touch",gotoNextChapter);
+					group:insert(nextChapter);
+				end
+				if overlayVars.chapter == 1 then
+					prevChapter:removeSelf();
+					prevChapter = display.newImage("../images/arrow_left_gray.png"); --The Previous Chapter Button (Left Arrow)
+					prevChapter.x = 40; prevChapter.y = display.contentHeight/2;
+					prevChapter:addEventListener("touch",gotoPreviousChapter);
+					group:insert(prevChapter);
+				end
+			end
+		end
+		
+		prevChapter:addEventListener("touch",gotoPreviousChapter);
+		nextChapter:addEventListener("touch",gotoNextChapter);
+		
 		group:insert(space1)
 		group:insert(space2)
 		group:insert(earth)
@@ -277,6 +332,10 @@ function scene:enterScene( event )
 		for i = 1,5 do
 			group:insert(levelBtn[i].view)
 		end
+		
+		group:insert(chapterText);
+		group:insert(prevChapter);
+		group:insert(nextChapter);
 end
 
 function scene:exitScene( event )
@@ -291,6 +350,10 @@ function scene:exitScene( event )
 		closeOverlay = nil;
 		bounceUp = nil;
 		bounceDown = nil;
+		gotoNextChapter = nil;
+		gotoPreviousChapter = nil;
+		prevChapter = nil
+		nextChapter = nil
 		
 		--Cancel All Timers
 		local k, v

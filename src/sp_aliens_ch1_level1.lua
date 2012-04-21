@@ -18,6 +18,8 @@ local scene 	 		= storyboard.newScene()
 widget.setTheme("theme_ios")	
 transitionStash = {}	  	
 timerStash = {};
+local music_bg;
+
 ----------------------------------------------------------------------------------
 --      NOTE:
 --      Code outside of listener functions (below) will only be executed once,
@@ -109,7 +111,7 @@ function scene:enterScene( event )
 		--                PRESETS                 --
 		--------------------------------------------
 		local prev_music = audio.loadStream("../sound/O fortuna.mp3")
-        local music_bg = audio.loadStream("../sound/Bounty 30.ogg")
+        music_bg = audio.loadStream("../sound/Bounty 30.ogg")
         audio.fadeOut(prev_music, { time=5000 })
         o_play = audio.play(music_bg, {channel=3,fadein=5000 } )
 		--------------------

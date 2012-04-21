@@ -80,7 +80,30 @@ pauseMenu.switchTo = function(event)
 				overlay_section = "Settings";
 
 				showInfo = false;
+				
+				valueVol = display.newText("Your Volume",display.contentWidth *.55,display.contentHeight * 0.25,native.systemFont,16)
 
+		        local sliderListener1 = function( event )
+		            id = "Volume";
+		            local sliderObj1 = event.target;
+		            valueVol.text=event.target.value;
+		            print( "New value is: " .. event.target.value )
+		            audio.setVolume((event.target.value/100),{channel=3})
+					MenuSettings.onTesterBtnRelease(event)
+		        end
+		        -- Create the slider widget
+		        mySlider1 = widget.newSlider{
+		            callback=sliderListener1
+		        }
+		        -- Center the slider widget on the screen:
+		        mySlider1.x = display.contentWidth * 0.5
+		        mySlider1.y = display.contentHeight * 0.2
+		        -- insert the slider widget into a group:
+		        --group:insert(valueVol)
+		        --group:insert( mySlider1.view)
+
+
+		        --Create the slider for Sound Effects Control
 				valueSFX = display.newText("Your Sound Effects",display.contentWidth *.50,display.contentHeight * 0.65,native.systemFont,16)  
 
 				local sliderListener2 = function( event )
@@ -101,6 +124,11 @@ pauseMenu.switchTo = function(event)
 				mySlider2.x = display.contentWidth * 0.5
 				mySlider2.y = display.contentHeight * 0.6
 				-- insert the slider widget into a group:
+				
+				 --group:insert(valueSFX)
+			     --group:insert( mySlider2.view)
+			
+			
 			end
 			if target.section == "Main" then
 				--Switch to Loading Screen
@@ -123,6 +151,10 @@ pauseMenu.switchTo = function(event)
 					mySlider2 = nil
 					valueSFX:removeSelf()
 					valueSFX=nil
+					mySlider1:removeSelf()
+					mySlider1 = nil
+					valueVol:removeSelf()
+					valueVol=nil
 				end
 				overlay_section = "Main"
 				
@@ -526,6 +558,7 @@ pauseMenu.nilEverything = function()
 	overlayshade = nil; overlayrect = nil; backBtn = nil; pauseText = nil; restartBtn = nil;
 	exitBtn = nil; loadBtn = nil; saveBtn = nil; backMainBtn = nil; overwriteBtn = nil; settingsBtn = nil;
 	loadCBtn = nil; menuText = nil;
+	valueVol = nil; valueSFX = nil; mySlider1 =nil ; mySlider.view = nil; mySlider2 = nil; mySlider.view = nil;
 	
 	for k = 1, 20 do
 		--display.remove(slots[k]);

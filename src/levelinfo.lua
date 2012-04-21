@@ -16,7 +16,10 @@ LevelInfo = {
 		wallet = 5000,
 		achievementIDs = {
 			001,002,003
-		}
+		},
+		overlay = "../images/overlay_ch1.png",
+		flagX = 125,
+		flagY = 155
 	},
 	--ch1level2 = 
 	{
@@ -26,7 +29,10 @@ LevelInfo = {
 		wallet = 4000,
 		achievementIDs = {
 		002,004,005
-		}
+		},
+		overlay = "../images/overlay_ch1.png",
+		flagX = 205,
+		flagY = 250
 	},
 	--ch1level3 = 
 	{
@@ -36,7 +42,10 @@ LevelInfo = {
 		wallet = 5000,
 		achievementIDs = {
 		005
-		}
+		},
+		overlay = "../images/overlay_ch1.png",
+		flagX = 345,
+		flagY = 90
 	},
 	--ch1level4 = 
 	{
@@ -46,7 +55,10 @@ LevelInfo = {
 		wallet = 3500,
 		achievementIDs = {
 		006,007
-		}
+		},
+		overlay = "../images/overlay_ch1.png",
+		flagX = 345,
+		flagY = 115
 	},
 	--ch1level5 = 
 	{
@@ -56,7 +68,10 @@ LevelInfo = {
 		wallet = 2000,
 		achievementIDs = {
 		008,009,010
-		}
+		},
+		overlay = "../images/overlay_ch1.png",
+		flagX = 310,
+		flagY = 195
 	}
 },
 --ch2=
@@ -68,7 +83,10 @@ LevelInfo = {
 		wallet = 5000,
 		achievementIDs = {
 		001,002,003
-		}
+		},
+		overlay = "../images/overlay_ch2.png",
+		flagX = 315,
+		flagY = 130
 	},
 	--ch2level2 = 
 	{
@@ -78,7 +96,10 @@ LevelInfo = {
 		wallet = 4000,
 		achievementIDs = {
 		002,004,005
-		}
+		},
+		overlay = "../images/overlay_ch2.png",
+		flagX = 220,
+		flagY = 180
 	},
 	--ch2level3 =
  	{
@@ -88,7 +109,10 @@ LevelInfo = {
 		wallet = 5000,
 		achievementIDs = {
 		005
-		}
+		},
+		overlay = "../images/overlay_ch2.png",
+		flagX = 195,
+		flagY = 60
 	},
 	--ch2level4 =
  	{
@@ -98,7 +122,10 @@ LevelInfo = {
 		wallet = 3500,
 		achievementIDs = {
 		006,007
-		}
+		},
+		overlay = "../images/overlay_ch2.png",
+		flagX = 265,
+		flagY = 180
 	},
 	--ch2level5 = 
 	{
@@ -108,7 +135,10 @@ LevelInfo = {
 		wallet = 2000,
 		achievementIDs = {
 		008,009,010
-		}
+		},
+		overlay = "../images/overlay_ch2.png",
+		flagX = display.contentWidth/2,
+		flagY = display.contentHeight/2
 	}
 }
 }

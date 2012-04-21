@@ -50,16 +50,20 @@ function scene:enterScene( event )
 		local bounceDown, bounceUp		-- Bouncing button functions
 		local openOverlay, closeOverlay -- Overlay open/close functions
 		local overlayVars = {
-			img = "../images/overlay_grey.png",	-- Overlay image location
-			overlay = nil,						-- Overlay display object
-			isOpen = false,						-- Boolean for whether overlay is open/closed
-			chapter = 1,						-- Current chapter (FOR LATER USE)
-			closeBtn = nil,						-- Button to close overlay
-			playBtn = nil,						-- Button to select level
-			title = nil,						-- Level Info: Title
-			desc = nil,							-- Level Info: Description
-			parScore = nil,						-- Level Info: Par Score
-			wallet = nil						-- Level Info: Wallet
+			img = "../images/overlay_ch1.png",		-- Overlay image location
+			overlay = nil,							-- Overlay display object
+			isOpen = false,							-- Boolean for whether overlay is open/closed
+			chapter = 1,							-- Current chapter (FOR LATER USE)
+			closeBtn = nil,							-- Button to close overlay
+			playBtn = nil,							-- Button to select level
+			title = nil,							-- Level Info: Title
+			desc = nil,								-- Level Info: Description
+			parScore = nil,							-- Level Info: Par Score
+			wallet = nil,							-- Level Info: Wallet
+			flag = {
+				img = "../images/flag_white.png",	-- Flag image
+				view = nil							-- Flag view
+			}
 		}
 		
 		--chooseOptions(overlayVars.chapter);
@@ -68,6 +72,11 @@ function scene:enterScene( event )
 			if not overlayVars.isOpen then
 				print("opening overlay")
 				overlayVars.isOpen = true
+				
+				local buttonPressed = event.target.level
+				local levelInfo = levels[overlayVars.chapter][buttonPressed]
+				overlayVars.img = levelInfo.overlay
+				
 				-- Create overlay image
 				overlayVars.overlay = display.newImage(overlayVars.img)
 				overlayVars.overlay.x = W/2
@@ -75,9 +84,6 @@ function scene:enterScene( event )
 				overlayVars.overlay:scale(0,0)
 				group:insert(overlayVars.overlay)
 				-- Determine which information to show based on button pressed
-				local buttonPressed = event.target.level
-				
-				local levelInfo = levels[overlayVars.chapter][buttonPressed]
 				--print(levels[1][1].title);
 				
 				--[[local levelInfo = "levels.ch".. overlayVars.chapter .."level"..buttonPressed--]]
@@ -119,28 +125,37 @@ function scene:enterScene( event )
 					
 					overlayVars.playBtn.view.x=overlayVars.overlay.x+overlayVars.overlay.width/4+offset
 					overlayVars.playBtn.view.y=overlayVars.overlay.y+overlayVars.overlay.height/4+offset
+					-- Flag
+					overlayVars.flag.view = display.newImage(overlayVars.flag.img)
+					overlayVars.flag.view.x = levelInfo.flagX
+					overlayVars.flag.view.y = levelInfo.flagY
+					group:insert(overlayVars.flag.view)
 					-- Title
 					overlayVars.title = display.newText(levelInfo.title,0,0,native.systemFont,40)
 					overlayVars.title:setReferencePoint(display.CenterLeftReferencePoint)
 					overlayVars.title:scale(0.5,0.5)
+					overlayVars.title:setTextColor(0,0,0)
 					overlayVars.title.x = overlayVars.overlay.x-overlayVars.overlay.width/2+offset
 					overlayVars.title.y = overlayVars.overlay.y-overlayVars.overlay.height/2+10+offset
 					-- Description
 					overlayVars.desc = display.newText("Info: "..levelInfo.desc,0,0,native.systemFont,40)
 					overlayVars.desc:setReferencePoint(display.CenterLeftReferencePoint)
 					overlayVars.desc:scale(0.5,0.5)
+					overlayVars.desc:setTextColor(0,0,0)
 					overlayVars.desc.x = overlayVars.overlay.x-overlayVars.overlay.width/2+offset
 					overlayVars.desc.y = overlayVars.overlay.y-overlayVars.overlay.height/2+10+2*offset
 					-- Par Score
 					overlayVars.parScore = display.newText("Par Score: "..levelInfo.parScore,0,0,native.systemFont,40)
 					overlayVars.parScore:setReferencePoint(display.CenterLeftReferencePoint)
 					overlayVars.parScore:scale(0.5,0.5)
+					overlayVars.parScore:setTextColor(0,0,0)
 					overlayVars.parScore.x = overlayVars.overlay.x-overlayVars.overlay.width/2+offset
 					overlayVars.parScore.y = overlayVars.overlay.y-overlayVars.overlay.height/2+10+3*offset
 					-- Wallet
 					overlayVars.wallet = display.newText("Bank: $"..levelInfo.wallet,0,0,native.systemFont,40)
 					overlayVars.wallet:setReferencePoint(display.CenterLeftReferencePoint)
 					overlayVars.wallet:scale(0.5,0.5)
+					overlayVars.wallet:setTextColor(0,0,0)
 					overlayVars.wallet.x = overlayVars.overlay.x-overlayVars.overlay.width/2+offset
 					overlayVars.wallet.y = overlayVars.overlay.y-overlayVars.overlay.height/2+10+4*offset
 					
@@ -184,6 +199,10 @@ function scene:enterScene( event )
 				if overlayVars.wallet then
 					overlayVars.wallet:removeSelf()
 					overlayVars.wallet = nil
+				end
+				if overlayVars.flag.view then
+					overlayVars.flag.view:removeSelf()
+					overlayVars.flag.view = nil
 				end
 				local function removeOverlay(event)
 					print("overlay closed")
@@ -235,7 +254,7 @@ function scene:enterScene( event )
 		earth:setReferencePoint ( display.CenterReferencePoint )
 		earth.x = W/2-10; earth.y = H-80;
 		
-		--Move the Space Backgrounds
+		--Move the Space Backgroundsz
 		function moveSpace (event)
 			if space1.x >= 2*W then
 				space1.x = -2*W

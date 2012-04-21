@@ -28,7 +28,7 @@ Trophies = {
 	achievementsGained = 0, --Number of Achievements Received
 	parScoreReached = 0, --Number of Levels Where the Par Score was Reached
 	slotsUsed = 0, --Number of Save Slots that are Occupied
-	numOfAchievements = 16, --Update This Number When You Add an Achievements
+	numOfAchievements = 17, --Update This Number When You Add an Achievements
 	currentlyAchieving = false, --Is the Thing Showing the Achievements?
 	
 	--Bool Can be > < = ~= >= <=
@@ -49,7 +49,8 @@ Trophies = {
 		[13] = {ID = 013, Title = "Cheapskate", Description = "Keep 95% of Your Funds After Build Phase", Completed = false, Arg = {"maxPercentageofMoneyKept"}, Bool = {">="}, Value = {95}},
 		[14] = {ID = 014, Title = "A Winner is You!", Description = "Win 25 Battles", Completed = false, Arg = {"wins"}, Bool = {">="}, Value = {25}},
 		[15] = {ID = 015, Title = "An Achievement Achievement?", Description = "Achieve 7 Achievements", Completed = false, Arg = {"achievementsGained"}, Bool = {">="}, Value = {7}},
-		[16] = {ID = 016, Title = "One Hit Wonder", Description = "Win a Battle in One Turn", Completed = false, Arg = {"shortestNumofTurns"}, Bool = {"="}, Value = {1}}
+		[16] = {ID = 016, Title = "One Hit Wonder", Description = "Win a Battle in One Turn", Completed = false, Arg = {"shortestNumofTurns"}, Bool = {"="}, Value = {1}},
+		[17] = {ID = 017, Title = "Bullet Storm", Description = "Shoot 200 Times", Completed = false, Arg = {"weaponsShot"}, Bool = {">="}, Value = {100}}
 	}
 }
 

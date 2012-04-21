@@ -29,9 +29,11 @@ timerStash = {};
 ---------------------------------------------------------------------------------
 
 local function restart(event)
-	local label = "sp_aliens_ch1_level1"
-	print("released button " .. label)
-	storyboard.gotoScene( label, "fade", 200)
+	
+	
+	storyboard.labelFile = "sp_aliens_ch1_level1"
+	print("released button " .. storyboard.labelFile)
+	storyboard.gotoScene ( "levelrestarter", "fade", 200 )
 	return true	-- indicates successful touch
 
 end
@@ -211,9 +213,10 @@ function scene:enterScene( event )
 		
 		local function restart_level(event)
 			if event.phase == "ended" and restartBtn.alpha > 0 then
-				restart()
+				restart(event)
 			end
 		end
+		
 		local function exit_level(event)
 			if event.phase == "ended" and exitBtn.alpha > 0 then
 				-- Notify consle we're leaving, then leave...

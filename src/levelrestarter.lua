@@ -55,7 +55,7 @@ local group = self.view
 	
 	    --localGroup = display.newGroup()
 		print(storyboard.labelFile)
-	    storyboard.gotoScene( storyboard.labelFile, "fade", 200 )
+	    storyboard.gotoScene( storyboard.labelFile, "zoomInOutFade", 200 )
 	    --return localGroup
 	
 	

@@ -17,7 +17,7 @@ local function onBtnRelease(event)
 	local t = event.target
 	local label = t.id
 	print("released button " .. label)
-	storyboard.gotoScene( label, "fade", 200)
+	storyboard.gotoScene( label, "zoomInOutFade", 200)
 	return true	-- indicates successful touch
 	
 end

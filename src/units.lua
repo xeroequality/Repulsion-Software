@@ -22,32 +22,32 @@ end
 Unit.cannon = {
 	id=1000,
 	type='projectile',
-	img="../images/cannon_sm.png",
-	img_base="../images/cannon_base_sm.png",
-	img_dmg="../images/cannon_sm.png",
-	img_base_dmg="../images/cannon_base_sm.png",
+	img="../images/weapon_cat_cannon.png",
+	img_base="../images/weapon_cat_cannon_base.png",
+	img_dmg="../images/weapon_cat_cannon.png",
+	img_base_dmg="../images/weapon_cat_cannon_base.png",
 	img_weapon="../images/projectile_cannonball.png",
 	img_ui="../images/ui_item_cannon.png",
 	sfx="../sound/single_cannon_shot.wav",
 	rotation=0,
 	translate={
-		x=8,
-		y=-30
+		x=-20,
+		y=-40
 	},
 	objShape={	 	-- obj (weapon) array of shape vertices
-		0,10,			-- Top left point going clockwise
-		0,-10,
-		40,-10,
-		40,10			-- Bottom left
+		-10,10,			-- Top left point going clockwise
+		-10,-10,
+		30,-10,
+		30,10			-- Bottom left
 	},
 	objBaseShape={	-- obj (base) array of shape vertices
-		0,10,			-- Top left point going clockwise
+		-10,10,			-- Top left point going clockwise
 		40,10,
-		40,23,
-		0,23			-- Bottom left
+		40,18,
+		-10,18			-- Bottom left
 	},
-	scaleX=(1/3),
-	scaleY=(1/3),
+	scaleX=(2/5),
+	scaleY=(2/5),
 	maxHP=100,
 	cost=500,
 	resist={
@@ -411,7 +411,7 @@ Unit.weaponSystems = function(event)
 					-- enemyUnitGroup[i]:addEventListener('touch', Unit.weaponSystems)
 			-- end
 		else
-			fire()
+			timerStash.newTimer = timer.performWithDelay(2000, fire, 1)
 		end
 	end
 	removeWeaponBeyondFloor = function()
@@ -420,6 +420,22 @@ Unit.weaponSystems = function(event)
 			-- Follow the weapon while moving
 			Parallax.move_abs(math.round(Parallax.currentView.x + ((weaponSpriteInstance.x - Parallax.currentView.x) * 0.1)), math.round(Parallax.currentView.y + ((weaponSpriteInstance.y - Parallax.currentView.y) * 0.1)), "moved");
 		else
+			Runtime:removeEventListener('enterFrame', removeWeaponBeyondFloor)
+			-- Move View Back to User's Base
+			local whereTo
+			if math.mod(whichPlayer, 2) == 0 then -- if even (starting at zero being even) then player's turn otherwise AI's turn
+				whereTo = math.round(selectedUnit.x)
+				for i = math.round(Parallax.currentView.x), whereTo, 1 do
+					timerStash.newTimer = timer.performWithDelay(1000, Parallax.move_abs((Parallax.currentView.x + ((i - Parallax.currentView.x))), 0, "moved"), 1)
+					-- Parallax.move_abs(Parallax.currentView.x + ((i - Parallax.currentView.x) * 0.01), 0, "moved");
+				end
+			else
+				whereTo = math.round(clickedUnit.x)
+				for i = math.round(Parallax.currentView.x), whereTo, -1 do
+					timerStash.newTimer = timer.performWithDelay(1000, Parallax.move_abs((Parallax.currentView.x + ((i - Parallax.currentView.x))), 0, "moved"), 1)
+					-- Parallax.move_abs(Parallax.currentView.x + ((i - Parallax.currentView.x) * 0.01), 0, "moved");
+				end
+			end
 			Runtime:removeEventListener('enterFrame', removeWeaponBeyondFloor)
 			Parallax.move_abs(math.round(Parallax.currentView.x), math.round(Parallax.currentView.y), "ended");
 			-- Remove Simulation Handle				
@@ -431,11 +447,18 @@ Unit.weaponSystems = function(event)
 					deleteWeapon()
 			end
 		end
-	end	removeWeaponOnCollision = function()
+	end
+	removeWeaponOnCollision = function()
 		weaponSpriteInstance:removeEventListener('collision', removeWeaponOnCollision)  -- makes it so it only activates on the first collision
 		print('deleting the ball')
-		if clickedUnit.type == 'projectile' or selectedUnit.type == 'projectile' then
-			weaponSpriteInstance:pause()
+		if (clickedUnit.weaponExists) then
+			if clickedUnit.type == 'projectile' then
+				weaponSpriteInstance:pause()
+			end
+		elseif (selectedUnit.weaponExists) then
+			if selectedUnit.type == 'projectile' then
+				weaponSpriteInstance:pause()
+			end
 		end
 		timerStash.newTimer = timer.performWithDelay(5000, deleteWeapon, 1)
 	end

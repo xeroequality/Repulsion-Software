@@ -35,7 +35,7 @@ local function restart(event)
 	
 	storyboard.labelFile = "sp_aliens_ch1_level1"
 	print("released button " .. storyboard.labelFile)
-	storyboard.gotoScene ( "levelrestarter", "fade", 200 )
+	storyboard.gotoScene ( "levelrestarter", "zoomInOutFade", 200 )
 	return true	-- indicates successful touch
 
 end
@@ -223,7 +223,7 @@ function scene:enterScene( event )
 			if event.phase == "ended" and exitBtn.alpha > 0 then
 				-- Notify consle we're leaving, then leave...
 				print("Exiting Level...")
-				storyboard.gotoScene("loading_exitLevel", "fade", 500)
+				storyboard.gotoScene("loading_exitLevel", "zoomInOutFade", 500)
 				return true	-- indicates successful touch
 			end
 		end

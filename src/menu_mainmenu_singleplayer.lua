@@ -33,9 +33,9 @@ local function goToScreen()
 
 	-- Check which Screen to Goto
 	print(buttonLabel)
-	if buttonLabel=="prev" then storyboard.gotoScene( "menu_mainmenu", "fade", 200 ) end
-	if buttonLabel=="cat"  then storyboard.gotoScene( "menu_levelselect", "fade", 200 ) end
-	if buttonLabel=="alien"  then storyboard.gotoScene( "menu_levelselect", "fade", 200 ) end
+	if buttonLabel=="prev" then storyboard.gotoScene( "menu_mainmenu", "zoomInOutFade", 200 ) end
+	if buttonLabel=="cat"  then storyboard.gotoScene( "menu_levelselect", "zoomInOutFade", 200 ) end
+	if buttonLabel=="alien"  then storyboard.gotoScene( "menu_levelselect", "zoomInOutFade", 200 ) end
 
 	return true
 

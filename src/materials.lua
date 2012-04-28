@@ -15,6 +15,7 @@ Material.wood_plank = {
 	img="../images/wood_plank.png",
 	img_dmg="../images/wood_plank.png",
 	img_ui="../images/ui_item_wooden_plank.png",
+	materialSFX="../sound/basicImpact.mp3",
 	shape={
 		-18,-7*0.5,
 		18,-7*0.5,
@@ -46,6 +47,7 @@ Material.wood_box = {
 	img="../images/wood_box.png",
 	img_dmg="../images/wood_box.png",
 	img_ui="../images/ui_item_wooden_box.png",
+	materialSFX="../sound/basicImpact.mp3",
 	shape={
 		-18,-18,
 		18,-18,
@@ -77,6 +79,7 @@ Material.granite_slab = {
 	img="../images/granite_slab.png",
 	img_dmg="../images/granite_slab.png",
 	img_ui="../images/ui_item_granite_slab.png",
+	materialSFX="../sound/fallingWoodenBox.mp3",
 	shape={
 		-18,-7,
 		 18,-7,
@@ -108,6 +111,7 @@ Material.glass_sheet = {
 	img="../images/glass_sheet.png",
 	img_dmg="../images/glass_sheet.png",
 	img_ui="../images/ui_item_glass_sheet.png",
+	materialSFX="../sound/glassImpact.mp3",
 	shape={
 		-18,-3,
 		 18,-3,
@@ -139,6 +143,7 @@ Material.glass_tri = {
 	img="../images/glass_triangle.png",
 	img_dmg="../images/glass_triangle.png",
 	img_ui="../images/ui_item_glass_triangle.png",
+	materialSFX="../sound/glassBreaking.mp3",
 	shape={
 		  0,-18,
 		 18, 18,
@@ -169,6 +174,7 @@ Material.wood_plank_alien = {
 	img="../images/wood_plank_alien.png",
 	img_dmg="../images/wood_plank_alien.png",
 	img_ui="../images/ui_item_wooden_plank_alien.png",
+	materialSFX="../sound/basicImpact.mp3",
 	shape={
 		-18,-3,
 		 18,-3,
@@ -200,6 +206,7 @@ Material.wood_box_alien = {
 	img="../images/wood_box_alien.png",
 	img_dmg="../images/wood_box_alien.png",
 	img_ui="../images/ui_item_wooden_box_alien.png",
+	materialSFX="../sound/basicImpact.mp3",
 	shape={
 		-18,-18,
 		18,-18,
@@ -231,6 +238,7 @@ Material.aerogel = {
 	img="../images/aerogel.png",
 	img_dmg="../images/aerogel.png",
 	img_ui="../images/ui_item_aerogel.png",
+	materialSFX="../sound/fireBall.mp3",
 	shape={
 		-18,-18,
 		18,-18,
@@ -262,6 +270,7 @@ Material.nanotube = {
 	img="../images/nanotube.png",
 	img_dmg="../images/nanotube.png",
 	img_ui="../images/ui_item_nanotube.png",
+	materialSFX="../sound/fallingWoodenBox.mp3",
 	shape={
 		-18,-7,
 		 18,-7,
@@ -313,6 +322,7 @@ Material.clone = function(id)
 			obj.id=cloner.id
 			obj.img_dmg=cloner.img_dmg
 			obj.img_ui=cloner.img_ui
+			obj.materialSFX=cloner.materialSFX
 			obj.shape=cloner.shape
 			obj:scale(cloner.scaleX,cloner.scaleY)
 			obj.maxHP=cloner.maxHP

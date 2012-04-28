@@ -11,7 +11,7 @@ local playBtn
 
 -- 'onRelease' event listener for playBtn
 local function onPlayBtnRelease()
-	storyboard.gotoScene( "menu_mainmenu", "fade", 200)
+	storyboard.gotoScene( "menu_mainmenu", "zoomInOutFade", 200)
 	return true	-- indicates successful touch
 end
 

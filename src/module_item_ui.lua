@@ -344,10 +344,10 @@ end
 --Collision
 
 UI.hit = function(event)
-	local threshold = 1;
-	if (event.other).power ~= nil then
+	local threshold = 4;
+	--if (event.other).power ~= nil then
 		if event.force >= threshold then
-			local damage = math.ceil((event.force*(event.other).power));
+			local damage = math.ceil((event.force));
 			(event.target).currentHP = (event.target).currentHP - damage;
 			Score.addtoScore(damage);
 			print((event.target).currentHP)
@@ -374,7 +374,7 @@ UI.hit = function(event)
 			end
 			print(Achievements.getValue("totalScore"));
 		end
-	end
+	--end
 end
 
 return UI;

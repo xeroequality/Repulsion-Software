@@ -18,7 +18,7 @@ local scene = storyboard.newScene()
 --      unless storyboard.removeScene() is called.
 -- 
 ----------------------------------------------------------------------------------- Forward declaration of back button and listener-- Only used / executed once, so can be placed outside storyboard-- (as said in NOTE above)
-local backBtn		local function onBackBtnRelease (event)	storyboard.gotoScene( "menu_splash", "fade", 500 )	return trueend
+local backBtn		local function onBackBtnRelease (event)	storyboard.gotoScene( "menu_splash", "zoomInOutFade", 500 )	return trueend
 ---------------------------------------------------------------------------------
 -- BEGINNING OF YOUR IMPLEMENTATION
 ---------------------------------------------------------------------------------

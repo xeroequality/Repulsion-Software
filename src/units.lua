@@ -340,7 +340,7 @@ Unit.weaponSystems = function(event)
 				end
 			end
 		else
-			selectedUnit = enemyUnitGroup[math.random(enemyUnitGroup.numChildren)]
+			selectedUnit = enemyUnitGroup[math.random(1,enemyUnitGroup.numChildren)]
 
 			-- local deltaYDivX = (-1)*math.random(0,180)
 			-- local cannonRotation = (180/math.pi)*math.atan(deltaYDivX) - selectedUnit.rotation -- rotates the cannon based on the trajectory line

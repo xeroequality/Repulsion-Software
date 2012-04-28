@@ -26,11 +26,11 @@ Material.wood_plank = {
 	maxHP=100,
 	cost=50,
 	resist={
-		basic=1,
+		basic=1.5,
 		fire=1,
-		water=1,
-		explosive=1,
-		electric=1
+		water=0.7,
+		explosive=1.5,
+		electric=0.5
 	},
 	density=0.8,
 	friction=0.9,
@@ -57,11 +57,11 @@ Material.wood_box = {
 	maxHP=300,
 	cost=200,
 	resist={
-		basic=1,
+		basic=1.5,
 		fire=1,
-		water=1,
-		explosive=1,
-		electric=1
+		water=0.7,
+		explosive=1.5,
+		electric=0.5
 	},
 	density=0.9,
 	friction=0.9,
@@ -88,11 +88,11 @@ Material.granite_slab = {
 	maxHP=100,
 	cost=75,
 	resist={
-		basic=1,
-		fire=0.5,
-		water=1,
-		explosive=1,
-		electric=0.5
+		basic=1.5,
+		fire=0.4,
+		water=0.6,
+		explosive=1.5,
+		electric=0.4
 	},
 	density=5.0,
 	friction=0.9,
@@ -120,9 +120,9 @@ Material.glass_sheet = {
 	cost=50,
 	resist={
 		basic=2,
-		fire=0.5,
-		water=1,
-		explosive=1,
+		fire=0.2,
+		water=0.2,
+		explosive=2,
 		electric=0.5
 	},
 	density=2.0,
@@ -150,9 +150,9 @@ Material.glass_tri = {
 	cost=50,
 	resist={
 		basic=2,
-		fire=0.5,
-		water=1,
-		explosive=1,
+		fire=0.2,
+		water=0.2,
+		explosive=2,
 		electric=0.5
 	},
 	density=2.0,
@@ -165,7 +165,7 @@ Material.glass_tri = {
 -- Faction: Aliens
 ------------------------------
 Material.wood_plank_alien = {
-	id = 11,
+	id = 100,
 	img="../images/wood_plank_alien.png",
 	img_dmg="../images/wood_plank_alien.png",
 	img_ui="../images/ui_item_wooden_plank_alien.png",
@@ -180,11 +180,11 @@ Material.wood_plank_alien = {
 	maxHP=100,
 	cost=50,
 	resist={
-		basic=1,
-		fire=0.5,
-		water=1,
-		explosive=1,
-		electric=2
+		basic=1.5,
+		fire=1,
+		water=0.7,
+		explosive=1.5,
+		electric=0.5
 	},
 	density=0.8,
 	friction=1,
@@ -196,7 +196,7 @@ Material.wood_plank_alien = {
 -- Faction: Aliens
 ------------------------------
 Material.wood_box_alien = {
-	id = 12,
+	id = 101,
 	img="../images/wood_box_alien.png",
 	img_dmg="../images/wood_box_alien.png",
 	img_ui="../images/ui_item_wooden_box_alien.png",
@@ -208,13 +208,13 @@ Material.wood_box_alien = {
 	},
 	scaleX=(1/6),
 	scaleY=(1/6),
-	maxHP=100,
+	maxHP=30,
 	cost=50,
 	resist={
 		basic=1,
-		fire=0.5,
-		water=1,
-		explosive=1,
+		fire=0.4,
+		water=0.7,
+		explosive=1.0,
 		electric=2
 	},
 	density=0.8,
@@ -227,7 +227,7 @@ Material.wood_box_alien = {
 -- Faction: Aliens
 ------------------------------
 Material.aerogel = {
-	id = 13,
+	id = 102,
 	img="../images/aerogel.png",
 	img_dmg="../images/aerogel.png",
 	img_ui="../images/ui_item_aerogel.png",
@@ -239,14 +239,14 @@ Material.aerogel = {
 	},
 	scaleX=(1/6),
 	scaleY=(1/6),
-	maxHP=500,
+	maxHP=15,
 	cost=400,
 	resist={
 		basic=1,
-		fire=0.5,
-		water=2,
-		explosive=1,
-		electric=0.5
+		fire=0.2,
+		water=0.5,
+		explosive=0.7,
+		electric=0.2
 	},
 	density=0.1,
 	friction=1,
@@ -254,11 +254,11 @@ Material.aerogel = {
 }
 
 ------------------------------
--- Aerogel
+-- Carbon Nanotube
 -- Faction: Aliens
 ------------------------------
 Material.nanotube = {
-	id = 14,
+	id = 103,
 	img="../images/nanotube.png",
 	img_dmg="../images/nanotube.png",
 	img_ui="../images/ui_item_nanotube.png",
@@ -273,11 +273,11 @@ Material.nanotube = {
 	maxHP=500,
 	cost=150,
 	resist={
-		basic=0.5,
-		fire=2,
-		water=1,
+		basic=0.4,
+		fire=1.4,
+		water=0.5,
 		explosive=1,
-		electric=0.5
+		electric=0.4
 	},
 	density=1.5,
 	friction=1,
@@ -299,13 +299,13 @@ Material.clone = function(id)
 			cloner = Material.glass_sheet
 		elseif id == 5 then
 			cloner = Material.glass_tri
-		elseif id == 11 then
+		elseif id == 100 then
 			cloner = Material.wood_plank_alien
-		elseif id == 12 then
+		elseif id == 101 then
 			cloner = Material.wood_box_alien
-		elseif id == 13 then
+		elseif id == 102 then
 			cloner = Material.aerogel
-		elseif id == 14 then
+		elseif id == 103 then
 			cloner = Material.nanotube
 		end
 			obj=display.newImage(cloner.img)

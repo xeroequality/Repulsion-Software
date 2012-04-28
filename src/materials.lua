@@ -289,6 +289,7 @@ Material.nanotube = {
 -- Pass in an object with an "id" that matches the material,
 --   that object will have all properties of that material.
 Material.clone = function(id)
+		print(id);
 		if id == 1 then
 			cloner = Material.wood_plank
 		elseif id == 2 then

@@ -44,7 +44,7 @@ end
 function scene:createScene( event )
         local group = self.view
 		physics.start()
-		-- physics.setDrawMode("hybrid")
+		physics.setDrawMode("hybrid")
 
 		-- -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
 		-- Setup Parameters for Parallax View
@@ -121,6 +121,7 @@ function scene:enterScene( event )
 		local levelObjs = { -- Use this to choose what is items are available in this level
 			Materials.wood_plank_alien,
 			Materials.wood_box_alien,
+			Units.cat_cannon,
 			Units.energyBall,
 			Units.repulsionBall
 		}

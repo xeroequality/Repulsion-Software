@@ -19,7 +19,7 @@ Unit.setFlr = function(inFloorLeft, inFloorWidth)
 	Flr.wdth = inFloorWidth
 end
 	
-Unit.cannon = {
+Unit.cat_cannon = {
 	id=1000,
 	type='projectile',
 	img="../images/weapon_cat_cannon.png",
@@ -64,6 +64,10 @@ Unit.cannon = {
 	objBaseFriction=0.9,
 	objBaseBounce=0,
 	weapon = display.newImage(""),
+	translateWeapon={
+		x=0,
+		y=0
+	},
 	weaponScaleX=(2/3),
 	weaponScaleY=(2/3),
 	weaponExists=false,
@@ -101,10 +105,10 @@ Unit.energyBall = {
 		y=80
 	},
 	objShape={	 	-- obj (weapon) array of shape vertices
-		20,0,			-- Top left point going clockwise
-		20,50,
+		20,0,		-- Top left point going clockwise
+		60,0,
 		60,50,
-		60,0			-- Bottom left
+		20,50		-- Bottom left
 	},
 	objBaseShape={	-- obj (base) array of shape vertices
 		0,50,			-- Top left point going clockwise
@@ -130,6 +134,10 @@ Unit.energyBall = {
 	objBaseFriction=0.9,
 	objBaseBounce=0,
 	weapon = display.newImage(""),
+	translateWeapon={
+		x=80,
+		y=15
+	},
 	weaponScaleX=(2/3),
 	weaponScaleY=(2/3),
 	weaponExists=false,
@@ -163,10 +171,10 @@ Unit.repulsionBall = {
 		y=80
 	},
 	objShape={	 	-- obj (weapon) array of shape vertices
-		20,0,			-- Top left point going clockwise
-		20,50,
+		20,0,		-- Top left point going clockwise
+		60,0,
 		60,50,
-		60,0			-- Bottom left
+		20,50		-- Bottom left
 	},
 	objBaseShape={	-- obj (base) array of shape vertices
 		0,50,			-- Top left point going clockwise
@@ -192,6 +200,10 @@ Unit.repulsionBall = {
 	objBaseFriction=0.9,
 	objBaseBounce=0,
 	weapon = display.newImage(""),
+	translateWeapon={
+		x=80,
+		y=15
+	},
 	weaponScaleX=(1/3),
 	weaponScaleY=(1/3),
 	weaponExists=false,
@@ -304,8 +316,8 @@ Unit.weaponSystems = function(event)
 						end
 
 						-- move the image
-						weaponSpriteInstance.x = clickedUnit.x + clickedUnit.translateX 				-- need to work on this
-						weaponSpriteInstance.y = clickedUnit.y + clickedUnit.translateY					-- and this
+						weaponSpriteInstance.x = clickedUnit.x + clickedUnit.translateWeaponX 				-- need to work on this
+						weaponSpriteInstance.y = clickedUnit.y + clickedUnit.translateWeaponY				-- and this
 						unitGroup:insert(weaponSpriteInstance)
 						print('unitGroup: ' .. unitGroup.numChildren)
 
@@ -323,7 +335,7 @@ Unit.weaponSystems = function(event)
 						weaponSpriteInstance.isBullet = true
 
 						-- fire the weapon            
-						weaponSpriteInstance:applyForce( (event.x - crosshair.x)*Unit.cannon.weaponForce, (event.y - (crosshair.y))*Unit.cannon.weaponForce, clickedUnit.x, clickedUnit.y )
+						weaponSpriteInstance:applyForce( (event.x - crosshair.x)*clickedUnit.weaponForce, (event.y - (crosshair.y))*clickedUnit.weaponForce, clickedUnit.x, clickedUnit.y )
 						weaponSFX = audio.loadSound(clickedUnit.sfx)
 						weaponSFXed = audio.play( weaponSFX,{channel=2} )
 						-- make sure that the cannon is on top of the 
@@ -372,8 +384,8 @@ Unit.weaponSystems = function(event)
 			end
 
 			-- move the image
-			weaponSpriteInstance.x = selectedUnit.x + selectedUnit.translateX 				-- need to work on this
-			weaponSpriteInstance.y = selectedUnit.y + selectedUnit.translateY					-- and this
+			weaponSpriteInstance.x = selectedUnit.x + selectedUnit.translateWeaponX 				-- need to work on this
+			weaponSpriteInstance.y = selectedUnit.y + selectedUnit.translateWeaponY				-- and this
 			enemyUnitGroup:insert(weaponSpriteInstance)
 
 			-- apply physics to the weapon
@@ -393,9 +405,10 @@ Unit.weaponSystems = function(event)
 			local xForce = (yForce*gy*range)/math.sqrt(math.abs(4*math.pow(yForce,2)-math.pow(gy,2)*math.pow(range,2)))
 			print('g^2*r^2: ' .. math.pow(gy,2)*math.pow(range,2))
 			print('xforce: ' .. xForce)
-			local cannonRotation = (180/math.pi)*math.atan(yForce/xForce)
-			selectedUnit.rotation = cannonRotation]]--
 			
+			local cannonRotation = (180/math.pi)*math.atan(-500/-100)
+			selectedUnit.rotation = cannonRotation
+			]]--
 			weaponSpriteInstance:applyForce( -500, -100, selectedUnit.x, selectedUnit.y )
 			weaponSFX = audio.loadSound(selectedUnit.sfx)
 			weaponSFXed = audio.play( weaponSFX,{channel=2} )
@@ -407,13 +420,14 @@ Unit.weaponSystems = function(event)
 		Runtime:removeEventListener('enterFrame', removeWeaponBeyondFloor)
 		if (clickedUnit.weaponExists) then
 			clickedUnit.weaponExists = false
+			weaponSpriteInstance:removeSelf()
 			clickedUnit.parent:remove( clickedUnit.weapon )
 		elseif (selectedUnit.weaponExists) then
 			selectedUnit.weaponExists = false
+			weaponSpriteInstance:removeSelf()
 			selectedUnit.parent:remove( selectedUnit.weapon )
 		end
 		print('ball deleted')
-		weaponSpriteInstance:removeSelf()
 		whichPlayer = whichPlayer + 1
 		if (unitGroup.numChildren >= 1 and enemyUnitGroup.numChildren  >= 1) then
 			if math.mod(whichPlayer, 2) == 0 then -- if even (starting at zero being even) then player's turn otherwise AI's turn
@@ -497,7 +511,7 @@ end
 Unit.clone = function(id)
 	unitObjGroup = display.newGroup()
 	if id == 1000 then
-		cloner = Unit.cannon
+		cloner = Unit.cat_cannon
 	elseif id == 1009 then
 		cloner = Unit.energyBall
 	elseif id == 1010 then
@@ -537,6 +551,8 @@ Unit.clone = function(id)
 		unitObjGroup.objBaseFriction=cloner.objBaseFriction
 		unitObjGroup.objBaseBounce=cloner.objBaseBounce
 		unitObjGroup.weaponExists=cloner.weaponExists
+		unitObjGroup.translateWeaponX=cloner.translateWeapon.x
+		unitObjGroup.translateWeaponY=cloner.translateWeapon.y
 		unitObjGroup.weaponScaleX=cloner.weaponScaleX
 		unitObjGroup.weaponScaleY=cloner.weaponScaleY
 		unitObjGroup.weaponProperties={

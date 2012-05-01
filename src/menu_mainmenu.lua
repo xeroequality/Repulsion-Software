@@ -74,6 +74,11 @@ function scene:enterScene( event )
         -----------------------------------------------------------------------------
         --      INSERT code here (e.g. start timers, load audio, start listeners, etc.)
 		-----------------------------------------------------------------------------
+		local prev_music = audio.loadStream("../sound/alienIntroMusic.mp3")
+        local music_bg = audio.loadStream("../sound/O Fortuna.mp3")
+        audio.fadeOut(prev_music, { time=2000 })
+        o_play = audio.play(music_bg, {fadein=2000,loops=-1 } )
+		
 		spBtn = widget.newButton{
 			id="menu_sp_main",
 			label="Single Player",

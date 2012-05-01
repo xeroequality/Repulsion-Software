@@ -402,16 +402,25 @@ Unit.weaponSystems = function(event)
 		print('ball deleted')
 		weaponSpriteInstance:removeSelf()
 		whichPlayer = whichPlayer + 1
-		if math.mod(whichPlayer, 2) == 0 then -- if even (starting at zero being even) then player's turn otherwise AI's turn
-			for i=1,unitGroup.numChildren do
-					unitGroup[i]:addEventListener('touch', Unit.weaponSystems)
+		if (unitGroup.numChildren >= 1 and enemyUnitGroup.numChildren  >= 1) then
+			if math.mod(whichPlayer, 2) == 0 then -- if even (starting at zero being even) then player's turn otherwise AI's turn
+				for i=1,unitGroup.numChildren do
+						unitGroup[i]:addEventListener('touch', Unit.weaponSystems)
+				end
+				-- enable this to enable pass and play
+				-- for i=1,enemyUnitGroup.numChildren do
+						-- enemyUnitGroup[i]:addEventListener('touch', Unit.weaponSystems)
+				-- end
+			else
+				timerStash.newTimer = timer.performWithDelay(2000, fire, 1)
 			end
-			-- enable this to enable pass and play
-			-- for i=1,enemyUnitGroup.numChildren do
-					-- enemyUnitGroup[i]:addEventListener('touch', Unit.weaponSystems)
-			-- end
-		else
-			timerStash.newTimer = timer.performWithDelay(2000, fire, 1)
+			else
+			-- Game is over
+			if math.mod(whichPlayer, 2) == 0 then -- if even (starting at zero being even) then player's turn otherwise AI's turn
+				print('Computer has won the game')
+			else 
+				print('Player has won the game')
+			end
 		end
 	end
 	removeWeaponBeyondFloor = function()

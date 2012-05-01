@@ -301,7 +301,7 @@ function scene:enterScene( event )
 		
 		gotoNextChapter = function(event) --Next Chapter Function
 			print(event.phase);
-			if event.phase == "began" and overlayVars.chapter < 7 then
+			if event.phase == "began" and overlayVars.chapter < 7 and overlayVars.isOpen == false then
 				overlayVars.chapter = overlayVars.chapter + 1;
 				chapterText.text = "Chapter "..overlayVars.chapter
 				if overlayVars.chapter == 2 then
@@ -321,7 +321,7 @@ function scene:enterScene( event )
 			end
 		end
 		gotoPreviousChapter = function(event) --Previous Chapter Function
-			if event.phase == "began" and overlayVars.chapter > 1 then
+			if event.phase == "began" and overlayVars.chapter > 1 and overlayVars.isOpen == false then
 				overlayVars.chapter = overlayVars.chapter - 1;
 				chapterText.text = "Chapter "..overlayVars.chapter
 				if overlayVars.chapter == 6 then

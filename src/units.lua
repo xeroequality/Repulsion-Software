@@ -382,7 +382,7 @@ Unit.weaponSystems = function(event)
 			physics.addBody( weaponSpriteInstance, { density=selectedUnit.weaponDensity, friction=selectedUnit.weaponFriction, bounce=selectedUnit.weaponBounce, radius=selectedUnit.weaponRadius, filter=enemyweaponCollisionFilter} )
 			weaponSpriteInstance.isBullet = true
 
-			-- fire the weapon          
+			-- fire the weapon
 			weaponSpriteInstance:applyForce( -700, -100, selectedUnit.x, selectedUnit.y )
 			weaponSFX = audio.loadSound(selectedUnit.sfx)
 			weaponSFXed = audio.play( weaponSFX,{channel=2} )

@@ -477,6 +477,7 @@ pauseMenu.createOverlay = function(group)
 		pauseText.static = "Yes"; backBtn.static = "Yes"; restartBtn.static = "Yes"; exitBtn.static = "Yes"; overwriteBtn.static = "Yes"
 		loadCBtn.static = "Yes"; menuText.static = "Yes"; settingsBtn.static = "Yes";
 		
+		--[[
 		group:insert(overlayshade)
 		group:insert(overlayrect)
 		group:insert(backBtn)
@@ -492,7 +493,7 @@ pauseMenu.createOverlay = function(group)
 		group:insert(menuText);
 		for k = 1, 20 do
 			group:insert(slots[k]);
-		end
+		end--]]
 		
 		backMainBtn:addEventListener("touch",pauseMenu.switchTo);
 		loadBtn:addEventListener("touch",pauseMenu.switchTo);
@@ -547,18 +548,18 @@ end
 
 pauseMenu.nilEverything = function()
 
-	--[[Delete Anything that Isn't Already Gone
+	--Delete Anything that Isn't Already Gone
 	display.remove(overlayshade); display.remove(overlayrect);
 	display.remove(backBtn); display.remove(pauseText); display.remove(restartBtn);
 	display.remove(exitBtn); display.remove(loadBtn); display.remove(saveBtn);
 	display.remove(backMainBtn); display.remove(overwriteBtn); display.remove(settingsBtn);
-	display.remove(loadCBtn); display.remove(menuText);--]]
+	display.remove(loadCBtn); display.remove(menuText);
 	
 	--Nil the Variables
 	overlayshade = nil; overlayrect = nil; backBtn = nil; pauseText = nil; restartBtn = nil;
 	exitBtn = nil; loadBtn = nil; saveBtn = nil; backMainBtn = nil; overwriteBtn = nil; settingsBtn = nil;
 	loadCBtn = nil; menuText = nil;
-	valueVol = nil; valueSFX = nil; mySlider1 =nil ; mySlider.view = nil; mySlider2 = nil; mySlider.view = nil;
+	valueVol = nil; valueSFX = nil;
 	
 	for k = 1, 20 do
 		--display.remove(slots[k]);

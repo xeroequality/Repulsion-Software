@@ -383,7 +383,20 @@ Unit.weaponSystems = function(event)
 			weaponSpriteInstance.isBullet = true
 
 			-- fire the weapon
-			weaponSpriteInstance:applyForce( -700, -100, selectedUnit.x, selectedUnit.y )
+			-- AI stuff I couldn't get working right
+			--[[local yForce = -100
+			selectedTarget = unitGroup[math.random(1,unitGroup.numChildren)]
+			local range = (selectedUnit.x - selectedTarget.x)
+			local gx, gy = physics.getGravity()
+			print('gravity: ' .. gy)
+			print('range: ' .. range)
+			local xForce = (yForce*gy*range)/math.sqrt(math.abs(4*math.pow(yForce,2)-math.pow(gy,2)*math.pow(range,2)))
+			print('g^2*r^2: ' .. math.pow(gy,2)*math.pow(range,2))
+			print('xforce: ' .. xForce)
+			local cannonRotation = (180/math.pi)*math.atan(yForce/xForce)
+			selectedUnit.rotation = cannonRotation]]--
+			
+			weaponSpriteInstance:applyForce( -500, -100, selectedUnit.x, selectedUnit.y )
 			weaponSFX = audio.loadSound(selectedUnit.sfx)
 			weaponSFXed = audio.play( weaponSFX,{channel=2} )
 			Runtime:addEventListener('enterFrame', removeWeaponBeyondFloor)

@@ -307,14 +307,14 @@ function scene:enterScene( event )
 				if overlayVars.chapter == 2 then
 					prevChapter:removeSelf();
 					prevChapter = display.newImage("../images/arrow_left.png"); --The Previous Chapter Button (Left Arrow)
-					prevChapter.x = 40; prevChapter.y = display.contentHeight/2;
+					prevChapter.x = 70; prevChapter.y = display.contentHeight/2;
 					prevChapter:addEventListener("touch",gotoPreviousChapter);
 					group:insert(prevChapter);
 				end
 				if overlayVars.chapter == 7 then
 					nextChapter:removeSelf();
 					nextChapter = display.newImage("../images/arrow_right_gray.png"); --The Next Chapter Button (Right Arrow)
-					nextChapter.x = display.contentWidth-40; nextChapter.y = display.contentHeight/2;
+					nextChapter.x = display.contentWidth-70; nextChapter.y = display.contentHeight/2;
 					nextChapter:addEventListener("touch",gotoNextChapter);
 					group:insert(nextChapter);
 				end
@@ -327,14 +327,14 @@ function scene:enterScene( event )
 				if overlayVars.chapter == 6 then
 					nextChapter:removeSelf();
 					nextChapter = display.newImage("../images/arrow_right.png"); --The Next Chapter Button (Right Arrow)
-					nextChapter.x = display.contentWidth-40; nextChapter.y = display.contentHeight/2;
+					nextChapter.x = display.contentWidth-70; nextChapter.y = display.contentHeight/2;
 					nextChapter:addEventListener("touch",gotoNextChapter);
 					group:insert(nextChapter);
 				end
 				if overlayVars.chapter == 1 then
 					prevChapter:removeSelf();
 					prevChapter = display.newImage("../images/arrow_left_gray.png"); --The Previous Chapter Button (Left Arrow)
-					prevChapter.x = 40; prevChapter.y = display.contentHeight/2;
+					prevChapter.x = 70; prevChapter.y = display.contentHeight/2;
 					prevChapter:addEventListener("touch",gotoPreviousChapter);
 					group:insert(prevChapter);
 				end

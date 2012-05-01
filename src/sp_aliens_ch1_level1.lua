@@ -121,7 +121,6 @@ function scene:enterScene( event )
 		local levelObjs = { -- Use this to choose what is items are available in this level
 			Materials.wood_plank_alien,
 			Materials.wood_box_alien,
-			Units.cannon,
 			Units.energyBall,
 			Units.repulsionBall
 		}

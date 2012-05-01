@@ -27,24 +27,24 @@ Unit.cannon = {
 	img_dmg="../images/weapon_cat_cannon.png",
 	img_base_dmg="../images/weapon_cat_cannon_base.png",
 	img_weapon="../images/projectile_cannonball.png",
-	img_ui="../images/ui_item_cannon.png",
+	img_ui="../images/ui_item_catCannon.png",
 	sfx="../sound/single_cannon_shot.wav",
 	rotation=0,
 	translate={
 		x=-20,
-		y=-40
+		y=-50
 	},
 	objShape={	 	-- obj (weapon) array of shape vertices
-		-10,10,			-- Top left point going clockwise
-		-10,-10,
-		30,-10,
-		30,10			-- Bottom left
+		-10,0,			-- Top left point going clockwise
+		-10,-20,
+		40,-20,
+		40,0			-- Bottom left
 	},
 	objBaseShape={	-- obj (base) array of shape vertices
-		-10,10,			-- Top left point going clockwise
-		40,10,
-		40,18,
-		-10,18			-- Bottom left
+		-10,0,			-- Top left point going clockwise
+		40,0,
+		40,15,
+		-10,15			-- Bottom left
 	},
 	scaleX=(2/5),
 	scaleY=(2/5),
@@ -93,7 +93,7 @@ Unit.energyBall = {
 	img_dmg="../images/weapon_alien_energyBall.png",
 	img_base_dmg="../images/weapon_alien_base.png",
 	img_weapon="../images/projectile_energyBall.png",
-	img_ui="../images/ui_item_cannon.png",
+	img_ui="../images/ui_item_energyBall.png",
 	sfx="../sound/energyBall.mp3",
 	rotation=0,
 	translate={
@@ -103,8 +103,8 @@ Unit.energyBall = {
 	objShape={	 	-- obj (weapon) array of shape vertices
 		20,0,			-- Top left point going clockwise
 		20,50,
-		80,50,
-		80,0			-- Bottom left
+		60,50,
+		60,0			-- Bottom left
 	},
 	objBaseShape={	-- obj (base) array of shape vertices
 		0,50,			-- Top left point going clockwise
@@ -155,7 +155,7 @@ Unit.repulsionBall = {
 	img_dmg="../images/weapon_alien_repulsionBall.png",
 	img_base_dmg="../images/weapon_alien_base.png",
 	img_weapon="../images/projectile_repulsionBall.png",
-	img_ui="../images/ui_item_cannon.png",
+	img_ui="../images/ui_item_repulsionBall.png",
 	sfx="../sound/repulsionBall.mp3",
 	rotation=0,
 	translate={
@@ -165,8 +165,8 @@ Unit.repulsionBall = {
 	objShape={	 	-- obj (weapon) array of shape vertices
 		20,0,			-- Top left point going clockwise
 		20,50,
-		80,50,
-		80,0			-- Bottom left
+		60,50,
+		60,0			-- Bottom left
 	},
 	objBaseShape={	-- obj (base) array of shape vertices
 		0,50,			-- Top left point going clockwise
@@ -424,7 +424,7 @@ Unit.weaponSystems = function(event)
 			-- Move View Back to User's Base
 			local whereTo
 			if math.mod(whichPlayer, 2) == 0 then -- if even (starting at zero being even) then player's turn otherwise AI's turn
-				whereTo = math.round(selectedUnit.x)
+				whereTo = math.round(enemyUnitGroup.x)
 				for i = math.round(Parallax.currentView.x), whereTo, 1 do
 					timerStash.newTimer = timer.performWithDelay(1000, Parallax.move_abs((Parallax.currentView.x + ((i - Parallax.currentView.x))), 0, "moved"), 1)
 					-- Parallax.move_abs(Parallax.currentView.x + ((i - Parallax.currentView.x) * 0.01), 0, "moved");

@@ -344,7 +344,7 @@ end
 --Collision
 
 UI.hit = function(event)
-	local threshold = 4;
+	local threshold = 3;
 	--if (event.other).power ~= nil then
 		if event.force >= threshold then
 			local damage = math.ceil((event.force));
@@ -355,6 +355,10 @@ UI.hit = function(event)
 			if h < 0 then h = 0; end
 			local p = math.ceil(4*(h/m));
 			(event.target).alpha = (p/4)
+			--Collision Sounds
+			objectSFX = audio.loadSound(event.target.materialSFX)
+			objectSFXed = audio.play(objectSFX,{channel=2})
+			--End Collision Sounds
 			if (event.target).currentHP <= 0 then
 				if (event.target).cost ~= nil then
 					Score.addtoScore(math.ceil((event.target).cost * 1.5));

@@ -63,8 +63,8 @@ function scene:enterScene( event )
 		local w = display.contentWidth
 		local h = display.contentHeight
 		
-		local o_fortuna = audio.loadStream("../sound/alienIntroMusic.mp3")
-		local o_play = audio.play(o_fortuna, {fadein=0})
+		local o_fortuna = audio.loadStream("../sound/Drain The Lizard 30.mp3")
+		local o_play = audio.play(o_fortuna, {loops=-1, fadein=0})
 
 		--Make the Space Backgrounds
 		displayObjects.space1:setReferencePoint ( display.CenterReferencePoint )

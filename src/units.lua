@@ -414,7 +414,7 @@ Unit.weaponSystems = function(event)
 			else
 				timerStash.newTimer = timer.performWithDelay(2000, fire, 1)
 			end
-			else
+		else
 			-- Game is over
 			if math.mod(whichPlayer, 2) == 0 then -- if even (starting at zero being even) then player's turn otherwise AI's turn
 				print('Computer has won the game')

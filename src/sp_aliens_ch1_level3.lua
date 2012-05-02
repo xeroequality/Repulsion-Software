@@ -11,11 +11,15 @@ local IO	     		= require( "save_and_load" )
 local Pause				= require( "pause_overlay" )
 local MenuSettings 		= require( "settings" )
 local ItemUI		    = require( "module_item_ui" )
+	  Score				= require( "scoring" )
+      Achievements		= require( "achievements" )
 local scene 	 		= storyboard.newScene()
 
 widget.setTheme("theme_ios")	
 transitionStash = {}	  	
 timerStash = {};
+local music_bg;
+
 ----------------------------------------------------------------------------------
 --      NOTE:
 --      Code outside of listener functions (below) will only be executed once,
@@ -27,16 +31,11 @@ timerStash = {};
 ---------------------------------------------------------------------------------
 
 local function restart(event)
-	local label = "sp_aliens_ch1_level1"
-	print("released button " .. label)
-	storyboard.gotoScene( label, "zoomInOutFade", 200)
-	return true	-- indicates successful touch
-
-end
-local function exitNOW(event)
-	local label = "menu_sp_aliens_levelselect"
-	print("released button " .. label)
-	storyboard.gotoScene( label, "zoomInOutFade", 200)
+	
+	
+	storyboard.labelFile = "sp_aliens_ch1_level3"
+	print("released button " .. storyboard.labelFile)
+	storyboard.gotoScene ( "levelrestarter", "zoomInOutFade", 200 )
 	return true	-- indicates successful touch
 
 end
@@ -45,7 +44,7 @@ end
 function scene:createScene( event )
         local group = self.view
 		physics.start()
-		--physics.setDrawMode("hybrid")
+		-- physics.setDrawMode("hybrid")
 
 		-- -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
 		-- Setup Parameters for Parallax View
@@ -69,7 +68,7 @@ function scene:createScene( event )
 			-- Define Foreground (Back) Image Parameters
 			midground = {
 				-- Filename, True Image Width & Height, Starting X, Starting Y, and Speed
-				img = "../images/background/la_skyline.png",
+				img = "../images/background_chapter1_level1_foreground_F.png",
 				width = 750,
 				height = 450,
 				left = 0,
@@ -79,7 +78,7 @@ function scene:createScene( event )
 			-- Define Foreground (Near) Image Parameters
 			foreground = {
 				-- Filename, True Image Width & Height, Starting X, Starting Y, and Speed
-				img = "../images/background/la_skyline.png",
+				img = "../images/background_chapter1_level1_foreground_N.png",
 				width = 960,
 				height = 332,
 				left = 0,
@@ -99,6 +98,7 @@ end
  
 -- Called immediately after scene has moved onscreen:
 function scene:enterScene( event )
+
         local group = self.view
 		local W = display.contentWidth
 		local H = display.contentHeight
@@ -110,11 +110,10 @@ function scene:enterScene( event )
 		--------------------------------------------
 		--                PRESETS                 --
 		--------------------------------------------
-		local prev_music = audio.loadStream("../sound/O fortuna.mp3")
-        local music_bg = audio.loadStream("../sound/Bounty 30.ogg")
+		local prev_music = audio.loadStream("../sound/O Fortuna.mp3")
+        music_bg = audio.loadStream("../sound/Bounty 30.ogg")
         audio.fadeOut(prev_music, { time=5000 })
-        --o_play = audio.play(music_bg, {channel=3,fadein=5000 } )
-		local slideBtn
+        o_play = audio.play(music_bg, {channel=3,fadein=5000,loops=-1 } )
 		--------------------
 		-- Material Objects
 		--------------------
@@ -122,8 +121,8 @@ function scene:enterScene( event )
 		local levelObjs = { -- Use this to choose what is items are available in this level
 			Materials.wood_plank_alien,
 			Materials.wood_box_alien,
-			Materials.aerogel,
-			Units.cannon
+			Units.energyBall,
+			Units.repulsionBall
 		}
 		print ('levelObjs: ' .. #levelObjs)
 
@@ -139,7 +138,7 @@ function scene:enterScene( event )
 		physics.addBody(floor, "static", {friction=0.9, bounce=0.05, filter=floorCollisionFilter} )
 		group:insert(floor)
 		
-		local levelWallet = 5000; --The Amount of Money for This Level
+		levelWallet = 2500; --The Amount of Money for This Level
 		wallet = levelWallet; --The Current Amount of Money
 		
 		--------------------------------------------
@@ -198,7 +197,7 @@ function scene:enterScene( event )
 		--              ITEM SELECT               --
 		--------------------------------------------
 		-- Event for selecting an item from scrollView
-		-- playerGroup = display.newGroup()
+		-- playerGroup = display.newGroup()  -- Could be used later to hold all of the players objects
 		materialGroup = display.newGroup()
 		unitGroup = display.newGroup()
 		-- group:insert(materialGroup);
@@ -211,17 +210,20 @@ function scene:enterScene( event )
 		--------------------------------------------
 		--             STATIC MENUS               --
 		--------------------------------------------
-		local static_menu = display.newGroup()
+		--local static_menu = display.newGroup()
 		
 		local function restart_level(event)
 			if event.phase == "ended" and restartBtn.alpha > 0 then
-				restart()
+				restart(event)
 			end
 		end
+		
 		local function exit_level(event)
 			if event.phase == "ended" and exitBtn.alpha > 0 then
-				scrollView.destroy()
-				exitNOW()
+				-- Notify consle we're leaving, then leave...
+				print("Exiting Level...")
+				storyboard.gotoScene("loading_exitLevel", "zoomInOutFade", 500)
+				return true	-- indicates successful touch
 			end
 		end
 		
@@ -262,6 +264,8 @@ function scene:enterScene( event )
 		overwriteBtn:addEventListener("touch",save);
 		loadCBtn:addEventListener("touch",load);
 		
+		
+		
 		--Focus HP
 		local HPText = display.newText("",0,0,native.systemFont,32);
 		HPText:scale(0.5,0.5)
@@ -275,7 +279,8 @@ function scene:enterScene( event )
 			end
 		end
 		Runtime:addEventListener("enterFrame",showHP);
-
+		
+        ----COLLISION function in module_item.ui.lua file now-------------
 		
 		local MONEY = display.newText("You Have $"..wallet,0,0,native.systemFont,12);
 		MONEY.x = display.contentWidth/2+60; MONEY.y = 15;
@@ -287,23 +292,15 @@ function scene:enterScene( event )
 		end
 		Runtime:addEventListener("enterFrame",updateMONEY)
 		
-		--Collision
-		local threshold = 1;
-		hit = function(event)
-			if (event.other).weapon ~= nil then
-				if event.force >= threshold then
-					(event.target).currentHP = (event.target).currentHP - math.ceil((event.force*(event.other).weapon));
-					print((event.target).currentHP)
-					local h = (event.target).currentHP; local m = (event.target).maxHP;
-					if h < 0 then h = 0; end
-					local p = math.ceil(4*(h/m));
-					(event.target).alpha = (p/4)
-					if (event.target).currentHP <= 0 then
-						(event.target):removeSelf()
-					end
-				end
-			end
+		local SCORE = display.newText("Score: 0",0,0,native.systemFont,12);
+		SCORE.x = display.contentWidth/2+60; SCORE.y = 30;
+		SCORE.movy = "Yes";
+		
+		updateSCORE = function(event)
+			local s = Score.getScore();
+			SCORE.text = "Score: "..s;
 		end
+		Runtime:addEventListener("enterFrame",updateSCORE);
 		
 		-- In future levels, the ONLY thing that needs to change is the first line:
 		local objGroup = Enemy.loadBase(Enemy.level3)
@@ -322,10 +319,14 @@ function scene:enterScene( event )
 		-- group:insert(rotate_button)
 		-- group:insert(menu_button)
 		group:insert(MONEY)
+		group:insert(SCORE)
 		group:insert(objGroup)
 		-- group:insert(projectile)
 		
 		group = Pause.bringMenutoFront(group);
+		
+		--Runtime for Achievement Checking
+		Runtime:addEventListener("enterFrame",Achievements.checkAchievements);
 
 end
 
@@ -342,7 +343,9 @@ function scene:exitScene( event )
 	Runtime:removeEventListener('enterFrame',removeballbeyondfloor)
 	Runtime:removeEventListener('enterFrame',startRotation)
 	Runtime:removeEventListener("enterFrame",updateMONEY)
+	Runtime:removeEventListener("enterFrame",updateSCORE);
 	Runtime:removeEventListener("enterFrame",showHP)
+	Runtime:removeEventListener("enterFrame",Achievements.checkAchievements);
 	
 	local num = group.numChildren;
 	while num >= 1 do
@@ -376,10 +379,12 @@ function scene:exitScene( event )
 	background = nil
 	focus = nil
 	wallet = nil
+	levelWallet = nil
 	updateMONEY = nil
 	-- playerGroup = nil
 	materialGroup = nil
 	unitGroup = nil
+	Score = nil;
 	
 	--if play_button then play_button:removeSelf(); play_button = nil; end
 	--if rotate_button then rotate_button:removeSelf(); rotate_button = nil; end
@@ -450,6 +455,14 @@ function scene:exitScene( event )
 	 transitionStash = nil
 	 transitionStash = {}
 		
+		
+	if (scrollView ~= nil) then scrollView.destroy(); scrollView = nil end
+	if (rotate_button ~= nil) then rotate_button:removeSelf(); rotate_button = nil end
+	if (menu_button ~= nil) then menu_button:removeSelf(); menu_button = nil end
+	if (play_button ~= nil) then play_button:removeSelf(); play_button = nil end
+	if (slideBtn ~= nil) then slideBtn:removeSelf(); slideBtn = nil end
+	
+	print("ExitScene Finished")
 end
  
  
@@ -460,18 +473,7 @@ function scene:destroyScene( event )
         -----------------------------------------------------------------------------
         --      INSERT code here (e.g. remove listeners, widgets, save state, etc.)
         -----------------------------------------------------------------------------
-		if slideBtn then
-			slideBtn:removeSelf()
-			slideBtn = nil
-		end
-		if scrollView then
-			scrollView.destroy();
-			scrollView = nil
-		end
-		if rotate_button then
-			rotate_button:removeSelf();
-			rotate_button = nil;
-		end
+
         
 end
  

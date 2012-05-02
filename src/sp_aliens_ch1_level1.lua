@@ -44,7 +44,7 @@ end
 function scene:createScene( event )
         local group = self.view
 		physics.start()
-		physics.setDrawMode("hybrid")
+		-- physics.setDrawMode("hybrid")
 
 		-- -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
 		-- Setup Parameters for Parallax View
@@ -121,9 +121,7 @@ function scene:enterScene( event )
 		local levelObjs = { -- Use this to choose what is items are available in this level
 			Materials.wood_plank_alien,
 			Materials.wood_box_alien,
-			Units.cat_cannon,
-			Units.energyBall,
-			Units.repulsionBall
+			Units.energyBall
 		}
 		print ('levelObjs: ' .. #levelObjs)
 
@@ -139,7 +137,7 @@ function scene:enterScene( event )
 		physics.addBody(floor, "static", {friction=0.9, bounce=0.05, filter=floorCollisionFilter} )
 		group:insert(floor)
 		
-		levelWallet = 50000; --The Amount of Money for This Level
+		levelWallet = 1000; --The Amount of Money for This Level
 		wallet = levelWallet; --The Current Amount of Money
 		
 		--------------------------------------------

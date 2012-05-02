@@ -24,7 +24,7 @@ Material.wood_plank = {
 	},
 	scaleX=(1/6),
 	scaleY=(1/6),
-	maxHP=100,
+	maxHP=15,
 	cost=50,
 	resist={
 		basic=1.5,
@@ -56,7 +56,7 @@ Material.wood_box = {
 	},
 	scaleX=(1/6),
 	scaleY=(1/6),
-	maxHP=300,
+	maxHP=30,
 	cost=200,
 	resist={
 		basic=1.5,
@@ -88,7 +88,7 @@ Material.granite_slab = {
 	},
 	scaleX=(1/6),
 	scaleY=(1/6),
-	maxHP=100,
+	maxHP=40,
 	cost=75,
 	resist={
 		basic=1.5,
@@ -120,7 +120,7 @@ Material.glass_sheet = {
 	},
 	scaleX=(1/6),
 	scaleY=(1/6),
-	maxHP=100,
+	maxHP=10,
 	cost=50,
 	resist={
 		basic=2,
@@ -151,8 +151,8 @@ Material.glass_tri = {
 	},
 	scaleX=(1/6),
 	scaleY=(1/6),
-	maxHP=100,
-	cost=50,
+	maxHP=15,
+	cost=70,
 	resist={
 		basic=2,
 		fire=0.2,
@@ -183,8 +183,8 @@ Material.wood_plank_alien = {
 	},
 	scaleX=(1/6),
 	scaleY=(1/6),
-	maxHP=100,
-	cost=50,
+	maxHP=20,
+	cost=15,
 	resist={
 		basic=1.5,
 		fire=1,
@@ -247,7 +247,7 @@ Material.aerogel = {
 	},
 	scaleX=(1/6),
 	scaleY=(1/6),
-	maxHP=15,
+	maxHP=10,
 	cost=400,
 	resist={
 		basic=1,
@@ -279,7 +279,7 @@ Material.nanotube = {
 	},
 	scaleX=(1/6),
 	scaleY=(1/6),
-	maxHP=500,
+	maxHP=40,
 	cost=150,
 	resist={
 		basic=0.4,

@@ -77,7 +77,7 @@ Unit.cat_cannon = {
 		water=1,
 		explosive=1,
 		electric=1
-	},	weaponRadius = 5,
+	},	weaponRadius = 5.5,
 	weaponForce = 6,
 	weaponDensity=8,
 	weaponFriction=0.2,
@@ -204,8 +204,8 @@ Unit.repulsionBall = {
 		x=80,
 		y=15
 	},
-	weaponScaleX=(1/3),
-	weaponScaleY=(1/3),
+	weaponScaleX=(2/3),
+	weaponScaleY=(2/3),
 	weaponExists=false,
 	weaponProperties={
 		basic=1,
@@ -229,7 +229,7 @@ Unit.weaponSystems = function(event)
 		-- creates the crosshair
 		local phase = event.phase
 		print('clickedUnit.x: ' .. clickedUnit.x .. ' clickedUnit.y: ' .. clickedUnit.y)
-		if math.mod(whichPlayer, 2) == 0 then -- if even (starting at zero being even) then player's turn otherwise AI's turn
+		if math.mod(whichPlayer, 2) == 0 or (math.mod(whichPlayer, 2) == 1 and enableAI == false) then -- if even (starting at zero being even) then player's turn otherwise AI's turn
 			if (phase == 'began') then
 				if not (clickedUnit.weaponExists) then
 						if (clickedUnit.type == 'projectile' or clickedUnit.type == 'energy') then
@@ -255,7 +255,7 @@ Unit.weaponSystems = function(event)
 	end
 
 	fire = function( event )
-		if math.mod(whichPlayer, 2) == 0 then -- if even (starting at zero being even) then player's turn otherwise AI's turn
+		if math.mod(whichPlayer, 2) == 0 or (math.mod(whichPlayer, 2) == 1 and enableAI == false) then -- if even (starting at zero being even) then player's turn otherwise AI's turn
 			local phase = event.phase
 			if (clickedUnit.type == 'projectile' or clickedUnit.type == 'energy') then
 				if "began" == phase then
@@ -281,10 +281,18 @@ Unit.weaponSystems = function(event)
 						else
 							whichUnitIndex = 2
 						end
-						if (event.x < crosshair.x) then
-							clickedUnit[whichUnitIndex].rotation = cannonRotation + 180  -- since arctan goes from -pi/2 to pi/2, this is necessary to make the cannon point backwards
+						if (math.mod(whichPlayer, 2) == 1 and enableAI == false) then
+							if (event.x > crosshair.x) then
+								clickedUnit[whichUnitIndex].rotation = cannonRotation + 180  -- since arctan goes from -pi/2 to pi/2, this is necessary to make the cannon point backwards
+							else
+								clickedUnit[whichUnitIndex].rotation = cannonRotation
+							end
 						else
-							clickedUnit[whichUnitIndex].rotation = cannonRotation
+							if (event.x < crosshair.x) then
+								clickedUnit[whichUnitIndex].rotation = cannonRotation + 180  -- since arctan goes from -pi/2 to pi/2, this is necessary to make the cannon point backwards
+							else
+								clickedUnit[whichUnitIndex].rotation = cannonRotation
+							end
 						end
 						crosshairLine:setColor( 0, 255, 0, 200 )
 						crosshairLine.width = 8
@@ -419,17 +427,18 @@ Unit.weaponSystems = function(event)
 				for i=1,unitGroup.numChildren do
 						unitGroup[i]:addEventListener('touch', Unit.weaponSystems)
 				end
+			elseif (math.mod(whichPlayer, 2) == 1 and enableAI == false) then
 				-- enable this to enable pass and play
-				-- for i=1,enemyUnitGroup.numChildren do
-						-- enemyUnitGroup[i]:addEventListener('touch', Unit.weaponSystems)
-				-- end
+				for i=1,enemyUnitGroup.numChildren do
+						enemyUnitGroup[i]:addEventListener('touch', Unit.weaponSystems)
+				end
 			else
 				timerStash.newTimer = timer.performWithDelay(2000, fire, 1)
 			end
 		else
 			-- Game is over
 			if math.mod(whichPlayer, 2) == 0 then -- if even (starting at zero being even) then player's turn otherwise AI's turn
-				print('Computer has won the game')
+				print('Player 2 or Computer has won the game')
 			else
 				local t = require("storyboard").currentLevel
 				-- t[1] = chapter
@@ -441,7 +450,7 @@ Unit.weaponSystems = function(event)
 						require("levelinfo")[t[1]+1][1].unlocked = true
 					end
 				end
-				print('Player has won the game')
+				print('Player 1 has won the game')
 				level.ended = true
 			end
 		end

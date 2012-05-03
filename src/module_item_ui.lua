@@ -282,10 +282,12 @@ UI.playUI = function(event)
 		unitGroup[i]:removeEventListener("touch",UI.dragItem)
 		unitGroup[i]:addEventListener('touch', Units.weaponSystems)
 	end
-	for i=1,enemyUnitGroup.numChildren do
-		print('unitGroup: ' .. enemyUnitGroup[i].id)
-		enemyUnitGroup[i]:removeEventListener("touch",UI.dragItem)
-		enemyUnitGroup[i]:addEventListener('touch', Units.weaponSystems)
+	if enableAI == false then
+		for i=1,enemyUnitGroup.numChildren do
+			print('unitGroup: ' .. enemyUnitGroup[i].id)
+			enemyUnitGroup[i]:removeEventListener("touch",UI.dragItem)
+			enemyUnitGroup[i]:addEventListener('touch', Units.weaponSystems)
+		end
 	end
 	--Convert Money Left Over to Score
 	Score.addtoScore(math.ceil(wallet*1.5));

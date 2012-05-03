@@ -49,10 +49,9 @@ local group = self.view
 
 	
 	-- Load menu screen
-	storyboard.gotoScene( "menu_splash", "zoomInOutFade", 500)
+	--storyboard.purgeScene("sp_aliens_ch1_level1")
+	storyboard.gotoScene( "menu_sp_aliens_levelselect", "zoomInOutFade", 500)
 	print("Engines Charged, Prepared to Warp.");
-	
-	
 	
 end
 

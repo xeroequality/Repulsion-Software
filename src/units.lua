@@ -19,7 +19,7 @@ Unit.setFlr = function(inFloorLeft, inFloorWidth)
 	Flr.wdth = inFloorWidth
 end
 	
-Unit.cannon = {
+Unit.cat_cannon = {
 	id=1000,
 	type='projectile',
 	img="../images/weapon_cat_cannon.png",
@@ -57,13 +57,17 @@ Unit.cannon = {
 		explosive=1,
 		electric=1
 	},
-	objDensity=1,
+	objDensity=10,
 	objFriction=0.9,
 	objBounce=0,
 	objBaseDensity=10,
 	objBaseFriction=0.9,
 	objBaseBounce=0,
 	weapon = display.newImage(""),
+	translateWeapon={
+		x=0,
+		y=0
+	},
 	weaponScaleX=(2/3),
 	weaponScaleY=(2/3),
 	weaponExists=false,
@@ -74,7 +78,7 @@ Unit.cannon = {
 		explosive=1,
 		electric=1
 	},	weaponRadius = 5,
-	weaponForce =6,
+	weaponForce = 6,
 	weaponDensity=8,
 	weaponFriction=0.2,
 	weaponBounce=0.05
@@ -101,10 +105,10 @@ Unit.energyBall = {
 		y=80
 	},
 	objShape={	 	-- obj (weapon) array of shape vertices
-		20,0,			-- Top left point going clockwise
-		20,50,
+		20,0,		-- Top left point going clockwise
+		60,0,
 		60,50,
-		60,0			-- Bottom left
+		20,50		-- Bottom left
 	},
 	objBaseShape={	-- obj (base) array of shape vertices
 		0,50,			-- Top left point going clockwise
@@ -130,6 +134,10 @@ Unit.energyBall = {
 	objBaseFriction=0.9,
 	objBaseBounce=0,
 	weapon = display.newImage(""),
+	translateWeapon={
+		x=80,
+		y=15
+	},
 	weaponScaleX=(2/3),
 	weaponScaleY=(2/3),
 	weaponExists=false,
@@ -163,10 +171,10 @@ Unit.repulsionBall = {
 		y=80
 	},
 	objShape={	 	-- obj (weapon) array of shape vertices
-		20,0,			-- Top left point going clockwise
-		20,50,
+		20,0,		-- Top left point going clockwise
+		60,0,
 		60,50,
-		60,0			-- Bottom left
+		20,50		-- Bottom left
 	},
 	objBaseShape={	-- obj (base) array of shape vertices
 		0,50,			-- Top left point going clockwise
@@ -192,6 +200,10 @@ Unit.repulsionBall = {
 	objBaseFriction=0.9,
 	objBaseBounce=0,
 	weapon = display.newImage(""),
+	translateWeapon={
+		x=80,
+		y=15
+	},
 	weaponScaleX=(1/3),
 	weaponScaleY=(1/3),
 	weaponExists=false,
@@ -304,8 +316,8 @@ Unit.weaponSystems = function(event)
 						end
 
 						-- move the image
-						weaponSpriteInstance.x = clickedUnit.x + clickedUnit.translateX 				-- need to work on this
-						weaponSpriteInstance.y = clickedUnit.y + clickedUnit.translateY					-- and this
+						weaponSpriteInstance.x = clickedUnit.x + clickedUnit.translateWeaponX 				-- need to work on this
+						weaponSpriteInstance.y = clickedUnit.y + clickedUnit.translateWeaponY				-- and this
 						unitGroup:insert(weaponSpriteInstance)
 						print('unitGroup: ' .. unitGroup.numChildren)
 
@@ -323,7 +335,7 @@ Unit.weaponSystems = function(event)
 						weaponSpriteInstance.isBullet = true
 
 						-- fire the weapon            
-						weaponSpriteInstance:applyForce( (event.x - crosshair.x)*Unit.cannon.weaponForce, (event.y - (crosshair.y))*Unit.cannon.weaponForce, clickedUnit.x, clickedUnit.y )
+						weaponSpriteInstance:applyForce( (event.x - crosshair.x)*clickedUnit.weaponForce, (event.y - (crosshair.y))*clickedUnit.weaponForce, clickedUnit.x, clickedUnit.y )
 						weaponSFX = audio.loadSound(clickedUnit.sfx)
 						weaponSFXed = audio.play( weaponSFX,{channel=2} )
 						-- make sure that the cannon is on top of the 
@@ -342,20 +354,10 @@ Unit.weaponSystems = function(event)
 		else
 			selectedUnit = enemyUnitGroup[math.random(1,enemyUnitGroup.numChildren)]
 
-			-- local deltaYDivX = (-1)*math.random(0,180)
-			-- local cannonRotation = (180/math.pi)*math.atan(deltaYDivX) - selectedUnit.rotation -- rotates the cannon based on the trajectory line
-			-- local whichUnitIndex
-			-- if selectedUnit.id == 1000 then
-				-- whichUnitIndex = 1
-			-- else
-				-- whichUnitIndex = 2
-			-- end
-			-- selectedUnit[whichUnitIndex].rotation = cannonRotation
-			
 			--Select a Target
 			selectedTarget = unitGroup[math.random(1,unitGroup.numChildren)];
-			xForce = ((selectedUnit.x-selectedTarget.x)*-1);
-			yForce = ((selectedTarget.y-selectedUnit.y)*1);
+			local xForce = ((selectedUnit.x-selectedTarget.x)*-1);
+			local yForce = ((selectedTarget.y-selectedUnit.y)*1);
 			if selectedTarget.y < selectedUnit.y then
 				if yForce > 0 then yForce = yForce * -1; end
 			end
@@ -364,7 +366,7 @@ Unit.weaponSystems = function(event)
 				yForce = yForce * 1;
 			end
 			print(xForce.." "..yForce.." "..selectedTarget.x.." "..selectedTarget.y.." "..selectedUnit.y);
-
+			
 			-- make a new image
 			selectedUnit.weapon = sprite.newSpriteSheet(selectedUnit.img_weapon, 19, 19)
 			local weaponSpriteSet = sprite.newSpriteSet(selectedUnit.weapon,1,3)
@@ -385,8 +387,8 @@ Unit.weaponSystems = function(event)
 			end
 
 			-- move the image
-			weaponSpriteInstance.x = selectedUnit.x + selectedUnit.translateX 				-- need to work on this
-			weaponSpriteInstance.y = selectedUnit.y + selectedUnit.translateY					-- and this
+			weaponSpriteInstance.x = selectedUnit.x + selectedUnit.translateWeaponX 				-- need to work on this
+			weaponSpriteInstance.y = selectedUnit.y + selectedUnit.translateWeaponY				-- and this
 			enemyUnitGroup:insert(weaponSpriteInstance)
 
 			-- apply physics to the weapon
@@ -395,7 +397,6 @@ Unit.weaponSystems = function(event)
 			physics.addBody( weaponSpriteInstance, { density=selectedUnit.weaponDensity, friction=selectedUnit.weaponFriction, bounce=selectedUnit.weaponBounce, radius=selectedUnit.weaponRadius, filter=enemyweaponCollisionFilter} )
 			weaponSpriteInstance.isBullet = true
 
-			-- fire the weapon
 			weaponSpriteInstance:applyForce( xForce, yForce, selectedUnit.x, selectedUnit.y )
 			weaponSFX = audio.loadSound(selectedUnit.sfx)
 			weaponSFXed = audio.play( weaponSFX,{channel=2} )
@@ -407,24 +408,46 @@ Unit.weaponSystems = function(event)
 		Runtime:removeEventListener('enterFrame', removeWeaponBeyondFloor)
 		if (clickedUnit.weaponExists) then
 			clickedUnit.weaponExists = false
+			weaponSpriteInstance:removeSelf()
 			clickedUnit.parent:remove( clickedUnit.weapon )
 		elseif (selectedUnit.weaponExists) then
 			selectedUnit.weaponExists = false
+			--weaponSpriteInstance:removeSelf()
+			display.remove(weaponSpriteInstance)
 			selectedUnit.parent:remove( selectedUnit.weapon )
 		end
 		print('ball deleted')
-		display.remove(weaponSpriteInstance);
 		whichPlayer = whichPlayer + 1
-		if math.mod(whichPlayer, 2) == 0 then -- if even (starting at zero being even) then player's turn otherwise AI's turn
-			for i=1,unitGroup.numChildren do
-					unitGroup[i]:addEventListener('touch', Unit.weaponSystems)
+		if (unitGroup.numChildren >= 1 and enemyUnitGroup.numChildren  >= 1) then
+			if math.mod(whichPlayer, 2) == 0 then -- if even (starting at zero being even) then player's turn otherwise AI's turn
+				for i=1,unitGroup.numChildren do
+						unitGroup[i]:addEventListener('touch', Unit.weaponSystems)
+				end
+				-- enable this to enable pass and play
+				-- for i=1,enemyUnitGroup.numChildren do
+						-- enemyUnitGroup[i]:addEventListener('touch', Unit.weaponSystems)
+				-- end
+			else
+				timerStash.newTimer = timer.performWithDelay(2000, fire, 1)
 			end
-			-- enable this to enable pass and play
-			-- for i=1,enemyUnitGroup.numChildren do
-					-- enemyUnitGroup[i]:addEventListener('touch', Unit.weaponSystems)
-			-- end
 		else
-			timerStash.newTimer = timer.performWithDelay(2000, fire, 1)
+			-- Game is over
+			if math.mod(whichPlayer, 2) == 0 then -- if even (starting at zero being even) then player's turn otherwise AI's turn
+				print('Computer has won the game')
+			else
+				local t = require("storyboard").currentLevel
+				-- t[1] = chapter
+				-- t[2] = level
+				if t ~= nil then
+					if t[2] < 5 then
+						require("levelinfo")[t[1]][t[2]+1].unlocked = true
+					else
+						require("levelinfo")[t[1]+1][1].unlocked = true
+					end
+				end
+				print('Player has won the game')
+				level.ended = true
+			end
 		end
 	end
 	removeWeaponBeyondFloor = function()
@@ -473,7 +496,7 @@ Unit.weaponSystems = function(event)
 				weaponSpriteInstance:pause()
 			end
 		end
-		timerStash.newTimer = timer.performWithDelay(5000, deleteWeapon, 1)
+		timerStash.newTimer = timer.performWithDelay(3500, deleteWeapon, 1)
 	end
 	
 	
@@ -488,7 +511,7 @@ end
 Unit.clone = function(id)
 	unitObjGroup = display.newGroup()
 	if id == 1000 then
-		cloner = Unit.cannon
+		cloner = Unit.cat_cannon
 	elseif id == 1009 then
 		cloner = Unit.energyBall
 	elseif id == 1010 then
@@ -528,6 +551,8 @@ Unit.clone = function(id)
 		unitObjGroup.objBaseFriction=cloner.objBaseFriction
 		unitObjGroup.objBaseBounce=cloner.objBaseBounce
 		unitObjGroup.weaponExists=cloner.weaponExists
+		unitObjGroup.translateWeaponX=cloner.translateWeapon.x
+		unitObjGroup.translateWeaponY=cloner.translateWeapon.y
 		unitObjGroup.weaponScaleX=cloner.weaponScaleX
 		unitObjGroup.weaponScaleY=cloner.weaponScaleY
 		unitObjGroup.weaponProperties={

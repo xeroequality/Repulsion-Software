@@ -69,105 +69,93 @@ function scene:enterScene( event )
 		--chooseOptions(overlayVars.chapter);
 		
 		openOverlay = function(event)
-			if not overlayVars.isOpen then
-				print("opening overlay")
-				overlayVars.isOpen = true
-				
-				local buttonPressed = event.target.level
-				local levelInfo = levels[overlayVars.chapter][buttonPressed]
-				overlayVars.img = levelInfo.overlay
-				
-				-- Create overlay image
-				overlayVars.overlay = display.newImage(overlayVars.img)
-				overlayVars.overlay.x = W/2
-				overlayVars.overlay.y = H/2
-				overlayVars.overlay:scale(0,0)
-				group:insert(overlayVars.overlay)
-				-- Determine which information to show based on button pressed
-				--print(levels[1][1].title);
-				
-				--[[local levelInfo = "levels.ch".. overlayVars.chapter .."level"..buttonPressed--]]
-					--[[if buttonPressed == 1 then
-						levelInfo = levels.ch1level1
-					elseif buttonPressed == 2 then
-						levelInfo = levels.ch1level2
-					elseif buttonPressed == 3 then
-						levelInfo = levels.ch1level3
-					elseif buttonPressed == 4 then
-						levelInfo = levels.ch1level4
-					elseif buttonPressed == 5 then
-						levelInfo = levels.ch1level5
-					end--]]
+			local buttonPressed = event.target.level
+			local levelInfo = levels[overlayVars.chapter][buttonPressed]
+			
+			if levelInfo.unlocked == true then
+				if not overlayVars.isOpen then
+					print("opening overlay")
+					overlayVars.isOpen = true
+
+					overlayVars.img = levelInfo.overlay
 					
-				-- Function to add objects to overlay
-				local function buildOverlay(event)
-					print("overlay opened")
-					-- Close Overlay Button
-					overlayVars.closeBtn = widget.newButton{
-						default="../images/background_redX.png",
-						over="../images/background_redX.png",
-						width=30,
-						height=30,
-						onRelease=closeOverlay
-					}
-					overlayVars.closeBtn.view.x=overlayVars.overlay.x+overlayVars.overlay.width/2-25
-					overlayVars.closeBtn.view.y=overlayVars.overlay.y-overlayVars.overlay.height/2+25
-					-- Play Level Button
-					overlayVars.playBtn = widget.newButton{
-						--id="sp_aliens_ch1_level"..buttonPressed,
-						id="sp_aliens_ch"..overlayVars.chapter.."_level"..buttonPressed,
-						default="../images/background_GO.png",
-						over="../images/background_GOWhite.png",
-						width=140,
-						height=87,
-						onRelease=onBtnRelease
-					}
-					
-					overlayVars.playBtn.view.x=overlayVars.overlay.x+overlayVars.overlay.width/4+offset
-					overlayVars.playBtn.view.y=overlayVars.overlay.y+overlayVars.overlay.height/4+offset
-					-- Flag
-					overlayVars.flag.view = display.newImage(overlayVars.flag.img)
-					overlayVars.flag.view.x = levelInfo.flagX
-					overlayVars.flag.view.y = levelInfo.flagY
-					group:insert(overlayVars.flag.view)
-					-- Title
-					overlayVars.title = display.newText(levelInfo.title,0,0,native.systemFont,40)
-					overlayVars.title:setReferencePoint(display.CenterLeftReferencePoint)
-					overlayVars.title:scale(0.5,0.5)
-					overlayVars.title:setTextColor(0,0,0)
-					overlayVars.title.x = overlayVars.overlay.x-overlayVars.overlay.width/2+offset
-					overlayVars.title.y = overlayVars.overlay.y-overlayVars.overlay.height/2+10+offset
-					-- Description
-					overlayVars.desc = display.newText("Info: "..levelInfo.desc,0,0,native.systemFont,40)
-					overlayVars.desc:setReferencePoint(display.CenterLeftReferencePoint)
-					overlayVars.desc:scale(0.5,0.5)
-					overlayVars.desc:setTextColor(0,0,0)
-					overlayVars.desc.x = overlayVars.overlay.x-overlayVars.overlay.width/2+offset
-					overlayVars.desc.y = overlayVars.overlay.y-overlayVars.overlay.height/2+10+2*offset
-					-- Par Score
-					overlayVars.parScore = display.newText("Par Score: "..levelInfo.parScore,0,0,native.systemFont,40)
-					overlayVars.parScore:setReferencePoint(display.CenterLeftReferencePoint)
-					overlayVars.parScore:scale(0.5,0.5)
-					overlayVars.parScore:setTextColor(0,0,0)
-					overlayVars.parScore.x = overlayVars.overlay.x-overlayVars.overlay.width/2+offset
-					overlayVars.parScore.y = overlayVars.overlay.y-overlayVars.overlay.height/2+10+3*offset
-					-- Wallet
-					overlayVars.wallet = display.newText("Bank: $"..levelInfo.wallet,0,0,native.systemFont,40)
-					overlayVars.wallet:setReferencePoint(display.CenterLeftReferencePoint)
-					overlayVars.wallet:scale(0.5,0.5)
-					overlayVars.wallet:setTextColor(0,0,0)
-					overlayVars.wallet.x = overlayVars.overlay.x-overlayVars.overlay.width/2+offset
-					overlayVars.wallet.y = overlayVars.overlay.y-overlayVars.overlay.height/2+10+4*offset
-					
-					group:insert(overlayVars.closeBtn.view)
-					group:insert(overlayVars.playBtn.view)
-					group:insert(overlayVars.title)
-					group:insert(overlayVars.desc)
-					group:insert(overlayVars.parScore)
-					group:insert(overlayVars.wallet)
+					-- Create overlay image
+					overlayVars.overlay = display.newImage(overlayVars.img)
+					overlayVars.overlay.x = W/2
+					overlayVars.overlay.y = H/2
+					overlayVars.overlay:scale(0,0)
+					group:insert(overlayVars.overlay)
+						
+					-- Function to add objects to overlay
+					local function buildOverlay(event)
+						print("overlay opened")
+						-- Close Overlay Button
+						overlayVars.closeBtn = widget.newButton{
+							default="../images/background_redX.png",
+							over="../images/background_redX.png",
+							width=30,
+							height=30,
+							onRelease=closeOverlay
+						}
+						overlayVars.closeBtn.view.x=overlayVars.overlay.x+overlayVars.overlay.width/2-25
+						overlayVars.closeBtn.view.y=overlayVars.overlay.y-overlayVars.overlay.height/2+25
+						-- Play Level Button
+						overlayVars.playBtn = widget.newButton{
+							--id="sp_aliens_ch1_level"..buttonPressed,
+							id="sp_aliens_ch"..overlayVars.chapter.."_level"..buttonPressed,
+							default="../images/background_GO.png",
+							over="../images/background_GOWhite.png",
+							width=140,
+							height=87,
+							onRelease=onBtnRelease
+						}
+						
+						overlayVars.playBtn.view.x=overlayVars.overlay.x+overlayVars.overlay.width/4+offset
+						overlayVars.playBtn.view.y=overlayVars.overlay.y+overlayVars.overlay.height/4+offset
+						-- Flag
+						overlayVars.flag.view = display.newImage(overlayVars.flag.img)
+						overlayVars.flag.view.x = levelInfo.flagX
+						overlayVars.flag.view.y = levelInfo.flagY
+						group:insert(overlayVars.flag.view)
+						-- Title
+						overlayVars.title = display.newText(levelInfo.title,0,0,native.systemFont,40)
+						overlayVars.title:setReferencePoint(display.CenterLeftReferencePoint)
+						overlayVars.title:scale(0.5,0.5)
+						overlayVars.title:setTextColor(0,0,0)
+						overlayVars.title.x = overlayVars.overlay.x-overlayVars.overlay.width/2+offset
+						overlayVars.title.y = overlayVars.overlay.y-overlayVars.overlay.height/2+10+offset
+						-- Description
+						overlayVars.desc = display.newText("Info: "..levelInfo.desc,0,0,native.systemFont,40)
+						overlayVars.desc:setReferencePoint(display.CenterLeftReferencePoint)
+						overlayVars.desc:scale(0.5,0.5)
+						overlayVars.desc:setTextColor(0,0,0)
+						overlayVars.desc.x = overlayVars.overlay.x-overlayVars.overlay.width/2+offset
+						overlayVars.desc.y = overlayVars.overlay.y-overlayVars.overlay.height/2+10+2*offset
+						-- Par Score
+						overlayVars.parScore = display.newText("Par Score: "..levelInfo.parScore,0,0,native.systemFont,40)
+						overlayVars.parScore:setReferencePoint(display.CenterLeftReferencePoint)
+						overlayVars.parScore:scale(0.5,0.5)
+						overlayVars.parScore:setTextColor(0,0,0)
+						overlayVars.parScore.x = overlayVars.overlay.x-overlayVars.overlay.width/2+offset
+						overlayVars.parScore.y = overlayVars.overlay.y-overlayVars.overlay.height/2+10+3*offset
+						-- Wallet
+						overlayVars.wallet = display.newText("Bank: $"..levelInfo.wallet,0,0,native.systemFont,40)
+						overlayVars.wallet:setReferencePoint(display.CenterLeftReferencePoint)
+						overlayVars.wallet:scale(0.5,0.5)
+						overlayVars.wallet:setTextColor(0,0,0)
+						overlayVars.wallet.x = overlayVars.overlay.x-overlayVars.overlay.width/2+offset
+						overlayVars.wallet.y = overlayVars.overlay.y-overlayVars.overlay.height/2+10+4*offset
+						
+						group:insert(overlayVars.closeBtn.view)
+						group:insert(overlayVars.playBtn.view)
+						group:insert(overlayVars.title)
+						group:insert(overlayVars.desc)
+						group:insert(overlayVars.parScore)
+						group:insert(overlayVars.wallet)
+					end
+					-- Scale up overlay display object
+					transitionStash.newTransition = transition.to(overlayVars.overlay, {time=500, xScale=1, yScale=1, onComplete=buildOverlay})
 				end
-				-- Scale up overlay display object
-				transitionStash.newTransition = transition.to(overlayVars.overlay, {time=500, xScale=1, yScale=1, onComplete=buildOverlay})
 			end
 		end
 		

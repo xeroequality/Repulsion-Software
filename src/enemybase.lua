@@ -8,6 +8,9 @@ W = display.contentWidth
 H = display.contentHeight
 
 EnemyBase = {}
+enemyGroup = display.newGroup()
+enemyMaterialGroup = display.newGroup()
+enemyUnitGroup = display.newGroup()
 
 EnemyBase.level1 = {
 	numObjects=7,
@@ -137,9 +140,6 @@ rotations={
 EnemyBase.loadBase = function(level)
 	local physics = require("physics")
 	local UI = require("module_item_ui")
-	enemyGroup = display.newGroup()
-	enemyMaterialGroup = display.newGroup()
-	enemyUnitGroup = display.newGroup()
 	
 	for i=1,level.numObjects do
 		local obj = {}
@@ -168,6 +168,22 @@ EnemyBase.loadBase = function(level)
 		end
 	end
 	return enemyGroup
+end
+
+EnemyBase.destroy = function()
+	local tmp = enemyMaterialGroup.numChildren
+	while tmp >= 1 do
+		enemyMaterialGroup:remove(tmp)
+		tmp = tmp - 1
+	end
+	enemyMaterialGroup = display.newGroup()
+	tmp = enemyUnitGroup.numChildren
+	while tmp >= 1 do
+		enemyUnitGroup:remove(tmp)
+		tmp = tmp - 1
+	end
+	enemyUnitGroup = display.newGroup()
+	enemyGroup = display.newGroup()
 end
 
 return EnemyBase

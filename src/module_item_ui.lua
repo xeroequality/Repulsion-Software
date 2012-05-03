@@ -2,6 +2,11 @@ local Units = require("units")
 --Item ScrollView UI
 
 UI = {
+	uiGroup = display.newGroup(),
+	play_button = nil,
+	rotate_button = nil,
+	menu_button = nil,
+	play_pressed = false,
 	focus = nil,
 	overlayModule = nil,
 	badx = 700,
@@ -42,7 +47,7 @@ UI.createSlideBtn = function(which_way,place_at_back)
 	end
 	slideBtn.y = H/2
 	if place_at_back == false then --Place it in Back?
-		slideBtn.x = scrollView.bkgView.width-45
+		slideBtn.x = 40
 	else
 		slideBtn.x = -35;
 	end
@@ -61,7 +66,7 @@ UI.dragItem = function(event)
 		if scrollView.isOpen then
 			bool = true
 		else
-			bool = false
+			--bool = false
 		end
 	end
 	if bool == true and overlay == false and overlay_activity == false then						-- need an and if touch.y is less than 150 so that it doesnt work when the scrollview is above the static button area
@@ -88,11 +93,11 @@ UI.dragItem = function(event)
 				return true
 			end
 			--Check If Object is in the Vicinity of the Rotate Button
-			rotate_button.alpha = 1;
-			if target.x >= (rotate_button.x-30) and target.x <= (rotate_button.x+30) then
-				if target.y >= (rotate_button.y-30) and target.y <= (rotate_button.y+30) then
+			UI.rotate_button.alpha = 1;
+			if target.x >= (UI.rotate_button.x-30) and target.x <= (UI.rotate_button.x+30) then
+				if target.y >= (UI.rotate_button.y-30) and target.y <= (UI.rotate_button.y+30) then
 					target:rotate(1)
-					rotate_button.alpha = 0.25;
+					UI.rotate_button.alpha = 0.25;
 				end
 			end
 		elseif phase == "ended" or phase == "cancelled" then
@@ -114,7 +119,7 @@ UI.dragItem = function(event)
 			display.getCurrentStage():setFocus(nil)
 			target.isFocus = false
 			--target:removeEventListener(dragItem)
-			rotate_button.alpha = 1;
+			UI.rotate_button.alpha = 1;
 		end
 	end
 	end
@@ -212,14 +217,14 @@ end
 
 UI.slideUI = function()
 	local widget = require("widget")
-	if scrollView.isOpen then
+	if scrollView ~= nil and scrollView.isOpen then
 		print("closing scrollView")
 		scrollView.isOpen = false
 		transitionStash.newTransition = transition.to(static_menu, {time=300, y=-85} )
 		transitionStash.newTransition = transition.to(scrollView.scrollview, {time=300, x=-85} )
-		transitionStash.newTransition = transition.to(play_button, {time=300, y=-35} )
-		transitionStash.newTransition = transition.to(rotate_button, {time=300, y=-35} )
-		transitionStash.newTransition = transition.to(menu_button, {time=300, y=-35} )
+		transitionStash.newTransition = transition.to(UI.play_button, {time=300, y=-35} )
+		transitionStash.newTransition = transition.to(UI.rotate_button, {time=300, y=-35} )
+		transitionStash.newTransition = transition.to(UI.menu_button, {time=300, y=-35} )
 
 		if slideBtn then
 			slideBtn:removeSelf()
@@ -229,18 +234,18 @@ UI.slideUI = function()
 			transitionStash.newTransition = transition.to( badoverlay, { alpha=0, xScale=1.0, yScale=1.0, time=0} )
 
 		end
-	elseif not scrollView.isOpen then
+	elseif scrollView ~= nil and not scrollView.isOpen then
 		print("opening scrollView")
 		scrollView.isOpen = true
 		transitionStash.newTransition = transition.to(static_menu, {time=300, y=0} )
 		transitionStash.newTransition = transition.to(scrollView.scrollview, {time=300, x=0} )
-		transitionStash.newTransition = transition.to(play_button, {time=300, y=35} )
-		transitionStash.newTransition = transition.to(rotate_button, {time=300, y=35} )
-		transitionStash.newTransition = transition.to(menu_button, {time=300, y=35} )
+		transitionStash.newTransition = transition.to(UI.play_button, {time=300, y=35} )
+		transitionStash.newTransition = transition.to(UI.rotate_button, {time=300, y=35} )
+		transitionStash.newTransition = transition.to(UI.menu_button, {time=300, y=35} )
 		if slideBtn then
 			slideBtn:removeSelf()
 			UI.createSlideBtn("left",true)
-			transitionStash.newTransition = transition.to(slideBtn, {time=300, x=scrollView.bkgView.width-45} )
+			transitionStash.newTransition = transition.to(slideBtn, {time=300, x=40} )
 			transitionStash.newTransition = transition.to( goodoverlay, { alpha=.25, xScale=1.0, yScale=1.0, time=0} )
 			transitionStash.newTransition = transition.to( badoverlay, { alpha=.25, xScale=1.0, yScale=1.0, time=0} )
 		end
@@ -262,20 +267,20 @@ UI.playUI = function(event)
 		materialGroup[i]:removeEventListener("touch",UI.dragItem)
 	end
 	print('clicked play')
-	transitionStash.newTransition = transition.to(menu_button, {time=500, x=-10} )
+	UI.play_pressed = true 
+	transitionStash.newTransition = transition.to(UI.menu_button, {time=500, x=-10} )
 	scrollView.destroy()
 	UI.overlayModule.destroy()
-	play_button:removeSelf()
-	rotate_button:removeSelf()
-	scrollView = nil
-	play_button = nil
-	rotate_button = nil;
+	UI.play_button:removeSelf()
+	UI.rotate_button:removeSelf()
+	--scrollView = nil
+	--UI.play_button = nil
+	--UI.rotate_button = nil;
 	whichPlayer = 0 				-- initializes tracking who's turn it is.
 	for i=1,unitGroup.numChildren do
 		print('unitGroup: ' .. unitGroup[i].id)
 		unitGroup[i]:removeEventListener("touch",UI.dragItem)
 		unitGroup[i]:addEventListener('touch', Units.weaponSystems)
-		unitGroup[i]:addEventListener("postCollision",UI.hit)
 	end
 	for i=1,enemyUnitGroup.numChildren do
 		print('unitGroup: ' .. enemyUnitGroup[i].id)
@@ -289,7 +294,6 @@ UI.playUI = function(event)
 	if pert > Achievements.getValue("maxPercentageofMoneyKept") then
 		Achievements.replace("maxPercentageofMoneyKept",pert);
 	end
-	
 	print("Percentage: "..pert);
 	wallet = 0;
 end
@@ -326,16 +330,25 @@ UI.rotateUI = function(event)
 end
 	
 UI.createMenuUI = function()
-	play_button = display.newImage("../images/ui_play_button.png");
-	play_button.x = 45+30; play_button.y = 35; play_button.static = "Yes"; play_button.movy = "Yes";
-	rotate_button = display.newImage("../images/ui_rotate_button.png");
-	rotate_button.x = 115+30; rotate_button.y = 35; rotate_button.static = "Yes"; rotate_button.movy = "Yes";
-	menu_button = display.newImage("../images/ui_menu_button.png");
-	menu_button.x = 185+30; menu_button.y = 35; menu_button.static = "Yes"; menu_button.movy = "Yes";
+	if UI.play_button == nil then
+		UI.play_button = display.newImage("../images/ui_play_button.png");
+		UI.play_button.x = 45+30; UI.play_button.y = 35; UI.play_button.static = "Yes"; UI.play_button.movy = "Yes";
+		UI.uiGroup:insert(UI.play_button)
+	end
+	if UI.rotate_button == nil then
+		UI.rotate_button = display.newImage("../images/ui_rotate_button.png");
+		UI.rotate_button.x = 115+30; UI.rotate_button.y = 35; UI.rotate_button.static = "Yes"; UI.rotate_button.movy = "Yes";
+		UI.uiGroup:insert(UI.rotate_button)
+	end
+	if UI.menu_button == nil then
+		UI.menu_button = display.newImage("../images/ui_menu_button.png");
+		UI.menu_button.x = 185+30; UI.menu_button.y = 35; UI.menu_button.static = "Yes"; UI.menu_button.movy = "Yes";
+		UI.uiGroup:insert(UI.menu_button)
+	end
 	
-	play_button:addEventListener("touch",UI.playUI);
-	rotate_button:addEventListener("touch",UI.rotateUI);
-	menu_button:addEventListener("touch",UI.menuUI);
+	UI.play_button:addEventListener("touch",UI.playUI);
+	UI.rotate_button:addEventListener("touch",UI.rotateUI);
+	UI.menu_button:addEventListener("touch",UI.menuUI);
 end
 
 ---------------------------------
@@ -359,14 +372,16 @@ UI.hit = function(event)
 		if event.force >= threshold then
 			local damage = math.ceil((event.force)/1.5);
 			(event.target).currentHP = (event.target).currentHP - damage;
-			if (event.target).child == nil then Score.addtoScore(damage); end
+			if event.target.child == nil then
+				Score.addtoScore(damage);
+			end
 			print((event.target).currentHP)
 			local h = (event.target).currentHP; local m = (event.target).maxHP;
 			if h < 0 then h = 0; end
 			local p = math.ceil(4*(h/m));
 			(event.target).alpha = (p/4)
 			if (event.target).currentHP <= 0 then
-				if (event.target).cost ~= nil and (event.target).child == nil then
+				if (event.target).cost ~= nil and event.target.child == nil then
 					Score.addtoScore(math.ceil((event.target).cost * 1.5));
 					if (event.target).id >= 1000 then
 						--Give Bonus Points for Destroying an Enemy Unit

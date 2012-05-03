@@ -183,5 +183,13 @@ function new(params)
                 scrollView:removeScrollBar()
         end
         
+		function scrollView:destroy()
+			local tmp = scrollView.numChildren
+			while tmp >= 1 do
+				scrollView:remove(tmp)
+				tmp = tmp - 1
+			end
+		end
+		
         return scrollView
 end

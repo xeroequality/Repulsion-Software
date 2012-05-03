@@ -53,10 +53,11 @@ local group = self.view
 	--storyboard.gotoScene( "menu_splash", "zoomInOutFade", 500)
 	--print("Engines Charged, Prepared to Warp.");
 	
-	    --localGroup = display.newGroup()
-		print(storyboard.labelFile)
-	    storyboard.gotoScene( storyboard.labelFile, "zoomInOutFade", 200 )
-	    --return localGroup
+	--localGroup = display.newGroup()
+	print(storyboard.labelFile)
+	storyboard.gotoScene( storyboard.labelFile, "zoomInOutFade", 200 )
+	--storyboard.gotoScene( storyboard.labelFile )
+	--return localGroup
 	
 	
 	

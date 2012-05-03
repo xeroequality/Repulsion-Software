@@ -31,6 +31,10 @@ Overlays.setGood = function(gTable)
 	Overlays.good.width = gTable.width
 	Overlays.good.height = gTable.height
 	Overlays.good.alpha = gTable.alpha
+	Overlays.good.view = display.newRect(Overlays.good.x,Overlays.good.y-Overlays.good.height/2,Overlays.good.width,Overlays.good.height)
+	Overlays.good.view:setFillColor(0,255,0)
+	Overlays.good.view.alpha = Overlays.good.alpha
+	Overlays.good.view.isVisible = false
 end
 
 Overlays.setBad = function(bTable)
@@ -40,6 +44,10 @@ Overlays.setBad = function(bTable)
 	Overlays.bad.width = bTable.width
 	Overlays.bad.height = bTable.height
 	Overlays.bad.alpha = bTable.alpha
+	Overlays.bad.view = display.newRect(Overlays.bad.x,Overlays.bad.y-Overlays.bad.height/2,Overlays.bad.width,Overlays.bad.height)
+	Overlays.bad.view.isVisible = false
+	Overlays.bad.view:setFillColor(255,0,0)
+	Overlays.bad.view.alpha = Overlays.bad.alpha
 end
 
 Overlays.show = function()
@@ -82,9 +90,11 @@ end
 
 Overlays.destroy = function()
 	if Overlays.good.hasGood then
+		Overlays.good.hasGood = false
 		Overlays.good.view:removeSelf()
 	end
 	if Overlays.bad.hasBad then
+		Overlays.bad.hasBad = false
 		Overlays.bad.view:removeSelf()
 	end
 end

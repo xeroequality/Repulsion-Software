@@ -184,8 +184,12 @@ Trophies.checkAchievements = function()
 end
 
 Trophies.destroyImage = function()
-	img:removeSelf();
-	trophyText:removeSelf();
+	if img ~= nil then
+		img:removeSelf();
+	end
+	if trophyText ~= nil then
+		trophyText:removeSelf();
+	end
 	img = nil;
 	trophyText = nil;
 	Trophies["currentlyAchieving"] = false;

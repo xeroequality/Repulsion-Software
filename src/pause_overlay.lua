@@ -1,6 +1,41 @@
 --Modularized Version of the Pause Overlay
 
-pauseMenu = {};
+pauseMenu = {
+	bigGroup = display.newGroup(),
+	overlayGroup = nil,
+	unitGroup = nil,
+	backBtn = nil,
+	pauseText = nil,
+	restartBtn = nil,
+	exitBtn = nil,
+	loadBtn = nil,
+	saveBtn = nil,
+	settingsBtn = nil,
+	backMainBtn = nil,
+	menuText = nil,
+	loadCBtn = nil,
+	overwriteBtn = nil,
+	overlay_section = nil,
+	overlayshade = nil,
+	overlayrect = nil,
+	showInfo = nil,
+	valueVol = nil,
+	valueSFX = nil,
+	params = {
+		anim_time = 15, 		--How Much Time Spent for Overlay Animation (Both Ways)
+		now_time = 0, 			--The Current Time for the Current Animation
+		b = 25,
+		iw = 96*(2/3),
+		r_alpha = 0, 			--Overlay's Starting Alpha Value
+		s_alpha = 0.7, 			--Shade Final Alpha Value
+		r_scale = 0.75, 		--Overlay's Starting Scale
+		nr_scale = 0.75,
+		once = false, 			--Preliminary Things Before Animating
+		r_w = (5*96*(2/3))+(2*25), 	--Length of the Overlay Rectangle
+		r_h = 256, 				--Height of the Overlay Rectangle
+		slot = 0
+	},
+}
 
 pauseMenu.switchTo = function(event)
 	if event.phase == "ended" and overlay == true then
@@ -8,19 +43,18 @@ pauseMenu.switchTo = function(event)
 		if target.alpha > 0 then
 			if target.section == "Load" then
 				--Switch to Loading Screen
-				backBtn.alpha = 0;
-				pauseText.alpha = 0;
-				restartBtn.alpha = 0;
-				exitBtn.alpha = 0;
-				loadBtn.alpha = 0;
-				saveBtn.alpha = 0;
-				settingsBtn.alpha = 0;
-				backMainBtn.alpha = 1;
-				loadCBtn.alpha = 1;
-				menuText.alpha = 0;
+				pauseMenu.backBtn.alpha = 0;
+				pauseMenu.pauseText.alpha = 0;
+				pauseMenu.restartBtn.alpha = 0;
+				pauseMenu.exitBtn.alpha = 0;
+				pauseMenu.loadBtn.alpha = 0;
+				pauseMenu.saveBtn.alpha = 0;
+				pauseMenu.settingsBtn.alpha = 0;
+				pauseMenu.backMainBtn.alpha = 1;
+				pauseMenu.loadCBtn.alpha = 1;
+				pauseMenu.menuText.alpha = 0;
 				local total = 0;
 				for k = 1, 10 do
-					local path = system.pathForFile( "", system.ResourceDirectory )
 					local path = system.pathForFile( "", system.ResourceDirectory )
 					local f = io.open( path.."slot"..k..".lua", "r" )
 					if f ~= nil then
@@ -31,24 +65,23 @@ pauseMenu.switchTo = function(event)
 					end
 				end
 				Achievements.replace("slotsUsed",total);
-				overlay_section = "Load";
-				showInfo = false;
+				pauseMenu.overlay_section = "Load";
+				pauseMenu.showInfo = false;
 			end
 			if target.section == "Save" then
 				--Switch to Saving Screen
-				backBtn.alpha = 0;
-				pauseText.alpha = 0;
-				restartBtn.alpha = 0;
-				exitBtn.alpha = 0;
-				loadBtn.alpha = 0;
-				saveBtn.alpha = 0;
-				settingsBtn.alpha = 0;
-				backMainBtn.alpha = 1;
-				overwriteBtn.alpha = 1;
-				menuText.alpha = 0;
+				pauseMenu.backBtn.alpha = 0;
+				pauseMenu.pauseText.alpha = 0;
+				pauseMenu.restartBtn.alpha = 0;
+				pauseMenu.exitBtn.alpha = 0;
+				pauseMenu.loadBtn.alpha = 0;
+				pauseMenu.saveBtn.alpha = 0;
+				pauseMenu.settingsBtn.alpha = 0;
+				pauseMenu.backMainBtn.alpha = 1;
+				pauseMenu.overwriteBtn.alpha = 1;
+				pauseMenu.menuText.alpha = 0;
 				local total = 0;
 				for k = 1, 10 do
-					local path = system.pathForFile( "", system.ResourceDirectory )
 					local path = system.pathForFile( "", system.ResourceDirectory )
 					local f = io.open( path.."slot"..k..".lua", "r" )
 					if f ~= nil then
@@ -59,34 +92,35 @@ pauseMenu.switchTo = function(event)
 					end
 				end
 				Achievements.replace("slotsUsed",total);
-				overlay_section = "Save";
-				showInfo = false;
+				pauseMenu.overlay_section = "Save";
+				pauseMenu.showInfo = false;
 			end
 			if target.section == "Settings" then
 				local widget 	 = require( "widget" )
 				widget.setTheme("theme_ios")	
 				local MenuSettings = require( "settings" )
-				backBtn.alpha = 0;
-				pauseText.alpha = 0;
-				restartBtn.alpha = 0;
-				exitBtn.alpha = 0;
-				loadBtn.alpha = 0;
-				saveBtn.alpha = 0;
-				settingsBtn.alpha = 0;
-				backMainBtn.alpha = 1;
-				settingsBtn.alpha = 0;
-				menuText.alpha = 0;
+				pauseMenu.backBtn.alpha = 0;
+				pauseMenu.pauseText.alpha = 0;
+				pauseMenu.restartBtn.alpha = 0;
+				pauseMenu.exitBtn.alpha = 0;
+				pauseMenu.loadBtn.alpha = 0;
+				pauseMenu.saveBtn.alpha = 0;
+				pauseMenu.settingsBtn.alpha = 0;
+				pauseMenu.backMainBtn.alpha = 1;
+				pauseMenu.settingsBtn.alpha = 0;
+				pauseMenu.menuText.alpha = 0;
 				
-				overlay_section = "Settings";
+				pauseMenu.overlay_section = "Settings";
 
-				showInfo = false;
+				pauseMenu.showInfo = false;
 				
-				valueVol = display.newText("Your Volume",display.contentWidth *.55,display.contentHeight * 0.25,native.systemFont,16)
+				pauseMenu.valueVol = display.newText("Your Volume",display.contentWidth *.55,display.contentHeight * 0.25,native.systemFont,16)
+				pauseMenu.bigGroup:insert(pauseMenu.valueVol)
 
 		        local sliderListener1 = function( event )
 		            id = "Volume";
 		            local sliderObj1 = event.target;
-		            valueVol.text=event.target.value;
+		            pauseMenu.valueVol.text=event.target.value;
 		            print( "New value is: " .. event.target.value )
 		            audio.setVolume((event.target.value/100),{channel=3})
 					MenuSettings.onTesterBtnRelease(event)
@@ -95,21 +129,23 @@ pauseMenu.switchTo = function(event)
 		        mySlider1 = widget.newSlider{
 		            callback=sliderListener1
 		        }
+				pauseMenu.bigGroup:insert(mySlider1.view)
 		        -- Center the slider widget on the screen:
 		        mySlider1.x = display.contentWidth * 0.5
 		        mySlider1.y = display.contentHeight * 0.2
 		        -- insert the slider widget into a group:
-		        --group:insert(valueVol)
+		        --group:insert(pauseMenu.valueVol)
 		        --group:insert( mySlider1.view)
 
 
 		        --Create the slider for Sound Effects Control
-				valueSFX = display.newText("Your Sound Effects",display.contentWidth *.50,display.contentHeight * 0.65,native.systemFont,16)  
+				pauseMenu.valueSFX = display.newText("Your Sound Effects",display.contentWidth *.50,display.contentHeight * 0.65,native.systemFont,16)  
+				pauseMenu.bigGroup:insert(pauseMenu.valueSFX)
 
 				local sliderListener2 = function( event )
 					local id = "Sound Effects";
 					local sliderObj2 = event.target;
-					valueSFX.text=event.target.value;
+					pauseMenu.valueSFX.text=event.target.value;
 					print( "New value is: " .. event.target.value )
 					audio.setVolume((event.target.value/100),{channel=2})
 					MenuSettings.onTestBtnRelease(event)
@@ -119,49 +155,49 @@ pauseMenu.switchTo = function(event)
 				mySlider2 = widget.newSlider{
 					callback=sliderListener2
 				}
-
+				pauseMenu.bigGroup:insert(mySlider2.view)
 				-- Center the slider widget on the screen:
 				mySlider2.x = display.contentWidth * 0.5
 				mySlider2.y = display.contentHeight * 0.6
 				-- insert the slider widget into a group:
 				
-				 --group:insert(valueSFX)
+				 --group:insert(pauseMenu.valueSFX)
 			     --group:insert( mySlider2.view)
 			
 			
 			end
 			if target.section == "Main" then
 				--Switch to Loading Screen
-				backBtn.alpha = 1;
-				pauseText.alpha = 1;
-				restartBtn.alpha = 1;
-				exitBtn.alpha = 1;
-				loadBtn.alpha = 1;
-				saveBtn.alpha = 1;
-				settingsBtn.alpha = 1;
-				backMainBtn.alpha = 0;
-				overwriteBtn.alpha = 0;
-				loadCBtn.alpha = 0;
-				menuText.alpha = 0;
+				pauseMenu.backBtn.alpha = 1;
+				pauseMenu.pauseText.alpha = 1;
+				pauseMenu.restartBtn.alpha = 1;
+				pauseMenu.exitBtn.alpha = 1;
+				pauseMenu.loadBtn.alpha = 1;
+				pauseMenu.saveBtn.alpha = 1;
+				pauseMenu.settingsBtn.alpha = 1;
+				pauseMenu.backMainBtn.alpha = 0;
+				pauseMenu.overwriteBtn.alpha = 0;
+				pauseMenu.loadCBtn.alpha = 0;
+				pauseMenu.menuText.alpha = 0;
 				for k = 1, 20 do
 					slots[k].alpha = 0;
 				end
-				if overlay_section == "Settings" then
+				if pauseMenu.overlay_section == "Settings" then
 					mySlider2:removeSelf()
 					mySlider2 = nil
-					valueSFX:removeSelf()
-					valueSFX=nil
+					pauseMenu.valueSFX:removeSelf()
+					pauseMenu.valueSFX=nil
 					mySlider1:removeSelf()
 					mySlider1 = nil
-					valueVol:removeSelf()
-					valueVol=nil
+					pauseMenu.valueVol:removeSelf()
+					pauseMenu.valueVol=nil
 				end
-				overlay_section = "Main"
+				pauseMenu.overlay_section = "Main"
 				
 				--Destroy All Object in Overlay Group
-				local num = overlayGroup.numChildren;
+				local num = pauseMenu.overlayGroup.numChildren;
 				while num >= 1 do
-					overlayGroup:remove(num)
+					pauseMenu.overlayGroup:remove(num)
 					num = num - 1
 				end
 			end
@@ -170,21 +206,19 @@ pauseMenu.switchTo = function(event)
 end
 
 pauseMenu.displayPreview = function(slot)
-	local num = overlayGroup.numChildren;
+	local num = pauseMenu.overlayGroup.numChildren;
 		while num >= 1 do
-			overlayGroup:remove(num)
+			pauseMenu.overlayGroup:remove(num)
 			num = num - 1
 		end
-	package.loaded["slot"..slot] = nil
-	_G["slot"..slot] = nil
 	local Play	 = require( "slot"..slot )
 	local Materials = require( "materials" )
 	local Units = require("units")
 	local player = Play.structure;
 	
-	local str = "Slot "..slot.."\n";
+	local str = "slot "..slot.."\n";
 	str = str.."Cost: "..player.totalCost.."\n";
-	str = str.."Num of Objects: "..player.numObjects.."\n";
+	str = str.."Num. Objects: "..player.numObjects.."\n";
 	
 	--Show An Image of the Structure
 	local max_w = 182-80; --How Much Space do We Have to Show This Image in Width
@@ -226,7 +260,7 @@ pauseMenu.displayPreview = function(slot)
 			obj.x = (player.x_vals[i]*xs)+baseX;
 			obj.y = (player.y_vals[i]*ys)+baseY;
 			
-			overlayGroup:insert(obj);
+			pauseMenu.overlayGroup:insert(obj);
 			obj:toFront()
 		else
 			local obj = Units.clone(player.id[i])
@@ -246,7 +280,7 @@ pauseMenu.displayPreview = function(slot)
 			obj.x = (player.x_vals[i]*xs)+baseX;
 			obj.y = (player.y_vals[i]*ys)+baseY;
 			
-			overlayGroup:insert(obj);
+			pauseMenu.overlayGroup:insert(obj);
 			obj:toFront()
 
 		end
@@ -255,30 +289,30 @@ pauseMenu.displayPreview = function(slot)
 end
 
 pauseMenu.confirm = function(event)
-	if event.phase == "began" and (event.target).alpha > 0 and overlay_section ~= "Main" then
-		showInfo = true;
-		slot = (event.target).slot;
-		local num = overlayGroup.numChildren;
+	if event.phase == "began" and (event.target).alpha > 0 and pauseMenu.overlay_section ~= "Main" then
+		pauseMenu.showInfo = true;
+		pauseMenu.params.slot = (event.target).slot;
+		local num = pauseMenu.overlayGroup.numChildren;
 		while num >= 1 do
-			overlayGroup:remove(num)
+			pauseMenu.overlayGroup:remove(num)
 			num = num - 1
 		end
 		--Get Text
-		local str = "Slot "..slot.."\n";
+		local str = "Slot "..pauseMenu.params.slot.."\n";
 		local path = system.pathForFile( "", system.ResourceDirectory )
-		local f = io.open( path.."slot"..slot..".lua", "r" )
+		local f = io.open( path.."slot"..pauseMenu.params.slot..".lua", "r" )
 		if f == nil then
 			str = str.."\nNo File";
 		else
-			str = pauseMenu.displayPreview(slot)
+			str = pauseMenu.displayPreview(pauseMenu.params.slot)
 		end
-		menuText.text = str;
-		menuText.alpha = 1;
+		pauseMenu.menuText.text = str;
+		pauseMenu.menuText.alpha = 1;
 	end
 end
 
 pauseMenu.back_to_main = function(event)
-	if event.phase == "began" and backBtn.alpha > 0 then
+	if event.phase == "began" and pauseMenu.backBtn.alpha > 0 then
 		local UI = require("module_item_ui");
 		UI.slideUI();
 		--Close Overlay if Up
@@ -296,139 +330,137 @@ pauseMenu.overlay_animation = function(event)
 		--Are We Going Into the Overlay?
 		if overlay == true then
 			--First Time Things
-			if once == false then
-				once = true;
-				overlayshade.alpha = 0;
-				overlayrect.alpha = r_alpha;
-				now_time = anim_time;
-				overlayrect:scale(r_scale,r_scale);
-				nr_scale = (1-r_scale)/anim_time;
-				nr_scale = (nr_scale+r_scale)/r_scale;
+			if pauseMenu.params.once == false then
+				pauseMenu.params.once = true;
+				pauseMenu.overlayshade.alpha = 0;
+				pauseMenu.overlayrect.alpha = pauseMenu.params.r_alpha;
+				pauseMenu.params.now_time = pauseMenu.params.anim_time;
+				pauseMenu.overlayrect:scale(pauseMenu.params.r_scale,pauseMenu.params.r_scale);
+				pauseMenu.params.nr_scale = (1-pauseMenu.params.r_scale)/pauseMenu.params.anim_time;
+				pauseMenu.params.nr_scale = (pauseMenu.params.nr_scale+pauseMenu.params.r_scale)/pauseMenu.params.r_scale;
 				physics.pause() --Pause the Physics
-				local UI = require("module_item_ui");
-				UI.slideUI();
+				require("module_item_ui").slideUI()
 			end
 			--Control Visibility of the Overlay Shade
-			overlayshade.alpha = overlayshade.alpha + (s_alpha/anim_time)
+			pauseMenu.overlayshade.alpha = pauseMenu.overlayshade.alpha + (pauseMenu.params.s_alpha/pauseMenu.params.anim_time)
 			--Control Visibility of the Overlay Rectangle
-			overlayrect.alpha = overlayrect.alpha + ((1-r_alpha)/anim_time)
+			pauseMenu.overlayrect.alpha = pauseMenu.overlayrect.alpha + ((1-pauseMenu.params.r_alpha)/pauseMenu.params.anim_time)
 			--Control Scaling of the Overlay Rectangle
-			overlayrect:scale(nr_scale,nr_scale);
+			pauseMenu.overlayrect:scale(pauseMenu.params.nr_scale,pauseMenu.params.nr_scale);
 			--Countdown the Timer
-			now_time = now_time - 1;
+			pauseMenu.params.now_time = pauseMenu.params.now_time - 1;
 			--Is Time Up?
-			if now_time <= 0 then
+			if pauseMenu.params.now_time <= 0 then
 				overlay_activity = false;
-				once = false;
-				overlayshade.alpha = s_alpha;
-				overlayrect.alpha = 1;
+				pauseMenu.params.once = false;
+				pauseMenu.overlayshade.alpha = pauseMenu.params.s_alpha;
+				pauseMenu.overlayrect.alpha = 1;
 				
 				--Display Buttons
-				backBtn.alpha = 1;
-				pauseText.alpha = 1;
-				restartBtn.alpha = 1;
-				exitBtn.alpha = 1;
-				loadBtn.alpha = 1;
-				saveBtn.alpha = 1;
-				settingsBtn.alpha = 1;
+				pauseMenu.backBtn.alpha = 1;
+				pauseMenu.pauseText.alpha = 1;
+				pauseMenu.restartBtn.alpha = 1;
+				pauseMenu.exitBtn.alpha = 1;
+				pauseMenu.loadBtn.alpha = 1;
+				pauseMenu.saveBtn.alpha = 1;
+				pauseMenu.settingsBtn.alpha = 1;
 				
 			end				
 		else
 		--If We Are Leaving
 			--First Time Things
-			if once == false then
-				once = true;
-				overlayshade.alpha = s_alpha;
-				overlayrect.alpha = 1;
-				now_time = anim_time;
-				nr_scale = (1-r_scale)/anim_time;
-				nr_scale = (nr_scale-r_scale)/r_scale;
+			if pauseMenu.params.once == false then
+				pauseMenu.params.once = true;
+				pauseMenu.overlayshade.alpha = pauseMenu.params.s_alpha;
+				pauseMenu.overlayrect.alpha = 1;
+				pauseMenu.params.now_time = pauseMenu.params.anim_time;
+				pauseMenu.params.nr_scale = (1-pauseMenu.params.r_scale)/pauseMenu.params.anim_time;
+				pauseMenu.params.nr_scale = (pauseMenu.params.nr_scale-pauseMenu.params.r_scale)/pauseMenu.params.r_scale;
 				
 				--Remove Buttons
-				backBtn.alpha = 0;
-				pauseText.alpha = 0;
-				restartBtn.alpha = 0;
-				exitBtn.alpha = 0;
-				loadBtn.alpha = 0;
-				saveBtn.alpha = 0;
-				settingsBtn.alpha = 0;
+				pauseMenu.backBtn.alpha = 0;
+				pauseMenu.pauseText.alpha = 0;
+				pauseMenu.restartBtn.alpha = 0;
+				pauseMenu.exitBtn.alpha = 0;
+				pauseMenu.loadBtn.alpha = 0;
+				pauseMenu.saveBtn.alpha = 0;
+				pauseMenu.settingsBtn.alpha = 0;
 			end
 			--Control Visibility of the Overlay Shade
-			overlayshade.alpha = overlayshade.alpha - (s_alpha/(anim_time+5))
+			pauseMenu.overlayshade.alpha = pauseMenu.overlayshade.alpha - (pauseMenu.params.s_alpha/(pauseMenu.params.anim_time+5))
 			--Control Visibility of the Overlay Rectangle
-			overlayrect.alpha = overlayrect.alpha - ((1-r_alpha)/(anim_time+5))
+			pauseMenu.overlayrect.alpha = pauseMenu.overlayrect.alpha - ((1-pauseMenu.params.r_alpha)/(pauseMenu.params.anim_time+5))
 			--Control Scaling of the Overlay Rectangle
-			overlayrect:scale(nr_scale,nr_scale);
+			pauseMenu.overlayrect:scale(pauseMenu.params.nr_scale,pauseMenu.params.nr_scale);
 			--Countdown the Timer
-			now_time = now_time - 1;
+			pauseMenu.params.now_time = pauseMenu.params.now_time - 1;
 			--Is Time Up?
-			if now_time <= 0 then
+			if pauseMenu.params.now_time <= 0 then
 				overlay_activity = false;
-				overlayshade.alpha = 0;
-				overlayrect.alpha = 0;
+				pauseMenu.overlayshade.alpha = 0;
+				pauseMenu.overlayrect.alpha = 0;
 				successTime = 1;
-				once = false;
-				overlayrect:scale((1/r_scale),(1/r_scale));
+				pauseMenu.params.once = false;
+				pauseMenu.overlayrect:scale((1/pauseMenu.params.r_scale),(1/pauseMenu.params.r_scale));
 				physics.start() --Restart the Physics
 			end	
 		end
 	else
-		once = false;
+		pauseMenu.params.once = false;
 	end
 end
 --Runtime Listener at Bottom of enterScene
 
 pauseMenu.createOverlay = function(group)
-	--Set Up the Width and Height Variables
-		w = display.contentWidth; h = display.contentHeight;
 		--Overlay Animation Variables
-		anim_time = 15; --How Much Time Spent for Overlay Animation (Both Ways)
-		now_time = 0; --The Current Time for the Current Animation
-		b = 25; iw = 96*(2/3);
-		r_alpha = 0; --Overlay's Starting Alpha Value
-		s_alpha = 0.7; --Shade Final Alpha Value
-		r_scale = 0.75; --Overlay's Starting Scale
-		nr_scale = r_scale; --Overlay's Current Scale
-		once = false; --Preliminary Things Before Animating
-		r_w = (5*iw)+(2*b); --Length of the Overlay Rectangle
-		r_h = 256; --Height of the Overlay Rectangle
-		overlay_section = "Main"; --Which Section of the Overlay are We In?
-		showInfo = false; --Showing Some Text?
-		slot = 0;
+		w = display.contentWidth
+		h = display.contentHeight
 		
 		--Make the Overlay Rectangle
-		overlayshade = display.newRect(-w,0,w*3,h); --The Shady Part of the Screen
-		overlayshade:setFillColor(0,0,0); overlayshade.alpha = 0;
-		overlayrect = display.newImageRect("../images/overlay_grey.png",r_w,r_h);
-		overlayrect.alpha = 0; overlayrect.x = (w/2); overlayrect.y = (h/2);
-		overlayGroup = display.newGroup();
+		pauseMenu.overlayshade = display.newRect(-w,0,w*3,h); --The Shady Part of the Screen
+		pauseMenu.overlayshade:setFillColor(0,0,0); pauseMenu.overlayshade.alpha = 0;
+		pauseMenu.bigGroup:insert(pauseMenu.overlayshade)
+		
+		pauseMenu.overlayrect = display.newImageRect("../images/overlay_grey.png",pauseMenu.params.r_w,pauseMenu.params.r_h);
+		pauseMenu.overlayrect.alpha = 0; pauseMenu.overlayrect.x = (w/2); pauseMenu.overlayrect.y = (h/2);
+		pauseMenu.bigGroup:insert(pauseMenu.overlayrect)
+		
+		pauseMenu.overlayGroup = display.newGroup();
 		
 		--Buttons
-		pauseText = display.newText("PAUSE",(w/2)-55,(h/2)-(r_h/2),"Arial Black",30);
-		backBtn= display.newImage("../images/btn_back.png");
-		backBtn.x = (w/2); backBtn.y = (h/2)+(r_h/2)-30;
-		restartBtn = display.newImage("../images/btn_restart_level.png");
-		restartBtn.x = (w/2); restartBtn.y = (h/2)+(r_h/2)-110;
-		exitBtn = display.newImage("../images/btn_exit_level.png");
-		exitBtn.x = (w/2); exitBtn.y = (h/2)+(r_h/2)-70;
-		loadBtn = display.newImage("../images/btn_load.png");
-		loadBtn.x = (w/2); loadBtn.y = (h/2)+(r_h/2)-150; loadBtn.section = "Load";
-		saveBtn = display.newImage("../images/btn_save.png");
-		saveBtn.x = (w/2); saveBtn.y = (h/2)+(r_h/2)-190; saveBtn.section = "Save";
-		settingsBtn = display.newImage("../images/btn_gear.png");
-		settingsBtn.x = (w/2)+150; settingsBtn.y = (h/2)+(r_h/2)-35; settingsBtn.section = "Settings";
+		pauseMenu.pauseText = display.newText("PAUSE",(w/2)-55,(h/2)-(pauseMenu.params.r_h/2),"Arial Black",30);
+		pauseMenu.backBtn= display.newImage("../images/btn_back.png");
+		pauseMenu.backBtn.x = (w/2); pauseMenu.backBtn.y = (h/2)+(pauseMenu.params.r_h/2)-30;
+		pauseMenu.restartBtn = display.newImage("../images/btn_restart_level.png");
+		pauseMenu.restartBtn.x = (w/2); pauseMenu.restartBtn.y = (h/2)+(pauseMenu.params.r_h/2)-110;
+		pauseMenu.exitBtn = display.newImage("../images/btn_exit_level.png");
+		pauseMenu.exitBtn.x = (w/2); pauseMenu.exitBtn.y = (h/2)+(pauseMenu.params.r_h/2)-70;
+		pauseMenu.loadBtn = display.newImage("../images/btn_load.png");
+		pauseMenu.loadBtn.x = (w/2); pauseMenu.loadBtn.y = (h/2)+(pauseMenu.params.r_h/2)-150; pauseMenu.loadBtn.section = "Load";
+		pauseMenu.saveBtn = display.newImage("../images/btn_save.png");
+		pauseMenu.saveBtn.x = (w/2); pauseMenu.saveBtn.y = (h/2)+(pauseMenu.params.r_h/2)-190; pauseMenu.saveBtn.section = "Save";
+		pauseMenu.settingsBtn = display.newImage("../images/btn_gear.png");
+		pauseMenu.settingsBtn.x = (w/2)+150; pauseMenu.settingsBtn.y = (h/2)+(pauseMenu.params.r_h/2)-35; pauseMenu.settingsBtn.section = "Settings";
+		pauseMenu.bigGroup:insert(pauseMenu.pauseText)
+		pauseMenu.bigGroup:insert(pauseMenu.backBtn)
+		pauseMenu.bigGroup:insert(pauseMenu.restartBtn)
+		pauseMenu.bigGroup:insert(pauseMenu.exitBtn)
+		pauseMenu.bigGroup:insert(pauseMenu.loadBtn)
+		pauseMenu.bigGroup:insert(pauseMenu.saveBtn)
+		pauseMenu.bigGroup:insert(pauseMenu.settingsBtn)
 		
-		--Slots
+		--slots
 		slots = {};
 		for k = 1, 20 do
 			if k <= 10 then
 				slots[k] = display.newImage("../images/btn_slot"..k..".png");
+				pauseMenu.bigGroup:insert(slots[k])
 				if k <= 5 then
 					slots[k].x = (w/2)-75-50;
-					slots[k].y = (h/2)-(r_h/2)+(k*40);
+					slots[k].y = (h/2)-(pauseMenu.params.r_h/2)+(k*40);
 				else
 					slots[k].x = (w/2)-75+50;
-					slots[k].y = (h/2)-(r_h/2)+((k-5)*40);
+					slots[k].y = (h/2)-(pauseMenu.params.r_h/2)+((k-5)*40);
 				end
 				slots[k].alpha = 0;
 				slots[k].movy = "Yes";
@@ -436,12 +468,13 @@ pauseMenu.createOverlay = function(group)
 				slots[k].slot = k;
 			else
 				slots[k] = display.newImage("../images/btn_nosave.png");
+				pauseMenu.bigGroup:insert(slots[k])
 				if k <= 15 then
 					slots[k].x = (w/2)-75-50;
-					slots[k].y = (h/2)-(r_h/2)+((k-10)*40);
+					slots[k].y = (h/2)-(pauseMenu.params.r_h/2)+((k-10)*40);
 				else
 					slots[k].x = (w/2)-75+50;
-					slots[k].y = (h/2)-(r_h/2)+((k-15)*40);
+					slots[k].y = (h/2)-(pauseMenu.params.r_h/2)+((k-15)*40);
 				end
 				slots[k].alpha = 0;
 				slots[k].movy = "Yes";
@@ -449,57 +482,43 @@ pauseMenu.createOverlay = function(group)
 				slots[k].slot = (k-10);
 			end
 		end
-		backMainBtn = display.newImage("../images/btn_back.png");
-		backMainBtn.x = (w/2)-75; backMainBtn.y = (h/2)-(r_h/2)+(6*40)-5; backMainBtn.alpha = 0; backMainBtn.section = "Main";
-		overwriteBtn = display.newImage("../images/btn_overwrite.png");
-		overwriteBtn.x = (w/2)+75+20; overwriteBtn.y = (h/2)-(r_h/2)+(6*40)-5;
-		loadCBtn = display.newImage("../images/btn_loadconfirm.png");
-		loadCBtn.x = (w/2)+75+20; loadCBtn.y = (h/2)-(r_h/2)+(6*40)-5;
-		menuText = display.newText("Stuff",0,0,native.systemFont,12);
-		menuText.x = (w/2)+75; menuText.y = (h/2)-80;
+		pauseMenu.backMainBtn = display.newImage("../images/btn_back.png");
+		pauseMenu.backMainBtn.x = (w/2)-75; pauseMenu.backMainBtn.y = (h/2)-(pauseMenu.params.r_h/2)+(6*40)-5; pauseMenu.backMainBtn.alpha = 0; pauseMenu.backMainBtn.section = "Main";
+		pauseMenu.overwriteBtn = display.newImage("../images/btn_overwrite.png");
+		pauseMenu.overwriteBtn.x = (w/2)+75+20; pauseMenu.overwriteBtn.y = (h/2)-(pauseMenu.params.r_h/2)+(6*40)-5;
+		pauseMenu.loadCBtn = display.newImage("../images/btn_loadconfirm.png");
+		pauseMenu.loadCBtn.x = (w/2)+75+20; pauseMenu.loadCBtn.y = (h/2)-(pauseMenu.params.r_h/2)+(6*40)-5;
+		pauseMenu.menuText = display.newText("Stuff",0,0,native.systemFont,12);
+		pauseMenu.menuText.x = (w/2)+75; pauseMenu.menuText.y = (h/2)-80;
+		pauseMenu.bigGroup:insert(pauseMenu.backMainBtn)
+		pauseMenu.bigGroup:insert(pauseMenu.overwriteBtn)
+		pauseMenu.bigGroup:insert(pauseMenu.loadCBtn)
+		pauseMenu.bigGroup:insert(pauseMenu.menuText)
 		
-		backBtn.alpha = 0;
-		pauseText.alpha = 0;
-		restartBtn.alpha = 0;
-		exitBtn.alpha = 0;
-		loadBtn.alpha = 0;
-		saveBtn.alpha = 0;
-		overwriteBtn.alpha = 0;
-		loadCBtn.alpha = 0;
-		menuText.alpha = 0;
-		settingsBtn.alpha = 0;
+		pauseMenu.backBtn.alpha = 0;
+		pauseMenu.pauseText.alpha = 0;
+		pauseMenu.restartBtn.alpha = 0;
+		pauseMenu.exitBtn.alpha = 0;
+		pauseMenu.loadBtn.alpha = 0;
+		pauseMenu.saveBtn.alpha = 0;
+		pauseMenu.overwriteBtn.alpha = 0;
+		pauseMenu.loadCBtn.alpha = 0;
+		pauseMenu.menuText.alpha = 0;
+		pauseMenu.settingsBtn.alpha = 0;
 		
-		overlayshade.movy = "Yes"; overlayrect.movy = "Yes"; saveBtn.movy = "Yes"; loadBtn.movy = "Yes"; backMainBtn.movy = "Yes";
-		pauseText.movy = "Yes"; backBtn.movy = "Yes"; restartBtn.movy = "Yes"; exitBtn.movy = "Yes"; overwriteBtn.movy = "Yes"
-		loadCBtn.movy = "Yes"; menuText.movy = "Yes"; settingsBtn.movy = "Yes";
+		pauseMenu.overlayshade.movy = "Yes"; pauseMenu.overlayrect.movy = "Yes"; pauseMenu.saveBtn.movy = "Yes"; pauseMenu.loadBtn.movy = "Yes"; pauseMenu.backMainBtn.movy = "Yes";
+		pauseMenu.pauseText.movy = "Yes"; pauseMenu.backBtn.movy = "Yes"; pauseMenu.restartBtn.movy = "Yes"; pauseMenu.exitBtn.movy = "Yes"; pauseMenu.overwriteBtn.movy = "Yes"
+		pauseMenu.loadCBtn.movy = "Yes"; pauseMenu.menuText.movy = "Yes"; pauseMenu.settingsBtn.movy = "Yes";
 		
-		overlayshade.static = "Yes"; overlayrect.static = "Yes"; saveBtn.static = "Yes"; loadBtn.static = "Yes"; backMainBtn.static = "Yes";
-		pauseText.static = "Yes"; backBtn.static = "Yes"; restartBtn.static = "Yes"; exitBtn.static = "Yes"; overwriteBtn.static = "Yes"
-		loadCBtn.static = "Yes"; menuText.static = "Yes"; settingsBtn.static = "Yes";
+		pauseMenu.overlayshade.static = "Yes"; pauseMenu.overlayrect.static = "Yes"; pauseMenu.saveBtn.static = "Yes"; pauseMenu.loadBtn.static = "Yes"; pauseMenu.backMainBtn.static = "Yes";
+		pauseMenu.pauseText.static = "Yes"; pauseMenu.backBtn.static = "Yes"; pauseMenu.restartBtn.static = "Yes"; pauseMenu.exitBtn.static = "Yes"; pauseMenu.overwriteBtn.static = "Yes"
+		pauseMenu.loadCBtn.static = "Yes"; pauseMenu.menuText.static = "Yes"; pauseMenu.settingsBtn.static = "Yes";
 		
-		--[[
-		group:insert(overlayshade)
-		group:insert(overlayrect)
-		group:insert(backBtn)
-		group:insert(pauseText);
-		group:insert(restartBtn);
-		group:insert(exitBtn);
-		group:insert(loadBtn);
-		group:insert(saveBtn);
-		group:insert(backMainBtn);
-		group:insert(overwriteBtn);
-		group:insert(settingsBtn);
-		group:insert(loadCBtn);
-		group:insert(menuText);
-		for k = 1, 20 do
-			group:insert(slots[k]);
-		end--]]
-		
-		backMainBtn:addEventListener("touch",pauseMenu.switchTo);
-		loadBtn:addEventListener("touch",pauseMenu.switchTo);
-		saveBtn:addEventListener("touch",pauseMenu.switchTo);
-		settingsBtn:addEventListener("touch",pauseMenu.switchTo)
-		backBtn:addEventListener("touch",pauseMenu.back_to_main);
+		pauseMenu.backMainBtn:addEventListener("touch",pauseMenu.switchTo);
+		pauseMenu.loadBtn:addEventListener("touch",pauseMenu.switchTo);
+		pauseMenu.saveBtn:addEventListener("touch",pauseMenu.switchTo);
+		pauseMenu.settingsBtn:addEventListener("touch",pauseMenu.switchTo)
+		pauseMenu.backBtn:addEventListener("touch",pauseMenu.back_to_main);
 		for k = 1, 20 do
 			slots[k]:addEventListener("touch",pauseMenu.confirm);
 		end
@@ -510,80 +529,90 @@ pauseMenu.createOverlay = function(group)
 end
 
 pauseMenu.bringMenutoFront = function(group)
-	--[[
-	group:insert(overlayshade)
-	group:insert(overlayrect)
-	group:insert(backBtn)
-	group:insert(pauseText);
-	group:insert(restartBtn);
-	group:insert(exitBtn);
-	group:insert(loadBtn);
-	group:insert(saveBtn);
-	group:insert(backMainBtn);
-	group:insert(overwriteBtn);
-	group:insert(settingsBtn);
-	group:insert(loadCBtn);
-	group:insert(menuText);
-	for k = 1, 20 do
-		group:insert(slots[k]);
-	end
-	return group;--]]
-	overlayshade:toFront()
-	overlayrect:toFront()
-	backBtn:toFront()
-	pauseText:toFront()
-	restartBtn:toFront()
-	exitBtn:toFront()
-	loadBtn:toFront()
-	saveBtn:toFront()
-	backMainBtn:toFront()
-	overwriteBtn:toFront()
-	settingsBtn:toFront()
-	loadCBtn:toFront()
-	menuText:toFront()
+	pauseMenu.overlayshade:toFront()
+	pauseMenu.overlayrect:toFront()
+	pauseMenu.backBtn:toFront()
+	pauseMenu.pauseText:toFront()
+	pauseMenu.restartBtn:toFront()
+	pauseMenu.exitBtn:toFront()
+	pauseMenu.loadBtn:toFront()
+	pauseMenu.saveBtn:toFront()
+	pauseMenu.backMainBtn:toFront()
+	pauseMenu.overwriteBtn:toFront()
+	pauseMenu.settingsBtn:toFront()
+	pauseMenu.loadCBtn:toFront()
+	pauseMenu.menuText:toFront()
 	for k = 1, 20 do
 		slots[k]:toFront();
 	end
 end
 
-pauseMenu.nilEverything = function()
-
-	--Delete Anything that Isn't Already Gone
-	display.remove(overlayshade); display.remove(overlayrect);
-	display.remove(backBtn); display.remove(pauseText); display.remove(restartBtn);
-	display.remove(exitBtn); display.remove(loadBtn); display.remove(saveBtn);
-	display.remove(backMainBtn); display.remove(overwriteBtn); display.remove(settingsBtn);
-	display.remove(loadCBtn); display.remove(menuText);
+pauseMenu.destroy = function()
+	Runtime:removeEventListener("enterFrame",pauseMenu.overlay_animation)
 	
-	--Nil the Variables
-	overlayshade = nil; overlayrect = nil; backBtn = nil; pauseText = nil; restartBtn = nil;
-	exitBtn = nil; loadBtn = nil; saveBtn = nil; backMainBtn = nil; overwriteBtn = nil; settingsBtn = nil;
-	loadCBtn = nil; menuText = nil;
-	valueVol = nil; valueSFX = nil;
-	
-	for k = 1, 20 do
-		--display.remove(slots[k]);
-		slots[k] = nil;
+	local tmp = pauseMenu.overlayGroup.numChildren;
+	while tmp >= 1 do
+		pauseMenu.overlayGroup:remove(tmp)
+		tmp = tmp - 1
 	end
-	
-	w = nil; h = nil;
-	anim_time = nil; --How Much Time Spent for Overlay Animation (Both Ways)
-	now_time = nil; --The Current Time for the Current Animation
-	b = nil; iw = nil;
-	r_alpha = nil; --Overlay's Starting Alpha Value
-	s_alpha = nil; --Shade Final Alpha Value
-	r_scale = nil; --Overlay's Starting Scale
-	nr_scale = nil; --Overlay's Current Scale
-	once = nil; --Preliminary Things Before Animating
-	r_w = nil; --Length of the Overlay Rectangle
-	r_h = nil; --Height of the Overlay Rectangle
-	overlay_section = nil; --Which Section of the Overlay are We In?
-	showInfo = nil; --Showing Some Text?
-	slot = nil;
-	
-	Runtime:removeEventListener("enterFrame",pauseMenu.overlay_animation);
-	
-	collectgarbage()
+	if pauseMenu.backBtn ~= nil then
+		pauseMenu.backBtn:removeSelf()
+	end
+	if pauseMenu.pauseText ~= nil then
+		pauseMenu.pauseText:removeSelf()
+	end
+	if pauseMenu.restartBtn ~= nil then
+		pauseMenu.restartBtn:removeSelf()
+	end
+	if pauseMenu.exitBtn ~= nil then
+		pauseMenu.exitBtn:removeSelf()
+	end
+	if pauseMenu.loadBtn ~= nil then
+		pauseMenu.loadBtn:removeSelf()
+	end
+	if pauseMenu.saveBtn ~= nil then
+		pauseMenu.saveBtn:removeSelf()
+	end
+	if pauseMenu.backMainBtn ~= nil then
+		pauseMenu.backMainBtn:removeSelf()
+	end
+	if pauseMenu.overwriteBtn ~= nil then
+		pauseMenu.overwriteBtn:removeSelf()
+	end
+	if pauseMenu.settingsBtn ~= nil then
+		pauseMenu.settingsBtn:removeSelf()
+	end
+	if pauseMenu.loadCBtn ~= nil then
+		pauseMenu.loadCBtn:removeSelf()
+	end
+	if pauseMenu.menuText ~= nil then
+		pauseMenu.menuText:removeSelf()
+	end
+	if pauseMenu.valueVol ~= nil then
+		pauseMenu.valueVol:removeSelf()
+	end
+	if pauseMenu.valueSFX ~= nil then
+		pauseMenu.valueSFX:removeSelf()
+	end
+	if mySlider1 ~= nil then
+		mySlider1.view:removeSelf()
+		mySlider1 = nil
+	end
+	if mySlider2 ~= nil then
+		mySlider2.view:removeSelf()
+		mySlider2 = nil
+	end
+	if pauseMenu.overlayshade ~= nil then
+		pauseMenu.overlayshade:removeSelf()
+	end
+	if pauseMenu.overlayrect ~= nil then
+		pauseMenu.overlayrect:removeSelf()
+	end
+	for i=1,#slots do
+		if slots[k] ~= nil then
+			slots[k]:removeSelf()
+		end
+	end
 end
 
 return pauseMenu;

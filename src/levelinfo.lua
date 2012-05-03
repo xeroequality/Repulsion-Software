@@ -13,65 +13,70 @@ LevelInfo = {
 		title = "Level 1: Los Angeles",
 		desc = "Description here",
 		parScore = 5000,
-		wallet = 5000,
+		wallet = 1200,
 		achievementIDs = {
 			001,002,003
 		},
 		overlay = "../images/overlay_ch1.png",
 		flagX = 125,
-		flagY = 155
+		flagY = 155,
+		unlocked = true
 	},
 	--ch1level2 = 
 	{
 		title = "Level 2: Mexico City",
 		desc = "Hola Beetches!",
 		parScore = 5000,
-		wallet = 4000,
+		wallet = 2000,
 		achievementIDs = {
 		002,004,005
 		},
 		overlay = "../images/overlay_ch1.png",
 		flagX = 205,
-		flagY = 250
+		flagY = 250,
+		unlocked = true
 	},
 	--ch1level3 = 
 	{
 		title = "Level 3: Montreal",
 		desc = "Parlez vous francais?",
 		parScore = 7500,
-		wallet = 5000,
+		wallet = 2000,
 		achievementIDs = {
 		005
 		},
 		overlay = "../images/overlay_ch1.png",
 		flagX = 345,
-		flagY = 90
+		flagY = 90,
+		unlocked = true
 	},
 	--ch1level4 = 
 	{
 		title = "Level 4: New York City",
 		desc = "MOVE!",
 		parScore = 8000,
-		wallet = 3500,
+		wallet = 2500,
 		achievementIDs = {
 		006,007
 		},
 		overlay = "../images/overlay_ch1.png",
 		flagX = 345,
-		flagY = 115
+		flagY = 115,
+		unlocked = true
 	},
 	--ch1level5 = 
 	{
 		title = "Boss Level: UF",
 		desc = "Evil Dr. Bermudez",
 		parScore = 5000,
-		wallet = 2000,
+		wallet = 3000,
 		achievementIDs = {
 		008,009,010
 		},
 		overlay = "../images/overlay_ch1.png",
 		flagX = 310,
-		flagY = 195
+		flagY = 195,
+		unlocked = true
 	}
 },
 --ch2=
@@ -86,7 +91,8 @@ LevelInfo = {
 		},
 		overlay = "../images/overlay_ch2.png",
 		flagX = 315,
-		flagY = 130
+		flagY = 130,
+		unlocked = true
 	},
 	--ch2level2 = 
 	{
@@ -99,7 +105,8 @@ LevelInfo = {
 		},
 		overlay = "../images/overlay_ch2.png",
 		flagX = 220,
-		flagY = 180
+		flagY = 180,
+		unlocked = true
 	},
 	--ch2level3 =
  	{
@@ -112,7 +119,8 @@ LevelInfo = {
 		},
 		overlay = "../images/overlay_ch2.png",
 		flagX = 195,
-		flagY = 60
+		flagY = 60,
+		unlocked = true
 	},
 	--ch2level4 =
  	{
@@ -125,7 +133,8 @@ LevelInfo = {
 		},
 		overlay = "../images/overlay_ch2.png",
 		flagX = 265,
-		flagY = 180
+		flagY = 180,
+		unlocked = true
 	},
 	--ch2level5 = 
 	{
@@ -138,7 +147,8 @@ LevelInfo = {
 		},
 		overlay = "../images/overlay_ch2.png",
 		flagX = display.contentWidth/2,
-		flagY = display.contentHeight/2
+		flagY = display.contentHeight/2,
+		unlocked = true
 	}
 }
 }

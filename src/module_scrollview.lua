@@ -26,7 +26,9 @@ ScrollView.new = function(svTable)
 	ScrollView.bkgView.y = H*1.5
 	ScrollView.bounds.top = svTable.top
 	ScrollView.bounds.bottom = svTable.bottom
-	ScrollView.scrollview = sv.new{top=ScrollView.bounds.top, bottom=ScrollView.bounds.bottom}
+	if ScrollView.scrollview == nil then
+		ScrollView.scrollview = sv.new{top=ScrollView.bounds.top, bottom=ScrollView.bounds.bottom}
+	end
 	ScrollView.scrollview:insert(ScrollView.bkgView)
 	return ScrollView
 end
@@ -55,8 +57,16 @@ ScrollView.destroy = function()
 		ScrollView.items[i].textView = nil
 		ScrollView.items[i] = nil
 	end
-	ScrollView.bkgView:removeSelf()
-	ScrollView.bkgView = nil
+	ScrollView.numItems = 0
+	ScrollView.isOpen = false
+	ScrollView.items = {}
+	
+	if ScrollView.bkgView ~= nil then
+		ScrollView.bkgView:removeSelf()
+		ScrollView.bkgView = nil
+	end
+	
+	ScrollView.scrollview:cleanUp()
 end
 
 return ScrollView

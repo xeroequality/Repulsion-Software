@@ -128,6 +128,9 @@ function scene:enterScene( event )
 			level.levelObjs = { -- Use this to choose what is items are available in this level
 				Materials.wood_plank_alien,
 				Materials.wood_box_alien,
+				Materials.aerogel,
+				Materials.nanotube,
+				Units.repulsionBall,
 				Units.energyBall
 			}
 			print ('levelObjs: ' .. #level.levelObjs)

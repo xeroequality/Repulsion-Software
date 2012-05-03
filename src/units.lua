@@ -357,14 +357,9 @@ Unit.weaponSystems = function(event)
 			--Select a Target
 			selectedTarget = unitGroup[math.random(1,unitGroup.numChildren)];
 			local xForce = ((selectedUnit.x-selectedTarget.x)*-1);
-			local yForce = ((selectedTarget.y-selectedUnit.y)*1);
-			if selectedTarget.y < selectedUnit.y then
-				if yForce > 0 then yForce = yForce * -1; end
-			end
-			if math.abs(selectedTarget.y-selectedUnit.y) <= 55 then
-				yForce = math.abs(yForce);
-				yForce = yForce * 1;
-			end
+			local yForce = ((selectedTarget.y-selectedUnit.y)*-1);
+			yForce = -100
+			
 			print(xForce.." "..yForce.." "..selectedTarget.x.." "..selectedTarget.y.." "..selectedUnit.y);
 			
 			-- make a new image
@@ -397,6 +392,7 @@ Unit.weaponSystems = function(event)
 			physics.addBody( weaponSpriteInstance, { density=selectedUnit.weaponDensity, friction=selectedUnit.weaponFriction, bounce=selectedUnit.weaponBounce, radius=selectedUnit.weaponRadius, filter=enemyweaponCollisionFilter} )
 			weaponSpriteInstance.isBullet = true
 
+			selectedUnit.rotation = (180/math.pi)*math.atan(yForce/xForce)
 			weaponSpriteInstance:applyForce( xForce, yForce, selectedUnit.x, selectedUnit.y )
 			weaponSFX = audio.loadSound(selectedUnit.sfx)
 			weaponSFXed = audio.play( weaponSFX,{channel=2} )

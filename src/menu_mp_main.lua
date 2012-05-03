@@ -144,9 +144,8 @@ function scene:enterScene( event )
 			physics.addBody(level.floor, "static", {friction=0.9, bounce=0.05, filter=floorCollisionFilter} )
 			group:insert(level.floor)
 			
-			levelWallet = require("levelinfo")[1][1].wallet 	--The Amount of Money for This Level [chapter][level].wallet
+			levelWallet = require("levelinfo").mp.wallet 	--The Amount of Money for This Level [chapter][level].wallet
 			wallet = levelWallet 								--The Current Amount of Money
-			
 			--------------------------------------------
 			--              Overlays                  --
 			--------------------------------------------
@@ -355,7 +354,7 @@ function scene:enterScene( event )
 			-----------------------------
 			-- Load the enemy base:
 			----------------------------
-			local objGroup = Enemy.loadBase(Enemy.level1)
+			local objGroup = Enemy.loadBase(Enemy.mp)
 			group:insert(objGroup)
 			
 			

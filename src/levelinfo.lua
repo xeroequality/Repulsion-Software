@@ -152,5 +152,18 @@ LevelInfo = {
 	}
 }
 }
+LevelInfo.mp = {
+		title = "MultiPlayer (Pass-n-Play)",
+		desc = "MOVE!",
+		parScore = 8000,
+		wallet = 3000,
+		achievementIDs = {
+		001
+		},
+		overlay = "../images/overlay_ch1.png",
+		flagX = 265,
+		flagY = 180,
+		unlocked = true
+}
 
 return LevelInfo

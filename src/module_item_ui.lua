@@ -217,43 +217,45 @@ end
 
 UI.slideUI = function()
 	local widget = require("widget")
-	if scrollView ~= nil and scrollView.isOpen then
-		print("closing scrollView")
-		scrollView.isOpen = false
-		transitionStash.newTransition = transition.to(static_menu, {time=300, y=-85} )
-		transitionStash.newTransition = transition.to(scrollView.scrollview, {time=300, x=-85} )
-		transitionStash.newTransition = transition.to(UI.play_button, {time=300, y=-35} )
-		transitionStash.newTransition = transition.to(UI.rotate_button, {time=300, y=-35} )
-		transitionStash.newTransition = transition.to(UI.menu_button, {time=300, y=-35} )
+	if scrollView ~= nil then
+		if scrollView.isOpen then
+			print("closing scrollView")
+			scrollView.isOpen = false
+			transitionStash.newTransition = transition.to(static_menu, {time=300, y=-85} )
+			transitionStash.newTransition = transition.to(scrollView.scrollview, {time=300, x=-85} )
+			transitionStash.newTransition = transition.to(UI.play_button, {time=300, y=-35} )
+			transitionStash.newTransition = transition.to(UI.rotate_button, {time=300, y=-35} )
+			transitionStash.newTransition = transition.to(UI.menu_button, {time=300, y=-35} )
 
-		if slideBtn then
-			slideBtn:removeSelf()
-			UI.createSlideBtn("right",false)
-			transitionStash.newTransition = transition.to(slideBtn, {time=300, x=-35} )
-			transitionStash.newTransition = transition.to( goodoverlay, { alpha=0, xScale=1.0, yScale=1.0, time=0} )
-			transitionStash.newTransition = transition.to( badoverlay, { alpha=0, xScale=1.0, yScale=1.0, time=0} )
+			if slideBtn then
+				slideBtn:removeSelf()
+				UI.createSlideBtn("right",false)
+				transitionStash.newTransition = transition.to(slideBtn, {time=300, x=-35} )
+				transitionStash.newTransition = transition.to( goodoverlay, { alpha=0, xScale=1.0, yScale=1.0, time=0} )
+				transitionStash.newTransition = transition.to( badoverlay, { alpha=0, xScale=1.0, yScale=1.0, time=0} )
 
-		end
-	elseif scrollView ~= nil and not scrollView.isOpen then
-		print("opening scrollView")
-		scrollView.isOpen = true
-		transitionStash.newTransition = transition.to(static_menu, {time=300, y=0} )
-		transitionStash.newTransition = transition.to(scrollView.scrollview, {time=300, x=0} )
-		transitionStash.newTransition = transition.to(UI.play_button, {time=300, y=35} )
-		transitionStash.newTransition = transition.to(UI.rotate_button, {time=300, y=35} )
-		transitionStash.newTransition = transition.to(UI.menu_button, {time=300, y=35} )
-		if slideBtn then
-			slideBtn:removeSelf()
-			UI.createSlideBtn("left",true)
-			transitionStash.newTransition = transition.to(slideBtn, {time=300, x=40} )
-			transitionStash.newTransition = transition.to( goodoverlay, { alpha=.25, xScale=1.0, yScale=1.0, time=0} )
-			transitionStash.newTransition = transition.to( badoverlay, { alpha=.25, xScale=1.0, yScale=1.0, time=0} )
-		end
-		--Close Overlay if Up
-		if overlay == true and overlay_activity == false then
-			overlay = false;
-			overlay_activity = true;
-			print("Here")
+			end
+		elseif scrollView ~= nil and not scrollView.isOpen then
+			print("opening scrollView")
+			scrollView.isOpen = true
+			transitionStash.newTransition = transition.to(static_menu, {time=300, y=0} )
+			transitionStash.newTransition = transition.to(scrollView.scrollview, {time=300, x=0} )
+			transitionStash.newTransition = transition.to(UI.play_button, {time=300, y=35} )
+			transitionStash.newTransition = transition.to(UI.rotate_button, {time=300, y=35} )
+			transitionStash.newTransition = transition.to(UI.menu_button, {time=300, y=35} )
+			if slideBtn then
+				slideBtn:removeSelf()
+				UI.createSlideBtn("left",true)
+				transitionStash.newTransition = transition.to(slideBtn, {time=300, x=40} )
+				transitionStash.newTransition = transition.to( goodoverlay, { alpha=.25, xScale=1.0, yScale=1.0, time=0} )
+				transitionStash.newTransition = transition.to( badoverlay, { alpha=.25, xScale=1.0, yScale=1.0, time=0} )
+			end
+			--Close Overlay if Up
+			if overlay == true and overlay_activity == false then
+				overlay = false;
+				overlay_activity = true;
+				print("Here")
+			end
 		end
 	end
 	return true

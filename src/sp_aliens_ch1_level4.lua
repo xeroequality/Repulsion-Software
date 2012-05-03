@@ -19,6 +19,7 @@ widget.setTheme("theme_ios")
 transitionStash = {}	  	
 timerStash = {};
 local music_bg;
+enableAI = true
 storyboard.currentLevel = {1,4}
 
 ----------------------------------------------------------------------------------

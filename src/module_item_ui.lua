@@ -275,6 +275,7 @@ UI.playUI = function(event)
 		print('unitGroup: ' .. unitGroup[i].id)
 		unitGroup[i]:removeEventListener("touch",UI.dragItem)
 		unitGroup[i]:addEventListener('touch', Units.weaponSystems)
+		unitGroup[i]:addEventListener("postCollision",UI.hit)
 	end
 	for i=1,enemyUnitGroup.numChildren do
 		print('unitGroup: ' .. enemyUnitGroup[i].id)
@@ -356,16 +357,16 @@ UI.hit = function(event)
 	local threshold = 5;
 	--if (event.other).power ~= nil then
 		if event.force >= threshold then
-			local damage = math.ceil((event.force)/5);
+			local damage = math.ceil((event.force)/1.5);
 			(event.target).currentHP = (event.target).currentHP - damage;
-			Score.addtoScore(damage);
+			if (event.target).child == nil then Score.addtoScore(damage); end
 			print((event.target).currentHP)
 			local h = (event.target).currentHP; local m = (event.target).maxHP;
 			if h < 0 then h = 0; end
 			local p = math.ceil(4*(h/m));
 			(event.target).alpha = (p/4)
 			if (event.target).currentHP <= 0 then
-				if (event.target).cost ~= nil then
+				if (event.target).cost ~= nil and (event.target).child == nil then
 					Score.addtoScore(math.ceil((event.target).cost * 1.5));
 					if (event.target).id >= 1000 then
 						--Give Bonus Points for Destroying an Enemy Unit

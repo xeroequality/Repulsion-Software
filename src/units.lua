@@ -351,6 +351,19 @@ Unit.weaponSystems = function(event)
 				-- whichUnitIndex = 2
 			-- end
 			-- selectedUnit[whichUnitIndex].rotation = cannonRotation
+			
+			--Select a Target
+			selectedTarget = unitGroup[math.random(1,unitGroup.numChildren)];
+			xForce = ((selectedUnit.x-selectedTarget.x)*-1);
+			yForce = ((selectedTarget.y-selectedUnit.y)*1);
+			if selectedTarget.y < selectedUnit.y then
+				if yForce > 0 then yForce = yForce * -1; end
+			end
+			if math.abs(selectedTarget.y-selectedUnit.y) <= 55 then
+				yForce = math.abs(yForce);
+				yForce = yForce * 1;
+			end
+			print(xForce.." "..yForce.." "..selectedTarget.x.." "..selectedTarget.y.." "..selectedUnit.y);
 
 			-- make a new image
 			selectedUnit.weapon = sprite.newSpriteSheet(selectedUnit.img_weapon, 19, 19)
@@ -383,7 +396,7 @@ Unit.weaponSystems = function(event)
 			weaponSpriteInstance.isBullet = true
 
 			-- fire the weapon
-			weaponSpriteInstance:applyForce( -700, -100, selectedUnit.x, selectedUnit.y )
+			weaponSpriteInstance:applyForce( xForce, yForce, selectedUnit.x, selectedUnit.y )
 			weaponSFX = audio.loadSound(selectedUnit.sfx)
 			weaponSFXed = audio.play( weaponSFX,{channel=2} )
 			Runtime:addEventListener('enterFrame', removeWeaponBeyondFloor)
@@ -400,7 +413,7 @@ Unit.weaponSystems = function(event)
 			selectedUnit.parent:remove( selectedUnit.weapon )
 		end
 		print('ball deleted')
-		weaponSpriteInstance:removeSelf()
+		display.remove(weaponSpriteInstance);
 		whichPlayer = whichPlayer + 1
 		if math.mod(whichPlayer, 2) == 0 then -- if even (starting at zero being even) then player's turn otherwise AI's turn
 			for i=1,unitGroup.numChildren do

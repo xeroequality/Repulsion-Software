@@ -114,6 +114,7 @@ function scene:enterScene( event )
         music_bg = audio.loadStream("../sound/Bounty 30.ogg")
         audio.fadeOut(prev_music, { time=5000 })
         o_play = audio.play(music_bg, {channel=3,fadein=5000,loops=-1 } )
+
 		--------------------
 		-- Material Objects
 		--------------------
